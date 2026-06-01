@@ -1,0 +1,15 @@
+part of 'splash_bloc.dart';
+
+// من الأفضل استخدام @immutable إذا لم تكن تستخدم Equatable
+// @immutable
+abstract class SplashState {}
+
+class SplashInitial extends SplashState {}
+
+class SplashLoading extends SplashState {}
+
+class SplashNavigateToOnboarding extends SplashState {}
+
+class SplashNavigateToWelcome extends SplashState {}
+
+class SplashNavigateToHome extends SplashState {}

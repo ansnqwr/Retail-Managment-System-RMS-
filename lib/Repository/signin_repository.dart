@@ -1,0 +1,182 @@
+// lib/Repository/signin_repository.dart
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'auth_local_data.dart'; // استيراد مدير التوكنز الـ Global
+
+class SigninRepository {
+  final String _baseUrl = 'https://your-api-url.com';
+
+  /// 1. الـ API الخاص بتسجيل الدخول التقليدي (إيميل وكلمة سر)
+  Future<void> loginWithEmailAndPassword(String email, String password) async {
+    final String loginUrl = '$_baseUrl/auth/login';
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(loginUrl),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'email': email, 'password': password}),
+          )
+          .timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = jsonDecode(response.body);
+
+        // استخراج التوكنز من الـ JSON
+        final String accessToken =
+            responseData['access_token'] ?? responseData['token'] ?? '';
+        final String refreshToken = responseData['refresh_token'] ?? '';
+
+        // حفظ التوكنز في الذاكرة وطباعتها في الـ Console تلقائياً
+        await TokenManager().saveTokens(
+          access: accessToken,
+          refresh: refreshToken,
+        );
+
+        return;
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw Exception(
+          errorData['message'] ?? 'خطأ في البريد الإلكتروني أو كلمة المرور',
+        );
+      }
+    } on http.ClientException {
+      throw Exception('خطأ في الاتصال بالشبكة، يرجى التحقق من الإنترنت.');
+    } on FormatException {
+      throw Exception('خطأ في تنسيق البيانات المستلمة من السيرفر.');
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  /// 2. الـ API الخاص بطلب الـ OTP عند تسجيل الدخول بجوجل
+  Future<void> requestGoogleOtp(String email, String googleId) async {
+    final String googleOtpUrl = '$_baseUrl/auth/google-login';
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(googleOtpUrl),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'email': email, 'google_id': googleId}),
+          )
+          .timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return; // تم إرسال الـ OTP بنجاح من قبل السيرفر
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw Exception(
+          errorData['message'] ?? 'فشل السيرفر في إرسال الـ OTP الخاص بجوجل',
+        );
+      }
+    } on http.ClientException {
+      throw Exception('خطأ في الشبكة أثناء الاتصال بالسيرفر لإرسال الـ OTP.');
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+
+
+  Future<void> verifyOtp(String email, String otpCode) async {
+    final String verifyUrl = 'https://your-api-url.com/auth/verify-otp';
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(verifyUrl),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'email': email, 'otp_code': otpCode}),
+          )
+          .timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = jsonDecode(response.body);
+
+        final String accessToken =
+            responseData['access_token'] ?? responseData['token'] ?? '';
+        final String refreshToken = responseData['refresh_token'] ?? '';
+
+        await TokenManager().saveTokens(
+          access: accessToken,
+          refresh: refreshToken,
+        );
+        return;
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['message'] ?? 'رمز التحقق غير صحيح أو انتهى');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+
+  Future<void> sendForgotPasswordEmail(String email) async {
+    final String forgotPasswordUrl = '$_baseUrl/auth/forgot-password';
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(forgotPasswordUrl),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'email': email}),
+          )
+          .timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return; // نجحت العملية وتم إرسال الرابط/الرمز من السيرفر
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw Exception(
+          errorData['message'] ?? 'فشل إرسال رابط استعادة كلمة المرور',
+        );
+      }
+    } on http.ClientException {
+      throw Exception('خطأ في الاتصال بالشبكة، تحقق من الإنترنت.');
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+
+
+
+Future<void> resetPassword({
+    required String email,
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final String resetUrl = '$_baseUrl/auth/reset-password';
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(resetUrl),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'email': email,
+              'current_password': currentPassword,
+              'new_password': newPassword,
+            }),
+          )
+          .timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return; // تم تغيير كلمة المرور بنجاح
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw Exception(
+          errorData['message'] ?? 'فشل في إعادة تعيين كلمة المرور',
+        );
+      }
+    } on http.ClientException {
+      throw Exception('خطأ في الاتصال بالشبكة، يرجى التحقق من الإنترنت.');
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+
+}
