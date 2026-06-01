@@ -76,16 +76,17 @@ class DelniApp extends StatelessWidget {
           ),
         ),
 
-        home: const EmailChangedScreen(),
-        // const SplashScreen(),
+        home:
+        //  const EmailChangedScreen(),
+        const SplashScreen(),
 // BlocProvider(
 //           create:
 //               (context) => LoginBloc(
 //                 SigninRepository(),
-//               ), // تمرير الـ Repository للـ Bloc
+//               ),
 //           child: const ResetPasswordScreen(
 //             email: "test_user@gmail.com",
-//           ), // عرض شاشة الـ OTP مباشرة
+//           ), 
 //         ), 
         
              ),
