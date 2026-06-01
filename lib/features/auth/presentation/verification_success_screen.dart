@@ -20,7 +20,6 @@ class VerificationSuccessScreen extends StatelessWidget {
             children: [
               const Spacer(),
 
-              // عنوان النجاح
               const Text(
                 "Verification Successful",
                 textAlign: TextAlign.center,
@@ -33,7 +32,6 @@ class VerificationSuccessScreen extends StatelessWidget {
               ),
               const SizedBox(height: 40),
 
-              // الأيقونة الدائرية المميزة لشعار النجاح
               Container(
                 width: 140,
                 height: 140,
@@ -53,7 +51,6 @@ class VerificationSuccessScreen extends StatelessWidget {
               ),
               const SizedBox(height: 40),
 
-              // نص الوصف المخفض
               const Text(
                 "Your account is now verified. You can now explore our latest products and enjoy a seamless shopping experience",
                 textAlign: TextAlign.center,
@@ -67,7 +64,6 @@ class VerificationSuccessScreen extends StatelessWidget {
 
               const Spacer(),
 
-              // زر الـ Next للانتقال للواجهة الرئيسية وتصفير الـ Stack
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pushAndRemoveUntil(

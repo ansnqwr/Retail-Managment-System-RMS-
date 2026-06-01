@@ -1,8 +1,7 @@
-// lib/features/auth/presentation/pages/login_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // استيراد للمكتبة الحفظ
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/features/auth/presentation/forgot_password_screen.dart';
 import 'package:untitled/features/auth/presentation/otp_screen.dart';
 import '../../../../core/widgets/login_background_painter.dart';
@@ -19,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _rememberMe = false; // المتغير المسؤول عن التذكر
+  bool _rememberMe = false;
 
   @override
   void dispose() {
@@ -28,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  // دالة لحفظ حالة تذكرني عند تسجيل الدخول الناجح
   Future<void> _saveRememberMeStatus() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('remember_me', _rememberMe);
@@ -56,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
          
           if (state is GoogleOtpSentSuccess) {
             if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop(); // إغلاق الـ Dialog
+              Navigator.of(context).pop();
             }
 
             Navigator.of(context).push(
@@ -67,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           context
                               .read<
                                 LoginBloc
-                              >(), //للتحقق
+                              >(),
                       child: OtpScreen(email: state.email),
                     ),
               ),
@@ -84,16 +82,12 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
 
-          // 🚀 عند نجاح تسجيل الدخول التقليدي
           if (state is LoginSuccess) {
             if (Navigator.of(context).canPop()) Navigator.of(context).pop();
 
-            // التعديل الهام: حفظ الخيار محلياً قبل الانتقال للرئيسية
             await _saveRememberMeStatus();
 
-            // الانتقال للشاشة الرئيسية وتصفير المكدس (Stack)
             if (!context.mounted) return;
-            // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
           }
         },
         child: Center(
@@ -190,7 +184,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
 
-                            // الـ Checkbox الخاص بتذكرني
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -223,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   context
                                                       .read<
                                                         LoginBloc
-                                                      >(), // نمرر الـ Bloc نفسه للشاشة الجديدة للاستماع للأحداث
+                                                      >(),
                                               child:
                                                   const ForgotPasswordScreen(),
                                             ),
@@ -243,7 +236,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(height: 15),
                             OutlinedButton(
                               onPressed: () {
-                                // تفعيل زر غوغل
                                 context.read<LoginBloc>().add(
                                   TriggerGoogleSignInEvent(),
                                 );

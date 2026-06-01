@@ -32,7 +32,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         elevation: 0,
         leading: const BackButton(color: darkPurple),
       ),
-     // ابحث عن BlocListener<LoginBloc, LoginState> داخل ملف forgot_password_screen.dart واستبدله بهذا الكود:
       body: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginLoading) {
@@ -46,7 +45,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             );
           }
           if (state is LoginFailure) {
-            Navigator.of(context).pop(); //
+            Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.redAccent,
@@ -56,7 +55,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           }
 
           if (state is ForgotPasswordEmailSentSuccess) {
-            Navigator.of(context).pop(); // إغلاق مؤشر التحميل (Loader)
+            Navigator.of(context).pop();
 
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -71,11 +70,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               MaterialPageRoute(
                 builder:
                     (_) => BlocProvider.value(
-                      value:
-                          context
-                              .read<
-                                LoginBloc
-                              >(), 
+                      value: context.read<LoginBloc>(),
                       child: ResetPasswordScreen(
                         email: _emailController.text.trim(),
                       ),
@@ -85,7 +80,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           }
         },
         child: SafeArea(
-          // بقية كود الواجهة كما هو دون تغيير...
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: Form(
@@ -102,7 +96,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 30),
 
-                  // عنوان الشاشة الرئيسية
                   const Text(
                     "Forgot Password",
                     style: TextStyle(
@@ -114,7 +107,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // نص الوصف والشرح الإرشادي للمستخدم
                   const Text(
                     "Enter your email in this field to receive a link for resetting your password.",
                     textAlign: TextAlign.center,
@@ -127,7 +119,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 40),
 
-                  // حقل إدخال البريد الإلكتروني (Email Input)
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -194,7 +185,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 30),
 
-                  // زر الإرسال (Send to Email)
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {

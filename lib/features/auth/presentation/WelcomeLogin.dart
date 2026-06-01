@@ -11,7 +11,6 @@ class WelcomeLoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // استخدام MediaQuery لضمان تجاوب الأبعاد مع جميع الشاشات
     final size = MediaQuery.of(context).size;
 
     const Color darkPurple = Color(0xFF603055); 
@@ -33,7 +32,7 @@ class WelcomeLoginScreen extends StatelessWidget {
               const Text(
                 "Welcome to Our\nStore!",
                 style: TextStyle(
-                  fontFamily: 'Poppins', // أو 'Cairo' حسب إعدادات مشروعك
+                  fontFamily: 'Poppins',
                   fontSize: 38,
                   fontWeight: FontWeight.w900,
                   color: darkPurple,
@@ -43,7 +42,6 @@ class WelcomeLoginScreen extends StatelessWidget {
 
               SizedBox(height: size.height * 0.08),
 
-              // 2. الجزء الأوسط: الصورة والنص بجانبها
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -63,9 +61,7 @@ class WelcomeLoginScreen extends StatelessWidget {
                 ],
               ),
 
-              // SizedBox(height: size.height * 0.1),
 
-              // 3. زر تسجيل الدخول (log in)
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(
@@ -86,7 +82,7 @@ class WelcomeLoginScreen extends StatelessWidget {
                   minimumSize: const Size(
                     double.infinity,
                     60,
-                  ), // عرض كامل الشاشة
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -105,7 +101,6 @@ class WelcomeLoginScreen extends StatelessWidget {
 
               SizedBox(height: size.height * 0.02),
 
-              // 4. زر الاستمرار كزائر (Continue as A Guest)
               Center(
                 child: TextButton(
                   onPressed: () {

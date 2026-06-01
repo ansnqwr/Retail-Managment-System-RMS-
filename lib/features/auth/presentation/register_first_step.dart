@@ -22,7 +22,6 @@ class RegisterFirstStep extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
             children: [
-              // الشعار العلوي للتطبيق
               Center(
                 child: Container(
                   width: 350,
@@ -35,7 +34,6 @@ class RegisterFirstStep extends StatelessWidget {
                 ),
               ),
 
-              // نص الترحيب الملون
               const Center(
                 child: Text(
                   "Welcome Back!",
@@ -48,7 +46,6 @@ class RegisterFirstStep extends StatelessWidget {
                 ),
               ),
 
-              // نص إرشادي لبدء التسجيل
               const Text(
                 "Get Started Free",
                 style: TextStyle(
@@ -60,14 +57,12 @@ class RegisterFirstStep extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // حقول الإدخال الأساسية
               _buildField("Email Address", _emailCtrl, Icons.email_outlined),
               _buildField("First Name", _firstCtrl, Icons.person_outline),
               _buildField("Last Name", _lastCtrl, Icons.person_outline),
 
               const SizedBox(height: 20),
 
-              // زر الانتقال للمرحلة التالية
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF6B2D5C),
@@ -78,14 +73,12 @@ class RegisterFirstStep extends StatelessWidget {
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // تجميع البيانات المدخلة في كائن الـ Model
                     final data =
                         UserRegistrationData()
                           ..email = _emailCtrl.text.trim()
                           ..firstName = _firstCtrl.text.trim()
                           ..lastName = _lastCtrl.text.trim();
 
-                    // 🚀 الانتقال المباشر والآمن وحقن الـ LoginBloc للشاشة القادمة
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -95,7 +88,7 @@ class RegisterFirstStep extends StatelessWidget {
                                   context
                                       .read<
                                         LoginBloc
-                                      >(), // تمرير نفس الـ Instance النشط
+                                      >(), 
                               child: SignupScreen(userData: data),
                             ),
                       ),
@@ -120,7 +113,6 @@ class RegisterFirstStep extends StatelessWidget {
     );
   }
 
-  // وجبة بناء حقول الإدخال المخصصة المطابقة لتصميمك
   Widget _buildField(
     String label,
     TextEditingController controller,

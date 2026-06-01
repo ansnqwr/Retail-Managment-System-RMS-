@@ -1,7 +1,7 @@
 // lib/features/auth/presentation/bloc/login_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../../../../Repository/signin_repository.dart'; // استيراد الـ الـ Repository الجديد
+import '../../../../Repository/signin_repository.dart'; 
 
 // --- Events ---
 abstract class LoginEvent {}
@@ -56,7 +56,7 @@ class ResetPasswordSuccess extends LoginState {}
 
 // --- BLoC Logic ---
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final SigninRepository repository; // حقن الـ Repository الجديد هنا
+  final SigninRepository repository; 
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   LoginBloc(this.repository) : super(LoginInitial()) {
@@ -65,17 +65,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginLoading());
       try {
         await repository.loginWithEmailAndPassword(event.email, event.password);
-        emit(LoginSuccess()); // تفعيل حالة النجاح لتوجيه المستخدم للرئيسية
+        emit(LoginSuccess()); 
       } catch (e) {
         emit(LoginFailure(e.toString()));
       }
     });
 
-    // 2. معالجة تسجيل الدخول عبر جوجل والـ OTP
     on<TriggerGoogleSignInEvent>((event, emit) async {
       emit(LoginLoading());
       try {
-        // فتح نافذة حسابات جوجل للمستخدم
         final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
         if (googleUser == null) {
@@ -83,10 +81,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           return;
         }
 
-        // استدعاء الـ API من الـ Repository الجديد لإرسال الـ OTP لإيميل المستخدم
         await repository.requestGoogleOtp(googleUser.email, googleUser.id);
 
-        // الانتقال لحالة النجاح وإرسال الإيميل للواجهة لعرضه
         emit(GoogleOtpSentSuccess(googleUser.email));
       } catch (e) {
         emit(LoginFailure(e.toString()));
@@ -110,7 +106,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginLoading());
       try {
         await repository.sendForgotPasswordEmail(event.email);
-        emit(ForgotPasswordEmailSentSuccess()); // نجاح إرسال البريد
+        emit(ForgotPasswordEmailSentSuccess());
       } catch (e) {
         emit(LoginFailure(e.toString()));
       }
@@ -126,7 +122,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           currentPassword: event.currentPassword,
           newPassword: event.newPassword,
         );
-        emit(ResetPasswordSuccess()); // نجاح التحديث
+        emit(ResetPasswordSuccess());
       } catch (e) {
         emit(LoginFailure(e.toString()));
       }

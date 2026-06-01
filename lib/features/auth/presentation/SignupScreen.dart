@@ -8,7 +8,6 @@ import 'package:untitled/features/auth/bloc/signup_state.dart';
 import 'package:untitled/features/auth/presentation/login_screen.dart';
 import 'package:untitled/models/registration_data.dart';
 
-// 💡 نموذج البيانات الجديد لاستقبال الـ ID والاسم من الباك آند
 class LocationItem {
   final int id;
   final String name;
@@ -31,7 +30,6 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _jobCtrl = TextEditingController();
   final TextEditingController _birthCtrl = TextEditingController();
 
-  // 🌍 تغيير القوائم لتصبح ديناميكية ومستندة إلى الأرقام المعرفية (IDs)
   List<LocationItem> _cities = [];
   List<LocationItem> _towns = [];
 
@@ -42,7 +40,6 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void initState() {
     super.initState();
-    // 🚀 طلب جلب المحافظات من السيرفر فور فتح الشاشة
     context.read<SignupBloc>().add(FetchCitiesEvent());
   }
 
@@ -53,25 +50,24 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFFCF9FC),
       body: SafeArea(
-        // 🔄 استخدام BlocListener للاستماع لردود السيرفر وتحديث القوائم المنسدلة
         child: BlocListener<SignupBloc, SignupState>(
           listener: (context, state) {
             if (state is CitiesLoadedState) {
               setState(() {
-                _cities = state.cities; // تعبئة المحافظات القادمة من الـ API
+                _cities = state.cities; 
               });
             }
             if (state is TownsLoadingState) {
               setState(() {
                 _isLoadingTowns = true;
-                _towns = []; // تنظيف قائمة البلدات القديمة أثناء التحميل
+                _towns = [];
                 _selectedTownId = null;
               });
             }
             if (state is TownsLoadedState) {
               setState(() {
                 _isLoadingTowns = false;
-                _towns = state.towns; // تعبئة بلدات المحافظة المحددة
+                _towns = state.towns;
               });
             }
           },
@@ -119,7 +115,6 @@ class _SignupScreenState extends State<SignupScreen> {
                           _selectedCityId = val;
                         });
                         if (val != null) {
-                          // 🚀 إرسال الـ id المختار للباك آند لطلب البلدات التابعة له فوراً
                           context.read<SignupBloc>().add(
                             FetchTownsEvent(cityId: val),
                           );
@@ -219,9 +214,9 @@ class _SignupScreenState extends State<SignupScreen> {
               items
                   .map(
                     (item) => DropdownMenuItem<int>(
-                      value: item.id, // القيمة البرمجية المرسلة هي الـ ID
+                      value: item.id, 
                       child: Text(
-                        item.name, // 
+                        item.name, 
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -256,8 +251,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         "first_name": widget.userData.firstName,
                         "last_name": widget.userData.lastName,
                         "password": _passCtrl.text,
-                        "city_id": _selectedCityId, // إرسال ID المحافظة
-                        "town_id": _selectedTownId, // إرسال ID البلدة
+                        "city_id": _selectedCityId,
+                        "town_id": _selectedTownId,
                         "phone": _numberCtrl.text,
                         "job": _jobCtrl.text,
                         "birthdate": _birthCtrl.text,

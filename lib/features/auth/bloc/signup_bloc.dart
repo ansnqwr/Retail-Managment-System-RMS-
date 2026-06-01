@@ -7,7 +7,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   final SignupRepository repository;
 
   SignupBloc(this.repository) : super(SignupInitial()) {
-    // 1. معالجة حدث جلب المحافظات
     on<FetchCitiesEvent>((event, emit) async {
       emit(CitiesLoadingState());
       try {
@@ -18,7 +17,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       }
     });
 
-    // 2. معالجة حدث جلب البلدات بناءً على المحافظة
     on<FetchTownsEvent>((event, emit) async {
       emit(TownsLoadingState());
       try {

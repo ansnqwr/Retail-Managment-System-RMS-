@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/login_bloc.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  final String email; // يتم تمريره من الشاشة السابقة لربط الحساب
+  final String email;
   const ResetPasswordScreen({super.key, required this.email});
 
   @override
@@ -53,7 +53,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             );
           }
           if (state is LoginFailure) {
-            Navigator.of(context).pop(); // إغلاق مؤشر التحميل
+            Navigator.of(context).pop(); 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.redAccent,
@@ -62,7 +62,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             );
           }
           if (state is ResetPasswordSuccess) {
-            Navigator.of(context).pop(); // إغلاق مؤشر التحميل
+            Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 backgroundColor: Colors.green,
@@ -109,7 +109,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                   const SizedBox(height: 30),
 
-                  // 1. حقل كلمة المرور الحالية (Current Password)
                   _buildPasswordTextField(
                     title: "Current Password",
                     controller: _currentPasswordController,
@@ -125,7 +124,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // 2. حقل كلمة المرور الجديدة (Create Password)
                   _buildPasswordTextField(
                     title: "Create Password",
                     controller: _newPasswordController,
@@ -141,7 +139,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // 3. حقل تأكيد كلمة المرور (Confirm Password)
                   _buildPasswordTextField(
                     title: "Confirm Password",
                     controller: _confirmPasswordController,
@@ -159,16 +156,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                   const SizedBox(height: 15),
 
-                  // زر الـ Reset المخصص والمطابق للتصميم
                Padding(
         padding: const EdgeInsets.all(30.0),
         child: ElevatedButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
-              // 🚀 إرسال الحدث إلى الـ BLoC ومنه إلى الـ API بالبريد الحالي والبيانات الجديدة
               context.read<LoginBloc>().add(
                 ResetPasswordSubmittedEvent(
-                  email: widget.email, // استخدام الإيميل الممرر تلقائياً
+                  email: widget.email, 
                   currentPassword: _currentPasswordController.text,
                   newPassword: _newPasswordController.text,
                 ),
@@ -202,7 +197,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  // دالة Widget مساعدة لبناء الحقول لتقليل تكرار الكود محاذاةً للتصميم المرفق
   Widget _buildPasswordTextField({
     required String title,
     required TextEditingController controller,

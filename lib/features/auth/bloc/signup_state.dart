@@ -1,8 +1,7 @@
-import 'package:untitled/features/auth/presentation/SignupScreen.dart'; // لاستيراد نموذج LocationItem
+import 'package:untitled/features/auth/presentation/SignupScreen.dart'; 
 
 abstract class SignupState {}
 
-// الحالات العامة الواجهة
 class SignupInitial extends SignupState {}
 
 class SignupLoading extends SignupState {}
@@ -14,7 +13,6 @@ class SignupFailure extends SignupState {
   SignupFailure(this.errorMessage);
 }
 
-// حالات جلب المحافظات (Cities)
 class CitiesLoadingState extends SignupState {}
 
 class CitiesLoadedState extends SignupState {
@@ -27,7 +25,6 @@ class CitiesErrorState extends SignupState {
   CitiesErrorState(this.message);
 }
 
-// حالات جلب البلدات (Towns)
 class TownsLoadingState extends SignupState {}
 
 class TownsLoadedState extends SignupState {

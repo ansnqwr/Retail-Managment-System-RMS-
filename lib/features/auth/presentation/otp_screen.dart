@@ -109,10 +109,9 @@ class _OtpScreenState extends State<OtpScreen> {
             );
           }
         },
-        // 💡 التعديل الجذري هنا: جعل الشاشة قابلة للتمرير عند فتح لوحة المفاتيح لمنع الـ Overflow
         child: SafeArea(
           child: SingleChildScrollView(
-            physics: const ClampingScrollPhysics(), // تمنع الارتداد المزعج
+            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -143,7 +142,6 @@ class _OtpScreenState extends State<OtpScreen> {
                 ),
                 const SizedBox(height: 40),
 
-                // المربعات الستة للـ OTP
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(6, (index) {
@@ -207,10 +205,8 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                 ),
 
-                // مسافة متجاوبة تفصل الأزرار عن المؤقت وتتمدد بناءً على حجم الكيبورد
                 const SizedBox(height: 60),
 
-                // إعادة الإرسال والمؤقت السفلي
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -248,7 +244,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       : "Request new code in 00:${_start.toString().padLeft(2, '0')}s",
                   style: const TextStyle(color: Colors.grey, fontSize: 13),
                 ),
-                const SizedBox(height: 20), // مسافة أمان نهائية بالأسفل
+                const SizedBox(height: 20),
               ],
             ),
           ),

@@ -1,14 +1,12 @@
 // signup_repository.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:untitled/features/auth/presentation/SignupScreen.dart'; // تأكد من صحة مسار الواجهة لاستيراد LocationItem
+import 'package:untitled/features/auth/presentation/SignupScreen.dart';
 import 'auth_local_data.dart';
 
 class SignupRepository {
-  // الرابط الأساسي للـ API (قم بتغييره للرابط الفعلي الخاص بكم)
   final String _apiBaseUrl = 'https://your-api-url.com';
 
-  // 1. طلب إنشاء الحساب النهائي
   Future<void> signup(Map<String, dynamic> userData) async {
     try {
       final response = await http
@@ -47,7 +45,6 @@ class SignupRepository {
     }
   }
 
-  // 2. 🚀 جلب قائمة المحافظات ديناميكياً من الباك آند
   Future<List<LocationItem>> getCities() async {
     try {
       final response = await http
@@ -103,7 +100,6 @@ class SignupRepository {
     }
   }
 
-  // دالة جلب البيانات المحمية القديمة كما هي
   Future<Map<String, dynamic>> fetchProtectedData() async {
     final String? token = TokenManager().accessToken;
 

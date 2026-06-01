@@ -1,6 +1,5 @@
 part of 'splash_bloc.dart';
 
-// من الأفضل استخدام @immutable إذا لم تكن تستخدم Equatable
 // @immutable
 abstract class SplashState {}
 

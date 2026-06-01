@@ -1,12 +1,11 @@
 // lib/Repository/signin_repository.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'auth_local_data.dart'; // استيراد مدير التوكنز الـ Global
+import 'auth_local_data.dart'; 
 
 class SigninRepository {
   final String _baseUrl = 'https://your-api-url.com';
 
-  /// 1. الـ API الخاص بتسجيل الدخول التقليدي (إيميل وكلمة سر)
   Future<void> loginWithEmailAndPassword(String email, String password) async {
     final String loginUrl = '$_baseUrl/auth/login';
 
@@ -22,12 +21,10 @@ class SigninRepository {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseData = jsonDecode(response.body);
 
-        // استخراج التوكنز من الـ JSON
         final String accessToken =
             responseData['access_token'] ?? responseData['token'] ?? '';
         final String refreshToken = responseData['refresh_token'] ?? '';
 
-        // حفظ التوكنز في الذاكرة وطباعتها في الـ Console تلقائياً
         await TokenManager().saveTokens(
           access: accessToken,
           refresh: refreshToken,
@@ -49,7 +46,6 @@ class SigninRepository {
     }
   }
 
-  /// 2. الـ API الخاص بطلب الـ OTP عند تسجيل الدخول بجوجل
   Future<void> requestGoogleOtp(String email, String googleId) async {
     final String googleOtpUrl = '$_baseUrl/auth/google-login';
 
@@ -63,7 +59,7 @@ class SigninRepository {
           .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return; // تم إرسال الـ OTP بنجاح من قبل السيرفر
+        return;
       } else {
         final errorData = jsonDecode(response.body);
         throw Exception(
@@ -126,7 +122,7 @@ class SigninRepository {
           .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return; // نجحت العملية وتم إرسال الرابط/الرمز من السيرفر
+        return;
       } else {
         final errorData = jsonDecode(response.body);
         throw Exception(
@@ -164,7 +160,7 @@ Future<void> resetPassword({
           .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return; // تم تغيير كلمة المرور بنجاح
+        return;
       } else {
         final errorData = jsonDecode(response.body);
         throw Exception(

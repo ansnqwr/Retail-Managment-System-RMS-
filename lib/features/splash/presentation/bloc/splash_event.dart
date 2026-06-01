@@ -12,4 +12,4 @@ class SplashNavigateToOnboarding extends SplashState {}
 
 class SplashNavigateToWelcome extends SplashState {}
 
-class SplashNavigateToHome extends SplashState {} // شاشة السيرفر الرئيسية
+class SplashNavigateToHome extends SplashState {} 

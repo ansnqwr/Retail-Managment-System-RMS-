@@ -14,7 +14,7 @@ class SplashScreen extends StatelessWidget {
       body: BlocConsumer<SplashBloc, SplashState>(
         listener: (context, state) {
           if (state is SplashNavigateToOnboarding) {
-            if (!context.mounted) return; // تأمين إضافي
+            if (!context.mounted) return; 
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => OnboardingScreen()),
             );
@@ -49,7 +49,6 @@ class SplashScreen extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // تمثيل الشعار باستخدام Hero Animation لتسهيل التحول للشاشات الأخرى بسلاسة
                     Hero(
                       tag: 'app_logo',
                       child: Container(
@@ -64,22 +63,8 @@ class SplashScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
 
-                    // تفعيل اسم التطبيق لإبراز الهوية البصرية
-                    // const Text(
-                    //   'دلني',
-                    //   style: TextStyle(
-                    //     fontFamily: 'Cairo', // خط Cairo العربي الأنيق
-                    //     fontWeight: FontWeight.bold,
-                    //     fontSize: 48,
-                    //     color: Color(
-                    //       0xFF6B2D5C,
-                    //     ), // اللون البنفسجي الدافئ المطابق للشعار
-                    //     letterSpacing: 1.2,
-                    //   ),
-                    // ),
                     const SizedBox(height: 48),
 
-                    // يظهر مؤشر التقدم الدائري فقط أثناء انتظار استجابة البلوك ومحاكاة التحقق
                     if (state is SplashLoading || state is SplashInitial)
                       const SizedBox(
                         width: 28,
@@ -93,7 +78,6 @@ class SplashScreen extends StatelessWidget {
                       ),
                   ],
                 ),
-                // كتابة الحقوق في أسفل الواجهة
                 Positioned(
                   bottom: 40,
                   child: Text(
