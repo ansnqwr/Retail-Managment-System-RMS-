@@ -6,6 +6,8 @@ import 'package:untitled/Repository/signup_repository.dart';
 
 import 'package:untitled/features/auth/bloc/login_bloc.dart';
 import 'package:untitled/features/auth/bloc/signup_bloc.dart';
+import 'package:untitled/features/auth/presentation/email_changed_screen.dart';
+import 'package:untitled/features/auth/presentation/forgot_password_screen.dart';
 import 'package:untitled/features/auth/presentation/password_changed_screen.dart';
 import 'package:untitled/features/auth/presentation/reset_password_screen.dart';
 import 'package:untitled/features/splash/presentation/bloc/splash_bloc.dart';
@@ -64,7 +66,7 @@ class DelniApp extends StatelessWidget {
             ),
           ),
 
-          fontFamily: 'Cairo',
+          // fontFamily: 'Cairo',
 
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.transparent,
@@ -74,7 +76,7 @@ class DelniApp extends StatelessWidget {
           ),
         ),
 
-        home: PasswordChangedScreen()
+        home: const EmailChangedScreen(),
         // const SplashScreen(),
 // BlocProvider(
 //           create:

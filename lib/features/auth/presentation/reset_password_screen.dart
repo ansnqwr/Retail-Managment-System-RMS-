@@ -170,7 +170,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         style: TextStyle(
                           color: Color(0xFFE2B78B),
                           fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Poppins',
                         ),
                       ),
                     ),
@@ -204,6 +205,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               fontWeight: FontWeight.bold,
               color: darkPurple,
               fontSize: 14,
+              fontFamily: 'Poppins',
             ),
           ),
         ),
@@ -212,7 +214,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           controller: controller,
           obscureText: obscureText,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          style: const TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
           validator: validator,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(
