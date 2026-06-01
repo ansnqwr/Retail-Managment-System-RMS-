@@ -43,13 +43,9 @@ class ForgotPasswordEmailSentSuccess extends LoginState {}
 
 class ResetPasswordSubmittedEvent extends LoginEvent {
   final String email;
-  final String currentPassword;
   final String newPassword;
-  ResetPasswordSubmittedEvent({
-    required this.email,
-    required this.currentPassword,
-    required this.newPassword,
-  });
+
+  ResetPasswordSubmittedEvent({required this.email, required this.newPassword});
 }
 
 class ResetPasswordSuccess extends LoginState {}
@@ -119,7 +115,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         await repository.resetPassword(
           email: event.email,
-          currentPassword: event.currentPassword,
           newPassword: event.newPassword,
         );
         emit(ResetPasswordSuccess());

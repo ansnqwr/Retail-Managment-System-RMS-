@@ -141,7 +141,6 @@ class SigninRepository {
 
 Future<void> resetPassword({
     required String email,
-    required String currentPassword,
     required String newPassword,
   }) async {
     final String resetUrl = '$_baseUrl/auth/reset-password';
@@ -153,7 +152,6 @@ Future<void> resetPassword({
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({
               'email': email,
-              'current_password': currentPassword,
               'new_password': newPassword,
             }),
           )
