@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/Repository/signin_repository.dart'
+import 'package:untitled/features/auth/data/models/Repository/signin_repository.dart'
     show SigninRepository;
-import 'package:untitled/features/auth/bloc/login_bloc.dart';
-import 'package:untitled/features/auth/presentation/login_screen.dart';
+import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
+import 'package:untitled/features/auth/view/login_screen.dart';
 
 class EmailChangedScreen extends StatelessWidget {
   const EmailChangedScreen({super.key});

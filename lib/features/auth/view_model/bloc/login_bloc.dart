@@ -1,7 +1,7 @@
 // lib/features/auth/presentation/bloc/login_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../../../../Repository/signin_repository.dart'; 
+import '../../data/models/Repository/signin_repository.dart'; 
 
 // --- Events ---
 abstract class LoginEvent {}

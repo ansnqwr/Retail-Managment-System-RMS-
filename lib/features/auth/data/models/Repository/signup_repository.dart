@@ -1,7 +1,7 @@
 // signup_repository.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:untitled/features/auth/presentation/SignupScreen.dart';
+import 'package:untitled/features/auth/view/SignupScreen.dart';
 import 'auth_local_data.dart';
 
 class SignupRepository {

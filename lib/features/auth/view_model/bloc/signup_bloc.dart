@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/Repository/signup_repository.dart';
+import 'package:untitled/features/auth/data/models/Repository/signup_repository.dart';
 import 'signup_event.dart';
 import 'signup_state.dart';
 

@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:untitled/features/splash/presentation/pages/splash_screen.dart';
+import 'package:untitled/features/splash/view/splash_screen.dart';
 
 import 'package:untitled/main.dart';
 

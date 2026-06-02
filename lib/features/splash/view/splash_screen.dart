@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/presentation/WelcomeLogin.dart';
-import 'package:untitled/features/home/presentation/pages/HomeScreen.dart';
-import 'package:untitled/features/onboarding/presentation/pages/onboarding_screen.dart';
-import '../bloc/splash_bloc.dart';
+import 'package:untitled/features/auth/view/WelcomeLogin.dart';
+import 'package:untitled/features/home/HomeScreen.dart';
+import 'package:untitled/features/onboarding/view/onboarding_screen.dart';
+import '../view model/splash_bloc.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});

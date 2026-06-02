@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/features/home/presentation/pages/HomeScreen.dart';
+import 'package:untitled/features/home/HomeScreen.dart';
 
 class VerificationSuccessScreen extends StatelessWidget {
   const VerificationSuccessScreen({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/presentation/reset_password_screen.dart';
-import '../bloc/login_bloc.dart';
+import 'package:untitled/features/auth/view/reset_password_screen.dart';
+import '../view_model/bloc/login_bloc.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});

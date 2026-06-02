@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/presentation/password_changed_screen.dart';
-import '../bloc/login_bloc.dart';
+import 'package:untitled/features/auth/view/password_changed_screen.dart';
+import '../view_model/bloc/login_bloc.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String email;

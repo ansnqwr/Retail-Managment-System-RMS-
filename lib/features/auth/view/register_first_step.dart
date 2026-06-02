@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/bloc/login_bloc.dart';
-import 'package:untitled/features/auth/presentation/SignupScreen.dart';
-import 'package:untitled/models/registration_data.dart';
+import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
+import 'package:untitled/features/auth/view/SignupScreen.dart';
+import 'package:untitled/features/auth/data/models/registration_data.dart';
 
 class RegisterFirstStep extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();

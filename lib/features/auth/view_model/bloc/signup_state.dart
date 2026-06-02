@@ -1,4 +1,4 @@
-import 'package:untitled/features/auth/presentation/SignupScreen.dart'; 
+import 'package:untitled/features/auth/view/SignupScreen.dart'; 
 
 abstract class SignupState {}
 

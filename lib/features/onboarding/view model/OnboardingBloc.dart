@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/onboarding/presentation/pages/bloc/onboarding_event.dart';
-import 'package:untitled/features/onboarding/presentation/pages/bloc/onboarding_state.dart';
+import 'package:untitled/features/onboarding/view%20model/onboarding_event.dart';
+import 'package:untitled/features/onboarding/view%20model/onboarding_state.dart';
 
 class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   OnboardingBloc() : super(OnboardingState()) {

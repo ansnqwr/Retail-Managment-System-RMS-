@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled/features/splash/presentation/bloc/splash_event.dart';
-import '../../../../Repository/auth_local_data.dart'; 
+import 'package:untitled/features/splash/view%20model/splash_event.dart';
+import '../../auth/data/models/Repository/auth_local_data.dart'; 
 
 
 part 'splash_state.dart';

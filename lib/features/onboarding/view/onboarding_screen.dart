@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:untitled/Repository/signup_repository.dart';
-import 'package:untitled/features/auth/presentation/WelcomeLogin.dart';
-import 'package:untitled/features/auth/bloc/signup_bloc.dart';
-import 'package:untitled/features/onboarding/presentation/pages/bloc/OnboardingBloc.dart';
-import 'package:untitled/features/onboarding/presentation/pages/bloc/onboarding_event.dart';
-import 'package:untitled/features/onboarding/presentation/pages/bloc/onboarding_state.dart';
+import 'package:untitled/features/auth/data/models/Repository/signup_repository.dart';
+import 'package:untitled/features/auth/view/WelcomeLogin.dart';
+import 'package:untitled/features/auth/view_model/bloc/signup_bloc.dart';
+import 'package:untitled/features/onboarding/view%20model/OnboardingBloc.dart';
+import 'package:untitled/features/onboarding/view%20model/onboarding_event.dart';
+import 'package:untitled/features/onboarding/view%20model/onboarding_state.dart';
 
 class OnboardingScreen extends StatelessWidget {
   final PageController _pageController = PageController();

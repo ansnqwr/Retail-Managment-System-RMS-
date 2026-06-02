@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/login_bloc.dart';
+import '../view_model/bloc/login_bloc.dart';
 import 'verification_success_screen.dart';
 
 class OtpScreen extends StatefulWidget {

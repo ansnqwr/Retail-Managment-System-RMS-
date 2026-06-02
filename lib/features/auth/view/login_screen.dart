@@ -1,11 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled/features/auth/presentation/forgot_password_screen.dart';
-import 'package:untitled/features/auth/presentation/otp_screen.dart';
+import 'package:untitled/features/auth/view/forgot_password_screen.dart';
+import 'package:untitled/features/auth/view/otp_screen.dart';
 import '../../../../core/widgets/login_background_painter.dart';
-import '../bloc/login_bloc.dart';
+import '../view_model/bloc/login_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -51,7 +50,6 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
 
-         
           if (state is GoogleOtpSentSuccess) {
             if (Navigator.of(context).canPop()) {
               Navigator.of(context).pop();
@@ -61,11 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
               MaterialPageRoute(
                 builder:
                     (_) => BlocProvider.value(
-                      value:
-                          context
-                              .read<
-                                LoginBloc
-                              >(),
+                      value: context.read<LoginBloc>(),
                       child: OtpScreen(email: state.email),
                     ),
               ),
@@ -212,11 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       MaterialPageRoute(
                                         builder:
                                             (_) => BlocProvider.value(
-                                              value:
-                                                  context
-                                                      .read<
-                                                        LoginBloc
-                                                      >(),
+                                              value: context.read<LoginBloc>(),
                                               child:
                                                   const ForgotPasswordScreen(),
                                             ),
@@ -251,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.network(
-                                    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_\"G\"_Logo.svg/1200px-Google_\"G\"_Logo.svg.png',
+                                    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_"G"_Logo.svg/1200px-Google_"G"_Logo.svg.png',
                                     height: 22,
                                     errorBuilder:
                                         (context, error, stackTrace) =>
