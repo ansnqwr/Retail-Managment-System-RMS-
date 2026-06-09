@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled/features/auth/view/forgot_password_screen.dart';
+import 'package:untitled/features/auth/view/password_changed_screen.dart';
 import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
 import 'package:untitled/features/home/Model/profile_repository.dart';
 import 'package:untitled/features/home/view%20model/profile_bloc.dart';
@@ -140,19 +141,20 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                               );
                             }
 Navigator.pop(context);
-                               Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => BlocProvider(
-                                      create:
-                                          (context) =>
-                                              ProfileBloc(ProfileRepository())
-                                                ..add(LoadProfileEvent()),
-                                      child: const ProfileView(),
-                                    ),
-                              ),
-                            ); 
+                            //    Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder:
+                            //         (context) => BlocProvider(
+                            //           create:
+                            //               (context) =>
+                            //                   ProfileBloc(ProfileRepository())
+                            //                     ..add(LoadProfileEvent()),
+                            //           child: const ProfileView(),
+                            //         ),
+                            //   ),
+                            // ); 
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const PasswordChangedScreen()));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _primaryColor,

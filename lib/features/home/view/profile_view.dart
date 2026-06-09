@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled/features/auth/data/models/Repository/signin_repository.dart' show SigninRepository;
+import 'package:untitled/features/auth/view/login_screen.dart';
+import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
 import 'package:untitled/features/home/view%20model/profile_bloc.dart'
     show
         ProfileBloc,
@@ -119,7 +122,8 @@ class ProfileView extends StatelessWidget {
             );
           }
 
-          return const Center(child: Text('Something went wrong.'));
+          // return const Center(child: Text('Something went wrong.'));
+return  _buildGuestView(context);
         },
       ),
     );
@@ -144,7 +148,15 @@ class ProfileView extends StatelessWidget {
               backgroundColor: const Color(0xFF6B2D5C),
             ),
             onPressed: () {
-              Navigator.of(context).pushReplacementNamed('/login');
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder:
+                      (_) => BlocProvider(
+                        create: (context) => LoginBloc(SigninRepository()),
+                        child: const LoginScreen(),
+                      ),
+                ),
+              );
             },
             child: const Text('Login', style: TextStyle(color: Colors.white)),
           ),

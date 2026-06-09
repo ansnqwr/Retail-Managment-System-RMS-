@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled/features/auth/view/email_changed_screen.dart';
 import 'package:untitled/features/auth/view/forgot_password_screen.dart';
-import 'package:untitled/features/auth/view/login_screen.dart';
 import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
-import 'package:untitled/features/home/Model/profile_repository.dart';
 import 'package:untitled/features/home/view%20model/profile_bloc.dart'
-    show ChangeEmailEvent, LoadProfileEvent, ProfileActionSuccess, ProfileBloc, ProfileError, ProfileLoading, ProfileState;
-import 'package:untitled/features/home/view/profile_view.dart';
+    show ChangeEmailEvent, ProfileActionSuccess, ProfileBloc, ProfileError, ProfileLoading, ProfileState;
 
 class ChangeEmailView extends StatefulWidget {
   const ChangeEmailView({super.key});
@@ -151,19 +149,27 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                               );
                             }
                             Navigator.pop(context);
-                               Navigator.push(
+                                                       Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) => BlocProvider(
-                                      create:
-                                          (context) =>
-                                              ProfileBloc(ProfileRepository())
-                                                ..add(LoadProfileEvent()),
-                                      child: const ProfileView(),
-                                    ),
+                                    (context) => const EmailChangedScreen(),
                               ),
-                            ); 
+                            );
+
+                            //    Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder:
+                            //         (context) => BlocProvider(
+                            //           create:
+                            //               (context) =>
+                            //                   ProfileBloc(ProfileRepository())
+                            //                     ..add(LoadProfileEvent()),
+                            //           child: const ProfileView(),
+                            //         ),
+                            //   ),
+                            // ); 
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _primaryColor,
