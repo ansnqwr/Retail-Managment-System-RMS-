@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled/features/auth/view/otp_screen.dart';
 import 'package:untitled/features/auth/view/reset_password_screen.dart';
 import '../view_model/bloc/login_bloc.dart';
 
@@ -57,26 +58,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           if (state is ForgotPasswordEmailSentSuccess) {
             Navigator.of(context).pop();
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.green,
-                content: Text(
-                  "تم التحقق بنجاح! يرجى تعيين كلمة المرور الجديدة الآن.",
-                ),
-              ),
-            );
-
-            Navigator.of(context).pushReplacement(
+Navigator.of(context).push(
               MaterialPageRoute(
                 builder:
                     (_) => BlocProvider.value(
                       value: context.read<LoginBloc>(),
-                      child: ResetPasswordScreen(
-                        email: _emailController.text.trim(),
-                      ),
+                      child: OtpScreen(email: _emailController.text.trim()),
                     ),
               ),
             );
+            
+         
+           
           }
         },
         child: SafeArea(
@@ -193,6 +186,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             email: _emailController.text.trim(),
                           ),
                         );
+
+                      
+
+
+
+
                       }
                     },
                     style: ElevatedButton.styleFrom(

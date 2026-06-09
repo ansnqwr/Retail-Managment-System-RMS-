@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled/features/auth/view/login_screen.dart';
 import 'package:untitled/features/auth/view/password_changed_screen.dart';
 import '../view_model/bloc/login_bloc.dart';
 
@@ -153,6 +154,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             ResetPasswordSubmittedEvent(
                               email: widget.email,
                               newPassword: _newPasswordController.text,
+                            ),
+                          );
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
                             ),
                           );
                         }

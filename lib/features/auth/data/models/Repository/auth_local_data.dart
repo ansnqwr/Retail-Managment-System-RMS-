@@ -1,11 +1,5 @@
-// auth_local_data.dart
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
-// String? currentToken = TokenManager().accessToken;
-// print(currentToken); 
-
 
 class TokenManager {
   static final TokenManager _instance = TokenManager._internal();
@@ -15,6 +9,7 @@ class TokenManager {
   String? accessToken;
   String? refreshToken;
 
+  // Save both tokens (Used during Login)
   Future<void> saveTokens({
     required String access,
     required String refresh,
@@ -23,19 +18,29 @@ class TokenManager {
     refreshToken = refresh;
 
     if (kDebugMode) {
-      print("========= 🔑 TOKENS RECEIVED =========");
+      print("========= 🔑 TOKENS SAVED =========");
       print("Access Token: $accessToken");
       print("Refresh Token: $refreshToken");
-      print("=====================================");
+      print("===================================");
     }
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', access);
     await prefs.setString('refresh_token', refresh);
-    await prefs.setBool(
-      'isLoggedIn',
-      true,
-    ); 
+    await prefs.setBool('isLoggedIn', true);
+  }
+
+  // Save ONLY access token (Used after Refresh Token API call)
+  Future<void> saveAccessToken(String access) async {
+    accessToken = access;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('access_token', access);
+
+    if (kDebugMode) {
+      print("========= 🔄 ACCESS TOKEN UPDATED =========");
+      print("New Access Token: $accessToken");
+      print("===========================================");
+    }
   }
 
   Future<void> loadTokens() async {

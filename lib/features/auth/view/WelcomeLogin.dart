@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/features/auth/data/models/Repository/signin_repository.dart';
 import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
 import 'package:untitled/features/auth/view/login_screen.dart';
 import 'package:untitled/features/auth/view/register_first_step.dart';
-import 'package:untitled/features/home/HomeScreen.dart';
+import 'package:untitled/features/home/Model/profile_repository.dart';
+import 'package:untitled/features/home/view%20model/profile_bloc.dart';
+import 'package:untitled/features/home/view/HomeScreen.dart';
 
 class WelcomeLoginScreen extends StatelessWidget {
   const WelcomeLoginScreen({super.key});
@@ -28,7 +31,6 @@ class WelcomeLoginScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. عنوان الصفحة
               const Text(
                 "Welcome to Our\nStore!",
                 style: TextStyle(
@@ -103,11 +105,14 @@ class WelcomeLoginScreen extends StatelessWidget {
 
               Center(
                 child: TextButton(
-                  onPressed: () {
+                  onPressed: ()  {
+                     context.read<ProfileBloc>().add(SetGuestModeEvent());
+context.read<ProfileBloc>().add(
+                      LoadProfileEvent(isGuest: true),
+                    );
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => const HomeScreen()),
                     );
-
                   },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(

@@ -7,6 +7,7 @@ import 'package:untitled/features/auth/view_model/bloc/signup_event.dart';
 import 'package:untitled/features/auth/view_model/bloc/signup_state.dart';
 import 'package:untitled/features/auth/view/login_screen.dart';
 import 'package:untitled/features/auth/data/models/registration_data.dart';
+import 'package:untitled/features/home/view/HomeScreen.dart';
 
 class LocationItem {
   final int id;
@@ -34,7 +35,9 @@ class _SignupScreenState extends State<SignupScreen> {
   List<LocationItem> _towns = [];
 
   int? _selectedCityId;
+  String? _selectedCityName;
   int? _selectedTownId;
+  String? _selectedTownName;
   bool _isLoadingTowns = false;
 
   @override
@@ -54,21 +57,33 @@ class _SignupScreenState extends State<SignupScreen> {
           listener: (context, state) {
             if (state is CitiesLoadedState) {
               setState(() {
-                _cities = state.cities; 
+                _cities = state.cities;
               });
-            }
-            if (state is TownsLoadingState) {
+            } else if (state is TownsLoadingState) {
               setState(() {
                 _isLoadingTowns = true;
                 _towns = [];
                 _selectedTownId = null;
               });
-            }
-            if (state is TownsLoadedState) {
+            } else if (state is TownsLoadedState) {
               setState(() {
                 _isLoadingTowns = false;
                 _towns = state.towns;
               });
+            } else if (state is SignupSuccess) {
+              // 1. التعديل الأول: الانتقال للشاشة الرئيسية يحدث هنا فقط عند النجاح
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
+              );
+            } else if (state is SignupFailure) {
+              // إظهار رسالة خطأ في حال فشل السيرفر في تسجيل الدخول
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage),
+                  backgroundColor: Colors.red,
+                ),
+              );
             }
           },
           child: Form(
@@ -113,6 +128,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       ) {
                         setState(() {
                           _selectedCityId = val;
+                          // حفظ اسم المدينة لإرساله للسيرفر
+                          _selectedCityName =
+                              _cities.firstWhere((city) => city.id == val).name;
                         });
                         if (val != null) {
                           context.read<SignupBloc>().add(
@@ -140,7 +158,16 @@ class _SignupScreenState extends State<SignupScreen> {
                                 _towns,
                                 _selectedTownId,
                                 (val) {
-                                  setState(() => _selectedTownId = val);
+                                  setState(() {
+                                    _selectedTownId = val;
+                                    // حفظ اسم البلدة لإرساله للسيرفر
+                                    _selectedTownName =
+                                        _towns
+                                            .firstWhere(
+                                              (town) => town.id == val,
+                                            )
+                                            .name;
+                                  });
                                 },
                               ),
                     ),
@@ -178,9 +205,13 @@ class _SignupScreenState extends State<SignupScreen> {
           controller: controller,
           obscureText: isObscure,
           validator: (val) {
+            // تجاهل التحقق من حقلي الوظيفة وتاريخ الميلاد
+            // if (label == "Job" || label == "Birthday") return null;
+
             if (val == null || val.isEmpty) return 'Required';
-            if (label == "Confirm Password" && val != _passCtrl.text)
+            if (label == "Confirm Password" && val != _passCtrl.text) {
               return 'Passwords do not match';
+            }
             return null;
           },
           decoration: _inputDecoration(),
@@ -214,11 +245,8 @@ class _SignupScreenState extends State<SignupScreen> {
               items
                   .map(
                     (item) => DropdownMenuItem<int>(
-                      value: item.id, 
-                      child: Text(
-                        item.name, 
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      value: item.id,
+                      child: Text(item.name, overflow: TextOverflow.ellipsis),
                     ),
                   )
                   .toList(),
@@ -251,12 +279,14 @@ class _SignupScreenState extends State<SignupScreen> {
                         "first_name": widget.userData.firstName,
                         "last_name": widget.userData.lastName,
                         "password": _passCtrl.text,
-                        "city_id": _selectedCityId,
-                        "town_id": _selectedTownId,
-                        "phone": _numberCtrl.text,
-                        "job": _jobCtrl.text,
-                        "birthdate": _birthCtrl.text,
+                        "confirm_password": _confirmPassCtrl.text,
+                        "governorate": _selectedTownName ?? '',
+                        "phone_number": _numberCtrl.text,
+                        "city": _selectedCityName ?? '',   
+                        // "job": _jobCtrl.text,        
+                        // "birthday": _birthCtrl.text,
                       };
+
                       context.read<SignupBloc>().add(
                         SubmitSignupEvent(finalRequest),
                       );
@@ -287,18 +317,16 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Widget _buildLoginLink() {
     return TextButton(
-      onPressed: () =>    Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder:
-                          (_) => BlocProvider(
-                            create:
-                                (context) => LoginBloc(
-                                  SigninRepository(),
-                                ), 
-                            child: const LoginScreen(),
-                          )
-                    ),
+      onPressed:
+          () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder:
+                  (_) => BlocProvider(
+                    create: (context) => LoginBloc(SigninRepository()),
+                    child: const LoginScreen(),
                   ),
+            ),
+          ),
       child: RichText(
         text: const TextSpan(
           text: "Already have an account? Login ",

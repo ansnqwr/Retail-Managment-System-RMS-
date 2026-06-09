@@ -5,19 +5,19 @@ import 'package:untitled/features/auth/view/SignupScreen.dart';
 import 'auth_local_data.dart';
 
 class SignupRepository {
-  final String _apiBaseUrl = 'https://your-api-url.com';
+  final String _apiBaseUrl = 'http://192.168.1.106:8000/api';
 
   Future<void> signup(Map<String, dynamic> userData) async {
     try {
       final response = await http
           .post(
-            Uri.parse('$_apiBaseUrl/signup'),
+            Uri.parse('$_apiBaseUrl/auth/signup'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(userData),
           )
           .timeout(const Duration(seconds: 15));
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
         final responseData = jsonDecode(response.body);
 
         final String accessToken =
@@ -72,7 +72,6 @@ class SignupRepository {
     }
   }
 
-  // 3. 🚀 جلب بلدات المحافظة بناءً على الـ ID الخاص بها
   Future<List<LocationItem>> getTowns(int cityId) async {
     try {
       final response = await http

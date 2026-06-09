@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled/features/auth/view/WelcomeLogin.dart';
-import 'package:untitled/features/home/HomeScreen.dart';
+import 'package:untitled/features/home/view/HomeScreen.dart';
 import 'package:untitled/features/onboarding/view/onboarding_screen.dart';
 import '../view model/splash_bloc.dart';
 

@@ -1,10 +1,11 @@
 // lib/Repository/signin_repository.dart
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'auth_local_data.dart'; 
 
 class SigninRepository {
-  final String _baseUrl = 'https://your-api-url.com';
+  final String _baseUrl = 'http://192.168.1.106:8000/api';
 
   Future<void> loginWithEmailAndPassword(String email, String password) async {
     final String loginUrl = '$_baseUrl/auth/login';
@@ -18,7 +19,7 @@ class SigninRepository {
           )
           .timeout(const Duration(seconds: 15));
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
         final responseData = jsonDecode(response.body);
 
         final String accessToken =
@@ -46,6 +47,8 @@ class SigninRepository {
     }
   }
 
+
+
   Future<void> requestGoogleOtp(String email, String googleId) async {
     final String googleOtpUrl = '$_baseUrl/auth/google-login';
 
@@ -59,6 +62,8 @@ class SigninRepository {
           .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        print('Google OTP sent successfully.');
+        print('Response body: ${response.body.toString()}');
         return;
       } else {
         final errorData = jsonDecode(response.body);
@@ -74,9 +79,8 @@ class SigninRepository {
   }
 
 
-
   Future<void> verifyOtp(String email, String otpCode) async {
-    final String verifyUrl = 'https://your-api-url.com/auth/verify-otp';
+    final String verifyUrl = '$_baseUrl/auth/verify-otp';
 
     try {
       final response = await http
@@ -110,7 +114,7 @@ class SigninRepository {
 
 
   Future<void> sendForgotPasswordEmail(String email) async {
-    final String forgotPasswordUrl = '$_baseUrl/auth/forgot-password';
+    final String forgotPasswordUrl = '$_baseUrl/forgot-password';
 
     try {
       final response = await http
@@ -135,8 +139,6 @@ class SigninRepository {
       throw Exception(e.toString());
     }
   }
-
-
 
 
 Future<void> resetPassword({
