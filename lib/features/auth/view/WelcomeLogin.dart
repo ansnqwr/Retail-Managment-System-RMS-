@@ -5,8 +5,8 @@ import '/features/auth/data/models/Repository/signin_repository.dart';
 import '/features/auth/view_model/bloc/login_bloc.dart';
 import '/features/auth/view/login_screen.dart';
 import '/features/auth/view/register_first_step.dart';
-import '/features/home/Model/profile_repository.dart';
-import '/features/home/view%20model/profile_bloc.dart';
+import '../../profiles/Model/profile_repository.dart';
+import '../../profiles/ViewModel/profile_bloc.dart';
 import '/features/home/view/RootScreen.dart';
 
 class WelcomeLoginScreen extends StatelessWidget {
@@ -102,7 +102,9 @@ class WelcomeLoginScreen extends StatelessWidget {
                       LoadProfileEvent(isGuest: true),
                     );
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const RootScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const RootScreen(isGuest: true),
+                      ),
                     );
                   },
                   style: TextButton.styleFrom(

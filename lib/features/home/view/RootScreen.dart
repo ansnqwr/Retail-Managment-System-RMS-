@@ -1,17 +1,18 @@
-import 'package:delni_rms/core/widgets/NavigationDestinationWidget.dart';
+import '/core/widgets/NavigationDestinationWidget.dart';
 
-import '/features/home/Model/profile_repository.dart';
-import '/features/home/view%20model/profile_bloc.dart';
+import '../../profiles/Model/profile_repository.dart';
+import '../../profiles/ViewModel/profile_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '/features/home/view/profile_view.dart';
+import '../../profiles/View/profile_view.dart';
 import '/features/home/view/Cart.dart';
 import '/features/home/view/Favorites.dart';
 import '/features/home/view/HomeScreen.dart';
-import '/features/home/view/Categories.dart';
+import '../../categories/View/Categories.dart';
 
 class RootScreen extends StatefulWidget {
-  const RootScreen({super.key});
+  final bool isGuest;
+  const RootScreen({super.key, required this.isGuest});
 
   @override
   State<RootScreen> createState() => _RootScreenState();
@@ -22,7 +23,7 @@ class _RootScreenState extends State<RootScreen> {
   @override
   Widget build(BuildContext context) {
     List<Widget> pages = [
-      HomeScreen(),
+      HomeScreen(isGuest: widget.isGuest),
       Favorites(),
       Categories(),
       Cart(),

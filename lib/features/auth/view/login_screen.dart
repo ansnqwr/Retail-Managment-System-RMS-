@@ -82,7 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const RootScreen()),
+              MaterialPageRoute(
+                builder: (context) => const RootScreen(isGuest: false),
+              ),
             );
             await _saveRememberMeStatus();
             if (!context.mounted) return;

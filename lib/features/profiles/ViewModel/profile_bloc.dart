@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '/features/home/Model/profile_repository.dart';
-import '/features/home/Model/user_model.dart';
+import '../Model/profile_repository.dart';
+import '../Model/user_model.dart';
 
 // --- EVENTS ---
 abstract class ProfileEvent {}

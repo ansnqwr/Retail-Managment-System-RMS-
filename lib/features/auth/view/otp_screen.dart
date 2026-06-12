@@ -117,7 +117,9 @@ class _OtpScreenState extends State<OtpScreen> {
           } else if (state is LoginSuccess) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => const RootScreen()),
+              MaterialPageRoute(
+                builder: (_) => const RootScreen(isGuest: false),
+              ),
             );
           }
 

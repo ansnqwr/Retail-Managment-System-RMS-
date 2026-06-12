@@ -20,7 +20,9 @@ class SplashScreen extends StatelessWidget {
             );
           } else if (state is SplashNavigateToHome) {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const RootScreen()),
+              MaterialPageRoute(
+                builder: (_) => const RootScreen(isGuest: false),
+              ),
             );
           } else if (state is SplashNavigateToWelcome) {
             Navigator.of(context).pushReplacement(

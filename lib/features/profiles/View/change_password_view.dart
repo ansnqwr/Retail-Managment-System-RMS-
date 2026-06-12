@@ -1,36 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '/features/auth/view/email_changed_screen.dart';
 import '/features/auth/view/forgot_password_screen.dart';
+import '/features/auth/view/password_changed_screen.dart';
 import '/features/auth/view_model/bloc/login_bloc.dart';
-import '/features/home/view%20model/profile_bloc.dart'
-    show
-        ChangeEmailEvent,
-        ProfileActionSuccess,
-        ProfileBloc,
-        ProfileError,
-        ProfileLoading,
-        ProfileState;
+import '../Model/profile_repository.dart';
+import '../ViewModel/profile_bloc.dart';
+import 'profile_view.dart';
 
-class ChangeEmailView extends StatefulWidget {
-  const ChangeEmailView({super.key});
+class ChangePasswordView extends StatefulWidget {
+  const ChangePasswordView({super.key});
 
   @override
-  State<ChangeEmailView> createState() => _ChangeEmailViewState();
+  State<ChangePasswordView> createState() => _ChangePasswordViewState();
 }
 
-class _ChangeEmailViewState extends State<ChangeEmailView> {
+class _ChangePasswordViewState extends State<ChangePasswordView> {
   final _formKey = GlobalKey<FormState>();
-  final _newEmailCtrl = TextEditingController();
-  final _passwordCtrl = TextEditingController();
+  final _currentCtrl = TextEditingController();
+  final _newCtrl = TextEditingController();
+  final _confirmCtrl = TextEditingController();
 
   final Color _primaryColor = const Color(0xFF6B2D5C);
   final Color _accentColor = const Color(0xFFF3A886);
 
   @override
   void dispose() {
-    _newEmailCtrl.dispose();
-    _passwordCtrl.dispose();
+    _currentCtrl.dispose();
+    _newCtrl.dispose();
+    _confirmCtrl.dispose();
     super.dispose();
   }
 
@@ -41,11 +38,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
       body: SafeArea(
         child: BlocListener<ProfileBloc, ProfileState>(
           listener: (context, state) {
-            // الانتقال يتم هنا فقط وبشكل آمن بعد نجاح العملية تماماً
             if (state is ProfileActionSuccess && state.requiresRelogin) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.message)));
               Navigator.of(
                 context,
               ).pushNamedAndRemoveUntil('/login', (route) => false);
@@ -65,7 +58,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                   _buildBackButton(),
                   const SizedBox(height: 32),
                   Text(
-                    'Create new Email',
+                    'Create new password',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -74,7 +67,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'Create a new account with your email and password, then go to the login page',
+                    'Your new password must be unique from those previously used.',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.black87,
@@ -83,25 +76,24 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                   ),
                   const SizedBox(height: 32),
                   _buildTextField(
-                    controller: _newEmailCtrl,
-                    hint: 'New Email',
-                    isObscure: false,
-                    keyboardType: TextInputType.emailAddress,
-                    validator:
-                        (val) =>
-                            val == null || !val.contains('@')
-                                ? 'Enter a valid email'
-                                : null,
+                    controller: _currentCtrl,
+                    hint: 'current Password',
+                    validator: (val) => val!.isEmpty ? 'Required' : null,
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
-                    controller: _passwordCtrl,
-                    hint: 'Current Password',
-                    isObscure: true,
+                    controller: _newCtrl,
+                    hint: 'New Password',
+                    validator: (val) => val!.length < 6 ? 'Min 6 chars' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _confirmCtrl,
+                    hint: 'Confirm Password',
                     validator:
                         (val) =>
-                            val == null || val.isEmpty
-                                ? 'Required to confirm identity'
+                            val != _newCtrl.text
+                                ? 'Passwords do not match'
                                 : null,
                   ),
                   const SizedBox(height: 12),
@@ -125,21 +117,16 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        'forgot old password?',
+                        'forget old password?',
                         style: TextStyle(color: _primaryColor, fontSize: 13),
                       ),
                     ),
                   ),
                   const SizedBox(height: 32),
-
                   BlocBuilder<ProfileBloc, ProfileState>(
                     builder: (context, state) {
                       if (state is ProfileLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Color(0xFF6B2D5C),
-                          ),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       }
                       return SizedBox(
                         width: double.infinity,
@@ -148,21 +135,13 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               context.read<ProfileBloc>().add(
-                                ChangeEmailEvent(
-                                  _newEmailCtrl.text.trim(),
-                                  _passwordCtrl.text.trim(),
+                                ChangePasswordEvent(
+                                  _currentCtrl.text,
+                                  _newCtrl.text,
                                 ),
                               );
                             }
                             Navigator.pop(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => const EmailChangedScreen(),
-                              ),
-                            );
-
                             //    Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
@@ -176,6 +155,13 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                             //         ),
                             //   ),
                             // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => const PasswordChangedScreen(),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _primaryColor,
@@ -184,7 +170,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                             ),
                           ),
                           child: Text(
-                            'Reset Email',
+                            'Reset Password',
                             style: TextStyle(
                               color: _accentColor,
                               fontSize: 16,
@@ -223,13 +209,10 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
     required TextEditingController controller,
     required String hint,
     required String? Function(String?) validator,
-    bool isObscure = false,
-    TextInputType keyboardType = TextInputType.text,
   }) {
     return TextFormField(
       controller: controller,
-      obscureText: isObscure,
-      keyboardType: keyboardType,
+      obscureText: true,
       style: const TextStyle(fontSize: 14),
       decoration: InputDecoration(
         hintText: hint,

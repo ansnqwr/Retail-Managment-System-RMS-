@@ -67,7 +67,9 @@ class VerificationSuccessScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const RootScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const RootScreen(isGuest: false),
+                    ),
                     (route) => false,
                   );
                 },

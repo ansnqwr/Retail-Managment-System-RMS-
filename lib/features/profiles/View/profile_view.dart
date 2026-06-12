@@ -4,7 +4,7 @@ import '/features/auth/data/models/Repository/signin_repository.dart'
     show SigninRepository;
 import '/features/auth/view/login_screen.dart';
 import '/features/auth/view_model/bloc/login_bloc.dart';
-import '/features/home/view%20model/profile_bloc.dart'
+import '../ViewModel/profile_bloc.dart'
     show
         ProfileBloc,
         ProfileError,
@@ -13,9 +13,9 @@ import '/features/home/view%20model/profile_bloc.dart'
         ProfileLoaded,
         ProfileLoading,
         ProfileState;
-import '/features/home/view/change_email_view.dart';
-import '/features/home/view/change_password_view.dart';
-import '/features/home/view/edit_profile_view.dart';
+import 'change_email_view.dart';
+import 'change_password_view.dart';
+import 'edit_profile_view.dart';
 
 class ProfileView extends StatelessWidget {
   final bool isGuest;

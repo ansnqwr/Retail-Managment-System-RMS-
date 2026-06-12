@@ -2,53 +2,46 @@ import 'package:flutter/material.dart';
 
 class CategorySliderItem extends StatelessWidget {
   final String label;
-  // final String image;
+  final int categoryId;
+  final bool isSelected;
+  final VoidCallback? onTap;
+
   const CategorySliderItem({
     super.key,
     required this.label,
-    // required this.image,
+    required this.categoryId,
+    this.isSelected = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return _categorySliderItem(
-      label,
-      // ,image
-    );
-  }
-}
+    final primaryColor = const Color(0xFF6B2D5C);
+    final bg = isSelected ? primaryColor : Colors.grey.shade200;
+    final border = isSelected ? primaryColor : Colors.grey.shade300;
+    final textColor = isSelected ? Colors.white : primaryColor;
 
-Widget _categorySliderItem(
-  String label,
-  //  ,String image
-) {
-  final primaryColor = const Color(0xFF6B2D5C);
-
-  return Container(
-    padding: EdgeInsets.all(10),
-    margin: EdgeInsets.only(left: 5, right: 5),
-    decoration: BoxDecoration(
+    return InkWell(
+      onTap: onTap,
       borderRadius: BorderRadius.circular(10),
-      border: Border.all(color: Colors.grey.shade500),
-      color: Colors.grey.shade300,
-    ),
-    child: Row(
-      children: [
-        // Expanded(flex: 4, child: Image.asset(image)),
-        // Expanded(
-        // flex: 3,
-        // child:
-        Text(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: border),
+          color: bg,
+        ),
+        child: Text(
           label,
           style: TextStyle(
             fontFamily: 'Cairo',
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: primaryColor,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: textColor,
           ),
         ),
-        // ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }

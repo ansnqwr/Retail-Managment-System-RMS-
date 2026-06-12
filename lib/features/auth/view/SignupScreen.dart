@@ -74,7 +74,9 @@ class _SignupScreenState extends State<SignupScreen> {
               // 1. التعديل الأول: الانتقال للشاشة الرئيسية يحدث هنا فقط عند النجاح
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const RootScreen()),
+                MaterialPageRoute(
+                  builder: (context) => const RootScreen(isGuest: false),
+                ),
               );
             } else if (state is SignupFailure) {
               // إظهار رسالة خطأ في حال فشل السيرفر في تسجيل الدخول

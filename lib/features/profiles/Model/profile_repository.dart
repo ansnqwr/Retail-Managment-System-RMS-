@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:delni_rms/features/auth/data/models/Repository/signin_repository.dart';
+import '/features/auth/data/models/Repository/signin_repository.dart';
 import 'package:http/http.dart' as http;
 import '/features/auth/data/models/Repository/auth_local_data.dart';
 import 'user_model.dart';

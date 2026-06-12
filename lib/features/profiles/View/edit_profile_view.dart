@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/data/models/Repository/signup_repository.dart';
-import '/features/home/Model/user_model.dart';
-import '/features/home/view%20model/profile_bloc.dart';
+import '../Model/user_model.dart';
+import '../ViewModel/profile_bloc.dart';
 
 import '/features/auth/view/SignupScreen.dart';
 
