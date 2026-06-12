@@ -1,8 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled/features/splash/view%20model/splash_event.dart';
-import '../../auth/data/models/Repository/auth_local_data.dart'; 
-
+import '/features/splash/view%20model/splash_event.dart';
+import '../../auth/data/models/Repository/auth_local_data.dart';
 
 part 'splash_state.dart';
 
@@ -26,7 +25,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
 
       if (isFirstTime) {
         emit(SplashNavigateToOnboarding());
-        return; 
+        return;
       }
 
       final bool rememberMe = prefs.getBool('remember_me') ?? false;

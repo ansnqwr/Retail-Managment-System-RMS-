@@ -1,4 +1,4 @@
-import 'package:untitled/features/auth/view/SignupScreen.dart'; 
+import '/features/auth/view/SignupScreen.dart';
 
 abstract class SignupState {}
 
@@ -13,6 +13,18 @@ class SignupFailure extends SignupState {
   SignupFailure(this.errorMessage);
 }
 
+class GovernoratesLoadingState extends SignupState {}
+
+class GovernoratesLoadedState extends SignupState {
+  final List<LocationItem> governorates;
+  GovernoratesLoadedState(this.governorates);
+}
+
+class GovernoratesErrorState extends SignupState {
+  final String message;
+  GovernoratesErrorState(this.message);
+}
+
 class CitiesLoadingState extends SignupState {}
 
 class CitiesLoadedState extends SignupState {
@@ -23,16 +35,4 @@ class CitiesLoadedState extends SignupState {
 class CitiesErrorState extends SignupState {
   final String message;
   CitiesErrorState(this.message);
-}
-
-class TownsLoadingState extends SignupState {}
-
-class TownsLoadedState extends SignupState {
-  final List<LocationItem> towns;
-  TownsLoadedState(this.towns);
-}
-
-class TownsErrorState extends SignupState {
-  final String message;
-  TownsErrorState(this.message);
 }

@@ -1,134 +1,101 @@
+import 'package:delni_rms/core/widgets/CategorySliderItem.dart';
+
+import '/core/widgets/OfflineFallbackWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/home/Model/profile_repository.dart';
-import 'package:untitled/features/home/view%20model/profile_bloc.dart';
-import 'package:untitled/features/home/view/profile_view.dart';
+import '/core/widgets/IconCircleWidget.dart';
+import '/core/widgets/BadgeIconWidget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = const Color(0xFF6B2D5C);
+
+    List<Map<String, String>> categories = [
+      {
+        'label': 'All',
+        // 'image': 'assets/images/all.png',
+      },
+      {
+        'label': 'Clothing',
+        // 'image': 'assets/images/clothing.png',
+      },
+      {
+        'label': 'Electronics',
+        // 'image': 'assets/images/electronics.png',
+      },
+      {
+        'label': 'Sports',
+        // 'image': 'assets/images/sports.png',
+      },
+      {
+        'label': 'Home',
+        // 'image': 'assets/images/home.png',
+      },
+      {
+        'label': 'Jewelry',
+        // 'image': 'assets/images/jewelry.png',
+      },
+    ];
     return Scaffold(
-      appBar: AppBar(
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(
-
-                Icons.menu,
-                size: 28,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                Scaffold.of(
-                  context,
-                ).openDrawer(); 
-              },
-            );
-          },
-        ),
-        title: const Text(
-          'متجر دلني الرئيسي',
-          style: TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFF6B2D5C),
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'تم الضغط على زر الإشعارات',
-                    style: TextStyle(fontFamily: 'Cairo'),
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFF6B2D5C)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.storefront, size: 50, color: Colors.white),
-                  SizedBox(height: 10),
-                  Text(
-                    'قائمة التحكم',
-                    style: TextStyle(
-                      fontFamily: 'Cairo',
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.person, color: Color(0xFF6B2D5C)),
-              title: const Text(
-                'الملف الشخصي',
-                style: TextStyle(
-                  fontFamily: 'Cairo',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => BlocProvider(
-                          create:
-                              (context) =>
-                                  ProfileBloc( ProfileRepository())
-                                    ..add(LoadProfileEvent()),
-                          child: const ProfileView(),
-                        ),
-                  ),
-                );     
-
-              },
-            ),
-          ],
-        ),
-      ),
-      body: const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 50),
+          Row(
             children: [
-              Icon(Icons.storefront, size: 80, color: Color(0xFF6B2D5C)),
-              SizedBox(height: 16),
+              const SizedBox(width: 10),
               Text(
-                'مستودع المتاجر متاح الآن!',
+                'Hello, User!',
                 style: TextStyle(
                   fontFamily: 'Cairo',
-                  fontSize: 18,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  color: primaryColor,
                 ),
               ),
-              SizedBox(height: 8),
-              Text(
-                'تصفح الآن أفضل عروض التجزئة المخصصة لك في منطقتك.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: 'Cairo', color: Colors.grey),
+              const Spacer(),
+              InkWell(
+                onTap: () {},
+                child: IconCircleWidget(
+                  icon: Icons.settings,
+                  color: primaryColor,
+                ),
               ),
+              const SizedBox(width: 12),
+              // todo: edit the notifications number (label)
+              InkWell(
+                onTap: () {},
+                child: BadgeIconWidget(
+                  context: context,
+                  label: '3',
+                  icon: Icons.notifications_outlined,
+                  color: primaryColor,
+                ),
+              ),
+              const SizedBox(width: 10),
             ],
           ),
-        ),
+
+          SizedBox(height: 30),
+
+          SizedBox(
+            height: 70,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              physics: AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.all(8),
+              children: List.generate(categories.length, (index) {
+                return CategorySliderItem(
+                  label: categories[index]['label']!,
+                  //  image: categories[index]['image']!,
+                );
+              }),
+            ),
+          ),
+        ],
+        //  Center(child: const OfflineFallbackWidget())
       ),
     );
   }

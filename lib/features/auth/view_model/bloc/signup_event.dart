@@ -1,10 +1,10 @@
 abstract class SignupEvent {}
 
-class FetchCitiesEvent extends SignupEvent {}
+class FetchGovernoratesEvent extends SignupEvent {}
 
-class FetchTownsEvent extends SignupEvent {
-  final int cityId;
-  FetchTownsEvent({required this.cityId});
+class FetchCitiesEvent extends SignupEvent {
+  final int governorateId;
+  FetchCitiesEvent({required this.governorateId});
 }
 
 class SubmitSignupEvent extends SignupEvent {

@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/home/Model/profile_repository.dart';
-import 'package:untitled/features/home/Model/user_model.dart';
-
+import '/features/home/Model/profile_repository.dart';
+import '/features/home/Model/user_model.dart';
 
 // --- EVENTS ---
 abstract class ProfileEvent {}
@@ -65,12 +64,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UpdateProfileEvent>(_onUpdateProfile);
     on<ChangePasswordEvent>(_onChangePassword);
     on<ChangeEmailEvent>(_onChangeEmail);
-      on<SetGuestModeEvent>((event, emit) {
+    on<SetGuestModeEvent>((event, emit) {
       emit(ProfileGuestMode());
     });
   }
 
-// في profile_bloc.dart
+  // في profile_bloc.dart
   Future<void> _onLoadProfile(
     LoadProfileEvent event,
     Emitter<ProfileState> emit,
@@ -144,6 +143,4 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if (_currentUser != null) emit(ProfileLoaded(_currentUser!));
     }
   }
-
-
 }

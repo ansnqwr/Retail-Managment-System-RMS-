@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled/features/auth/data/models/Repository/signin_repository.dart';
-import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
-import 'package:untitled/features/auth/view/login_screen.dart';
-import 'package:untitled/features/auth/view/register_first_step.dart';
-import 'package:untitled/features/home/Model/profile_repository.dart';
-import 'package:untitled/features/home/view%20model/profile_bloc.dart';
-import 'package:untitled/features/home/view/HomeScreen.dart';
+import '/features/auth/data/models/Repository/signin_repository.dart';
+import '/features/auth/view_model/bloc/login_bloc.dart';
+import '/features/auth/view/login_screen.dart';
+import '/features/auth/view/register_first_step.dart';
+import '/features/home/Model/profile_repository.dart';
+import '/features/home/view%20model/profile_bloc.dart';
+import '/features/home/view/RootScreen.dart';
 
 class WelcomeLoginScreen extends StatelessWidget {
   const WelcomeLoginScreen({super.key});
@@ -16,9 +16,9 @@ class WelcomeLoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    const Color darkPurple = Color(0xFF603055); 
-    const Color peachColor = Color(0xFFE79476); 
-    const Color bgColor = Color(0xFFFCF9FC); 
+    const Color darkPurple = Color(0xFF603055);
+    const Color peachColor = Color(0xFFE79476);
+    const Color bgColor = Color(0xFFFCF9FC);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -47,22 +47,19 @@ class WelcomeLoginScreen extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                   Center(
-                child: Container(
-                  width: 300,
-                  height: 300,
-                  padding: const EdgeInsets.all(12),
-                  child: Image.asset(
-                    'assets/images/SignIn.png',
-                    fit: BoxFit.contain,
+                  Center(
+                    child: Container(
+                      width: 300,
+                      height: 300,
+                      padding: const EdgeInsets.all(12),
+                      child: Image.asset(
+                        'assets/images/SignIn.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
                   ),
-                ),   
-             )
-                  ,
-                 
                 ],
               ),
-
 
               ElevatedButton(
                 onPressed: () {
@@ -70,21 +67,15 @@ class WelcomeLoginScreen extends StatelessWidget {
                     MaterialPageRoute(
                       builder:
                           (_) => BlocProvider(
-                            create:
-                                (context) => LoginBloc(
-                                  SigninRepository(),
-                                ), 
+                            create: (context) => LoginBloc(SigninRepository()),
                             child: const LoginScreen(),
-                          )
+                          ),
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: darkPurple,
-                  minimumSize: const Size(
-                    double.infinity,
-                    60,
-                  ),
+                  minimumSize: const Size(double.infinity, 60),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -105,13 +96,13 @@ class WelcomeLoginScreen extends StatelessWidget {
 
               Center(
                 child: TextButton(
-                  onPressed: ()  {
-                     context.read<ProfileBloc>().add(SetGuestModeEvent());
-context.read<ProfileBloc>().add(
+                  onPressed: () {
+                    context.read<ProfileBloc>().add(SetGuestModeEvent());
+                    context.read<ProfileBloc>().add(
                       LoadProfileEvent(isGuest: true),
                     );
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const HomeScreen()),
+                      MaterialPageRoute(builder: (_) => const RootScreen()),
                     );
                   },
                   style: TextButton.styleFrom(
@@ -132,8 +123,7 @@ context.read<ProfileBloc>().add(
                 ),
               ),
 
-
-               Center(
+              Center(
                 child: TextButton(
                   onPressed: () {
                     Navigator.of(context).push(

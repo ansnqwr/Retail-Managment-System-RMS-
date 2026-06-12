@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/view/email_changed_screen.dart';
-import 'package:untitled/features/auth/view/forgot_password_screen.dart';
-import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
-import 'package:untitled/features/home/view%20model/profile_bloc.dart'
-    show ChangeEmailEvent, ProfileActionSuccess, ProfileBloc, ProfileError, ProfileLoading, ProfileState;
+import '/features/auth/view/email_changed_screen.dart';
+import '/features/auth/view/forgot_password_screen.dart';
+import '/features/auth/view_model/bloc/login_bloc.dart';
+import '/features/home/view%20model/profile_bloc.dart'
+    show
+        ChangeEmailEvent,
+        ProfileActionSuccess,
+        ProfileBloc,
+        ProfileError,
+        ProfileLoading,
+        ProfileState;
 
 class ChangeEmailView extends StatefulWidget {
   const ChangeEmailView({super.key});
@@ -111,21 +117,21 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                                   child: const ForgotPasswordScreen(),
                                 ),
                           ),
-                        );                      },
+                        );
+                      },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
                         minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        'forget old password?',
+                        'forgot old password?',
                         style: TextStyle(color: _primaryColor, fontSize: 13),
                       ),
                     ),
                   ),
                   const SizedBox(height: 32),
 
-                  // الـ BlocBuilder يتحكم فقط في مظهر الزر أثناء التحميل
                   BlocBuilder<ProfileBloc, ProfileState>(
                     builder: (context, state) {
                       if (state is ProfileLoading) {
@@ -149,7 +155,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                               );
                             }
                             Navigator.pop(context);
-                                                       Navigator.push(
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder:
@@ -169,7 +175,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                             //           child: const ProfileView(),
                             //         ),
                             //   ),
-                            // ); 
+                            // );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _primaryColor,

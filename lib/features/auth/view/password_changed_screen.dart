@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/data/models/Repository/signin_repository.dart' show SigninRepository;
-import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
-import 'package:untitled/features/auth/view/login_screen.dart';
+import '/features/auth/data/models/Repository/signin_repository.dart'
+    show SigninRepository;
+import '/features/auth/view_model/bloc/login_bloc.dart';
+import '/features/auth/view/login_screen.dart';
 
 class PasswordChangedScreen extends StatelessWidget {
   const PasswordChangedScreen({super.key});
@@ -80,7 +81,7 @@ class PasswordChangedScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).popUntil((route) => route.isFirst);
-                   Navigator.of(context).push(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder:
                           (_) => BlocProvider(

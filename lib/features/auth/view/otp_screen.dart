@@ -1,8 +1,8 @@
 import 'dart:async';
+import '/features/home/view/RootScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/view/reset_password_screen.dart';
-import 'package:untitled/features/home/view/HomeScreen.dart';
+import '/features/auth/view/reset_password_screen.dart';
 import '../view_model/bloc/login_bloc.dart';
 import 'verification_success_screen.dart';
 
@@ -61,7 +61,11 @@ class _OtpScreenState extends State<OtpScreen> {
     String otp = _controllers.map((c) => c.text).join();
     if (otp.length == 6) {
       context.read<LoginBloc>().add(
-        VerifyOtpEvent(email: widget.email, otpCode: otp, isForgotPassword: true),
+        VerifyOtpEvent(
+          email: widget.email,
+          otpCode: otp,
+          isForgotPassword: true,
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -103,11 +107,19 @@ class _OtpScreenState extends State<OtpScreen> {
             );
           }
 
-  if (state is OtpVerifiedSuccess) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => ResetPasswordScreen(email: state.email)));
-  } else if (state is LoginSuccess) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
-  }
+          if (state is OtpVerifiedSuccess) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ResetPasswordScreen(email: state.email),
+              ),
+            );
+          } else if (state is LoginSuccess) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const RootScreen()),
+            );
+          }
 
           // if (state is OtpVerifiedSuccess) {
           //   Navigator.of(context).pop();
@@ -121,7 +133,7 @@ class _OtpScreenState extends State<OtpScreen> {
           //     ),
           //   );
           // }
-          
+
           // if (state is LoginSuccess) {
           //   Navigator.of(context).pop();
           //   Navigator.of(context).pushReplacement(

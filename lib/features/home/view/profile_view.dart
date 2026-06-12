@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/data/models/Repository/signin_repository.dart' show SigninRepository;
-import 'package:untitled/features/auth/view/login_screen.dart';
-import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
-import 'package:untitled/features/home/view%20model/profile_bloc.dart'
+import '/features/auth/data/models/Repository/signin_repository.dart'
+    show SigninRepository;
+import '/features/auth/view/login_screen.dart';
+import '/features/auth/view_model/bloc/login_bloc.dart';
+import '/features/home/view%20model/profile_bloc.dart'
     show
         ProfileBloc,
         ProfileError,
@@ -12,10 +13,9 @@ import 'package:untitled/features/home/view%20model/profile_bloc.dart'
         ProfileLoaded,
         ProfileLoading,
         ProfileState;
-import 'package:untitled/features/home/view/change_email_view.dart';
-import 'package:untitled/features/home/view/change_password_view.dart';
-import 'package:untitled/features/home/view/edit_profile_view.dart';
-
+import '/features/home/view/change_email_view.dart';
+import '/features/home/view/change_password_view.dart';
+import '/features/home/view/edit_profile_view.dart';
 
 class ProfileView extends StatelessWidget {
   final bool isGuest;
@@ -60,18 +60,13 @@ class ProfileView extends StatelessWidget {
                     padding: const EdgeInsets.all(24.0),
                     child: Column(
                       children: [
-                        _buildInfoField(
-                          'Email',
-                          user.email,
-                         
-                        ),
+                        _buildInfoField('Email', user.email),
                         _buildInfoField('Number', user.phone),
-                                                _buildInfoField('City', user.city),
-
                         _buildInfoField('Governorate', user.governorate),
 
+                        _buildInfoField('Governorate', user.city),
 
-                         const SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -113,7 +108,7 @@ class ProfileView extends StatelessWidget {
                             const Text(' ?'),
                           ],
                         ),
-                        const SizedBox(height: 20), 
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -123,7 +118,7 @@ class ProfileView extends StatelessWidget {
           }
 
           // return const Center(child: Text('Something went wrong.'));
-return  _buildGuestView(context);
+          return _buildGuestView(context);
         },
       ),
     );
@@ -268,7 +263,6 @@ return  _buildGuestView(context);
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              
               ],
             ),
           ),

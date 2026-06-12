@@ -2,11 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/data/models/Repository/signup_repository.dart';
-import 'package:untitled/features/home/Model/user_model.dart';
-import 'package:untitled/features/home/view%20model/profile_bloc.dart';
+import '/features/auth/data/models/Repository/signup_repository.dart';
+import '/features/home/Model/user_model.dart';
+import '/features/home/view%20model/profile_bloc.dart';
 
-import 'package:untitled/features/auth/view/SignupScreen.dart';
+import '/features/auth/view/SignupScreen.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key});
@@ -32,7 +32,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   LocationItem? selectedCity;
 
   bool isLoadingLocations = true;
-  bool isLoadingCities = false;
+  bool isLoadingGovernorates = false;
 
   @override
   void initState() {
@@ -70,10 +70,9 @@ class _EditProfileViewState extends State<EditProfileView> {
     super.dispose();
   }
 
-
   Future<void> _loadInitialLocations() async {
     try {
-      final fetchedGovernorates = await _signupRepository.getCities();
+      final fetchedGovernorates = await _signupRepository.getGovernorates();
       setState(() {
         governorates = fetchedGovernorates;
         isLoadingLocations = false;
@@ -87,14 +86,14 @@ class _EditProfileViewState extends State<EditProfileView> {
           setState(() {
             selectedGovernorate = matchedGov;
           });
-          await _loadCities(
+          await _loadGovernorates(
             matchedGov.id,
-            preselectedCityName: _initialUser.city,
+            preselectedGovernorateName: _initialUser.governorate,
           );
         } catch (e) {
           setState(() {
             selectedGovernorate = null;
-            selectedCity = null;
+            selectedGovernorate = null;
           });
         }
       }
@@ -106,36 +105,39 @@ class _EditProfileViewState extends State<EditProfileView> {
     }
   }
 
-  Future<void> _loadCities(
+  Future<void> _loadGovernorates(
     int governorateId, {
-    String? preselectedCityName,
+    String? preselectedGovernorateName,
   }) async {
     setState(() {
-      isLoadingCities = true;
+      isLoadingGovernorates = true;
     });
     try {
-      final fetchedCities = await _signupRepository.getTowns(governorateId);
+      final fetchedGovernorates = await _signupRepository.getCities(
+        governorateId,
+      );
       setState(() {
-        cities = fetchedCities;
-        isLoadingCities = false;
+        governorates = fetchedGovernorates;
+        isLoadingGovernorates = false;
       });
 
-      if (preselectedCityName != null && preselectedCityName.isNotEmpty) {
+      if (preselectedGovernorateName != null &&
+          preselectedGovernorateName.isNotEmpty) {
         try {
           setState(() {
-            selectedCity = cities.firstWhere(
-              (c) => c.name == preselectedCityName,
+            selectedGovernorate = governorates.firstWhere(
+              (c) => c.name == preselectedGovernorateName,
             );
           });
         } catch (e) {
           setState(() {
-            selectedCity = null;
+            selectedGovernorate = null;
           });
         }
       }
     } catch (e) {
       setState(() {
-        isLoadingCities = false;
+        isLoadingGovernorates = false;
       });
       _showSnackBar(e.toString());
     }
@@ -148,7 +150,6 @@ class _EditProfileViewState extends State<EditProfileView> {
       ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -167,18 +168,17 @@ class _EditProfileViewState extends State<EditProfileView> {
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state is ProfileActionSuccess) {
-
             if (state.requiresRelogin == false) {
               ScaffoldMessenger.of(
                 context,
               ).showSnackBar(SnackBar(content: Text(state.message)));
-              Navigator.pop(context); 
+              Navigator.pop(context);
             }
 
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.message)));
-            Navigator.pop(context); 
+            Navigator.pop(context);
           } else if (state is ProfileError) {
             ScaffoldMessenger.of(
               context,
@@ -218,7 +218,7 @@ class _EditProfileViewState extends State<EditProfileView> {
             _buildTextField('Phone Number', _phoneCtrl, isNumber: true),
 
             _buildLocationDropdown(
-              label: 'City',
+              label: 'Governorate',
               items: governorates,
               selectedItem: selectedGovernorate,
               isLoading: false,
@@ -226,22 +226,22 @@ class _EditProfileViewState extends State<EditProfileView> {
                 if (newValue != null && newValue != selectedGovernorate) {
                   setState(() {
                     selectedGovernorate = newValue;
-                    selectedCity = null;
-                    cities = [];
+                    selectedGovernorate = null;
+                    governorates = [];
                   });
-                  _loadCities(newValue.id);
+                  _loadGovernorates(newValue.id);
                 }
               },
             ),
 
             _buildLocationDropdown(
               label: 'Governorate',
-              items: cities,
-              selectedItem: selectedCity,
-              isLoading: isLoadingCities,
+              items: governorates,
+              selectedItem: selectedGovernorate,
+              isLoading: isLoadingGovernorates,
               onChanged: (LocationItem? newValue) {
                 setState(() {
-                  selectedCity = newValue;
+                  selectedGovernorate = newValue;
                 });
               },
             ),
@@ -260,7 +260,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    if (selectedGovernorate == null || selectedCity == null) {
+                    if (selectedGovernorate == null ||
+                        selectedGovernorate == null) {
                       _showSnackBar("الرجاء اختيار المحافظة والمدينة أولاً");
                       return;
                     }
@@ -269,7 +270,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       id: _initialUser.id,
                       firstName: _fNameCtrl.text.trim(),
                       lastName: _lNameCtrl.text.trim(),
-                      email: _initialUser.email, 
+                      email: _initialUser.email,
                       phone: _phoneCtrl.text.trim(),
                       governorate: selectedGovernorate!.name,
                       city: selectedCity!.name,
@@ -288,8 +289,6 @@ class _EditProfileViewState extends State<EditProfileView> {
                     // color: Colors.white,
                     // background: #F2A488,
                     color: Color(0xFFF2A488),
-                    
-
                   ),
                 ),
               ),

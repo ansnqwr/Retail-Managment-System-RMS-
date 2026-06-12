@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/view/otp_screen.dart';
-import 'package:untitled/features/auth/view/reset_password_screen.dart';
+import '/features/auth/view/otp_screen.dart';
+import '/features/auth/view/reset_password_screen.dart';
 import '../view_model/bloc/login_bloc.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -58,7 +58,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           if (state is ForgotPasswordEmailSentSuccess) {
             Navigator.of(context).pop();
 
-Navigator.of(context).push(
+            Navigator.of(context).push(
               MaterialPageRoute(
                 builder:
                     (_) => BlocProvider.value(
@@ -67,9 +67,6 @@ Navigator.of(context).push(
                     ),
               ),
             );
-            
-         
-           
           }
         },
         child: SafeArea(
@@ -186,12 +183,6 @@ Navigator.of(context).push(
                             email: _emailController.text.trim(),
                           ),
                         );
-
-                      
-
-
-
-
                       }
                     },
                     style: ElevatedButton.styleFrom(

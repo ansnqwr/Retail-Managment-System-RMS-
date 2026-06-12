@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
-import 'package:untitled/features/auth/view/SignupScreen.dart';
-import 'package:untitled/features/auth/data/models/registration_data.dart';
+import '/features/auth/view_model/bloc/login_bloc.dart';
+import '/features/auth/view/SignupScreen.dart';
+import '/features/auth/data/models/registration_data.dart';
 
 class RegisterFirstStep extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -84,11 +84,7 @@ class RegisterFirstStep extends StatelessWidget {
                       MaterialPageRoute(
                         builder:
                             (currentContext) => BlocProvider.value(
-                              value:
-                                  context
-                                      .read<
-                                        LoginBloc
-                                      >(), 
+                              value: context.read<LoginBloc>(),
                               child: SignupScreen(userData: data),
                             ),
                       ),

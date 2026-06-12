@@ -1,11 +1,10 @@
 import 'dart:convert';
+import 'package:delni_rms/features/auth/data/models/Repository/signin_repository.dart';
 import 'package:http/http.dart' as http;
-import 'package:untitled/features/auth/data/models/Repository/auth_local_data.dart';
+import '/features/auth/data/models/Repository/auth_local_data.dart';
 import 'user_model.dart';
 
 class ProfileRepository {
-  static const String baseUrl = 'http://192.168.1.106:8000/api';
-
   // Helper: Request with automatic token refresh on 401
   Future<http.Response> _performRequest(
     Future<http.Response> Function() request,

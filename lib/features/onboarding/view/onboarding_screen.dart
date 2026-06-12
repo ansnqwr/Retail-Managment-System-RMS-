@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:untitled/features/auth/data/models/Repository/signup_repository.dart';
-import 'package:untitled/features/auth/view/WelcomeLogin.dart';
-import 'package:untitled/features/auth/view_model/bloc/signup_bloc.dart';
-import 'package:untitled/features/onboarding/view%20model/OnboardingBloc.dart';
-import 'package:untitled/features/onboarding/view%20model/onboarding_event.dart';
-import 'package:untitled/features/onboarding/view%20model/onboarding_state.dart';
+import '/features/auth/data/models/Repository/signup_repository.dart';
+import '/features/auth/view/WelcomeLogin.dart';
+import '/features/auth/view_model/bloc/signup_bloc.dart';
+import '/features/onboarding/view%20model/OnboardingBloc.dart';
+import '/features/onboarding/view%20model/onboarding_event.dart';
+import '/features/onboarding/view%20model/onboarding_state.dart';
 
 class OnboardingScreen extends StatelessWidget {
   final PageController _pageController = PageController();
@@ -34,17 +34,16 @@ class OnboardingScreen extends StatelessWidget {
                   Align(
                     alignment: Alignment.topRight,
                     child: TextButton(
-                      onPressed: ()async {
-// 1. حفظ في الذاكرة أن المستخدم لم يعد "أول مرة"
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setBool('isFirstTime', false);
-if (!context.mounted) return;
+                      onPressed: () async {
+                        // 1. حفظ في الذاكرة أن المستخدم لم يعد "أول مرة"
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool('isFirstTime', false);
+                        if (!context.mounted) return;
 
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder:
                                 (_) => BlocProvider(
-                             
                                   create:
                                       (context) =>
                                           SignupBloc(SignupRepository()),
@@ -98,7 +97,7 @@ if (!context.mounted) return;
                   Padding(
                     padding: const EdgeInsets.only(bottom: 30),
                     child: InkWell(
-                     onTap: () async {
+                      onTap: () async {
                         // 1. إذا كان المستخدم في الصفحات الأولى، ينتقل للصفحة التالية داخل الـ Onboarding
                         if (state.currentPage < 1) {
                           _pageController.nextPage(
@@ -186,17 +185,19 @@ if (!context.mounted) return;
             ),
           ),
           const SizedBox(height: 15),
-          Center( 
-            child:    SizedBox(
-            width: 200,
-          height: 200,
-            child: Center(
-            child: Image.asset('assets/images/Screenshot 2026-05-25 135830.png',) 
+          Center(
+            child: SizedBox(
+              width: 200,
+              height: 200,
+              child: Center(
+                child: Image.asset(
+                  'assets/images/Screenshot 2026-05-25 135830.png',
+                ),
+              ),
+            ),
           ),
-          ),)
-      ,
-           // 
 
+          //
           const SizedBox(height: 15),
           Text(
             "Your Language Preferance",
@@ -264,13 +265,13 @@ if (!context.mounted) return;
           ),
           const Spacer(),
           Center(
-            
-            child:SizedBox(
+            child: SizedBox(
               height: 250,
               width: 250,
-              child:              Image.asset('assets/images/Screenshot 2026-05-25 135627.png'),
-            )
-            
+              child: Image.asset(
+                'assets/images/Screenshot 2026-05-25 135627.png',
+              ),
+            ),
           ), // استبدل بمسار صورتك
           const Spacer(),
         ],

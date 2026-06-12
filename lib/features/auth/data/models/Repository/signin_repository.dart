@@ -2,13 +2,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'auth_local_data.dart'; 
+import 'auth_local_data.dart';
+
+final String baseUrl = 'http://192.168.1.3:8000/api';
 
 class SigninRepository {
-  final String _baseUrl = 'http://192.168.1.106:8000/api';
-
   Future<void> loginWithEmailAndPassword(String email, String password) async {
-    final String loginUrl = '$_baseUrl/auth/login';
+    final String loginUrl = '$baseUrl/auth/login';
 
     try {
       final response = await http
@@ -19,7 +19,9 @@ class SigninRepository {
           )
           .timeout(const Duration(seconds: 15));
 
-      if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 204) {
         final responseData = jsonDecode(response.body);
 
         final String accessToken =
@@ -47,10 +49,8 @@ class SigninRepository {
     }
   }
 
-
-
   Future<void> requestGoogleOtp(String email, String googleId) async {
-    final String googleOtpUrl = '$_baseUrl/auth/google-login';
+    final String googleOtpUrl = '$baseUrl/auth/google-login';
 
     try {
       final response = await http
@@ -78,9 +78,8 @@ class SigninRepository {
     }
   }
 
-
   Future<void> verifyOtp(String email, String otpCode) async {
-    final String verifyUrl = '$_baseUrl/auth/verify-otp';
+    final String verifyUrl = '$baseUrl/auth/verify-otp';
 
     try {
       final response = await http
@@ -112,9 +111,8 @@ class SigninRepository {
     }
   }
 
-
   Future<void> sendForgotPasswordEmail(String email) async {
-    final String forgotPasswordUrl = '$_baseUrl/forgot-password';
+    final String forgotPasswordUrl = '$baseUrl/forgot-password';
 
     try {
       final response = await http
@@ -140,22 +138,18 @@ class SigninRepository {
     }
   }
 
-
-Future<void> resetPassword({
+  Future<void> resetPassword({
     required String email,
     required String newPassword,
   }) async {
-    final String resetUrl = '$_baseUrl/auth/reset-password';
+    final String resetUrl = '$baseUrl/auth/reset-password';
 
     try {
       final response = await http
           .post(
             Uri.parse(resetUrl),
             headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              'email': email,
-              'new_password': newPassword,
-            }),
+            body: jsonEncode({'email': email, 'new_password': newPassword}),
           )
           .timeout(const Duration(seconds: 15));
 
@@ -173,6 +167,4 @@ Future<void> resetPassword({
       throw Exception(e.toString());
     }
   }
-
-
 }

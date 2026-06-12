@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/features/home/view/HomeScreen.dart';
+import '/features/home/view/RootScreen.dart';
 
 class VerificationSuccessScreen extends StatelessWidget {
   const VerificationSuccessScreen({super.key});
@@ -67,7 +67,7 @@ class VerificationSuccessScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const HomeScreen()),
+                    MaterialPageRoute(builder: (_) => const RootScreen()),
                     (route) => false,
                   );
                 },

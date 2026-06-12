@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/view/login_screen.dart';
-import 'package:untitled/features/auth/view/password_changed_screen.dart';
+import '/features/auth/view/login_screen.dart';
+import '/features/auth/view/password_changed_screen.dart';
 import '../view_model/bloc/login_bloc.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -60,7 +60,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               ),
             );
           }
-         if (state is ResetPasswordSuccess) {
+          if (state is ResetPasswordSuccess) {
             Navigator.of(context).pop(); // Closes the loading dialog
 
             // Navigate to the success screen
@@ -81,8 +81,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 children: [
                   const SizedBox(height: 10),
                   Icon(
-                    Icons
-                        .lock_reset_outlined, 
+                    Icons.lock_reset_outlined,
                     size: 90,
                     color: darkPurple.withOpacity(0.8),
                   ),
@@ -220,7 +219,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           controller: controller,
           obscureText: obscureText,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Poppins',
+          ),
           validator: validator,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(

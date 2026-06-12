@@ -1,13 +1,13 @@
+import '/features/home/view/RootScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/data/models/Repository/signin_repository.dart';
-import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
-import 'package:untitled/features/auth/view_model/bloc/signup_bloc.dart';
-import 'package:untitled/features/auth/view_model/bloc/signup_event.dart';
-import 'package:untitled/features/auth/view_model/bloc/signup_state.dart';
-import 'package:untitled/features/auth/view/login_screen.dart';
-import 'package:untitled/features/auth/data/models/registration_data.dart';
-import 'package:untitled/features/home/view/HomeScreen.dart';
+import '/features/auth/data/models/Repository/signin_repository.dart';
+import '/features/auth/view_model/bloc/login_bloc.dart';
+import '/features/auth/view_model/bloc/signup_bloc.dart';
+import '/features/auth/view_model/bloc/signup_event.dart';
+import '/features/auth/view_model/bloc/signup_state.dart';
+import '/features/auth/view/login_screen.dart';
+import '/features/auth/data/models/registration_data.dart';
 
 class LocationItem {
   final int id;
@@ -28,22 +28,22 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passCtrl = TextEditingController();
   final TextEditingController _confirmPassCtrl = TextEditingController();
   final TextEditingController _numberCtrl = TextEditingController();
-  final TextEditingController _jobCtrl = TextEditingController();
-  final TextEditingController _birthCtrl = TextEditingController();
+  // final TextEditingController _jobCtrl = TextEditingController();
+  // final TextEditingController _birthCtrl = TextEditingController();
 
+  List<LocationItem> _governorates = [];
   List<LocationItem> _cities = [];
-  List<LocationItem> _towns = [];
 
+  int? _selectedGovernorateId;
+  String? _selectedGovernorateName;
   int? _selectedCityId;
   String? _selectedCityName;
-  int? _selectedTownId;
-  String? _selectedTownName;
-  bool _isLoadingTowns = false;
+  bool _isLoadingCities = false;
 
   @override
   void initState() {
     super.initState();
-    context.read<SignupBloc>().add(FetchCitiesEvent());
+    context.read<SignupBloc>().add(FetchGovernoratesEvent());
   }
 
   @override
@@ -55,26 +55,26 @@ class _SignupScreenState extends State<SignupScreen> {
       body: SafeArea(
         child: BlocListener<SignupBloc, SignupState>(
           listener: (context, state) {
-            if (state is CitiesLoadedState) {
+            if (state is GovernoratesLoadedState) {
               setState(() {
+                _governorates = state.governorates;
+              });
+            } else if (state is CitiesLoadingState) {
+              setState(() {
+                _isLoadingCities = true;
+                _cities = [];
+                _selectedCityId = null;
+              });
+            } else if (state is CitiesLoadedState) {
+              setState(() {
+                _isLoadingCities = false;
                 _cities = state.cities;
-              });
-            } else if (state is TownsLoadingState) {
-              setState(() {
-                _isLoadingTowns = true;
-                _towns = [];
-                _selectedTownId = null;
-              });
-            } else if (state is TownsLoadedState) {
-              setState(() {
-                _isLoadingTowns = false;
-                _towns = state.towns;
               });
             } else if (state is SignupSuccess) {
               // 1. التعديل الأول: الانتقال للشاشة الرئيسية يحدث هنا فقط عند النجاح
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                MaterialPageRoute(builder: (context) => const RootScreen()),
               );
             } else if (state is SignupFailure) {
               // إظهار رسالة خطأ في حال فشل السيرفر في تسجيل الدخول
@@ -113,9 +113,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   isObscure: true,
                 ),
                 _buildField("Number", _numberCtrl),
-                _buildField("Job", _jobCtrl),
-                _buildField("Birthday", _birthCtrl),
 
+                // _buildField("Job", _jobCtrl),
+                // _buildField("Birthday", _birthCtrl),
                 const SizedBox(height: 15),
 
                 Row(
@@ -123,28 +123,35 @@ class _SignupScreenState extends State<SignupScreen> {
                   children: [
                     // قائمة المحافظات
                     Expanded(
-                      child: _buildDropdown("City", _cities, _selectedCityId, (
-                        val,
-                      ) {
-                        setState(() {
-                          _selectedCityId = val;
-                          // حفظ اسم المدينة لإرساله للسيرفر
-                          _selectedCityName =
-                              _cities.firstWhere((city) => city.id == val).name;
-                        });
-                        if (val != null) {
-                          context.read<SignupBloc>().add(
-                            FetchTownsEvent(cityId: val),
-                          );
-                        }
-                      }),
+                      child: _buildDropdown(
+                        "Governorate",
+                        _governorates,
+                        _selectedGovernorateId,
+                        (val) {
+                          setState(() {
+                            _selectedGovernorateId = val;
+                            // حفظ اسم المدينة لإرساله للسيرفر
+                            _selectedGovernorateName =
+                                _governorates
+                                    .firstWhere(
+                                      (governorate) => governorate.id == val,
+                                    )
+                                    .name;
+                          });
+                          if (val != null) {
+                            context.read<SignupBloc>().add(
+                              FetchCitiesEvent(governorateId: val),
+                            );
+                          }
+                        },
+                      ),
                     ),
                     SizedBox(width: size.width * 0.04),
 
                     // قائمة البلدات
                     Expanded(
                       child:
-                          _isLoadingTowns
+                          _isLoadingCities
                               ? const Padding(
                                 padding: EdgeInsets.only(top: 30),
                                 child: Center(
@@ -154,17 +161,17 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               )
                               : _buildDropdown(
-                                "Town",
-                                _towns,
-                                _selectedTownId,
+                                "City",
+                                _cities,
+                                _selectedCityId,
                                 (val) {
                                   setState(() {
-                                    _selectedTownId = val;
+                                    _selectedCityId = val;
                                     // حفظ اسم البلدة لإرساله للسيرفر
-                                    _selectedTownName =
-                                        _towns
+                                    _selectedCityName =
+                                        _cities
                                             .firstWhere(
-                                              (town) => town.id == val,
+                                              (city) => city.id == val,
                                             )
                                             .name;
                                   });
@@ -280,10 +287,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         "last_name": widget.userData.lastName,
                         "password": _passCtrl.text,
                         "confirm_password": _confirmPassCtrl.text,
-                        "governorate": _selectedTownName ?? '',
+                        "governorate": _selectedGovernorateName ?? '',
                         "phone_number": _numberCtrl.text,
-                        "city": _selectedCityName ?? '',   
-                        // "job": _jobCtrl.text,        
+                        "city": _selectedCityName ?? '',
+                        // "job": _jobCtrl.text,
                         // "birthday": _birthCtrl.text,
                       };
 

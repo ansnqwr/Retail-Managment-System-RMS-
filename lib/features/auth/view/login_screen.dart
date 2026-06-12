@@ -1,9 +1,9 @@
+import '/features/home/view/RootScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled/features/auth/view/forgot_password_screen.dart';
-import 'package:untitled/features/auth/view/otp_screen.dart';
-import 'package:untitled/features/home/view/HomeScreen.dart';
+import '/features/auth/view/forgot_password_screen.dart';
+import '/features/auth/view/otp_screen.dart';
 import '../../../../core/widgets/login_background_painter.dart';
 import '../view_model/bloc/login_bloc.dart';
 
@@ -80,10 +80,11 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state is LoginSuccess) {
             if (Navigator.of(context).canPop()) Navigator.of(context).pop();
 
-Navigator.push(
+            Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );            await _saveRememberMeStatus();
+              MaterialPageRoute(builder: (context) => const RootScreen()),
+            );
+            await _saveRememberMeStatus();
             if (!context.mounted) return;
           }
         },

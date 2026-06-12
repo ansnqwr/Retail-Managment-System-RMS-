@@ -4,8 +4,8 @@ class UserRegistrationData {
   String? lastName;
   String? password;
   String? phone;
-  String? job;
-  String? birthdate;
+  // String? job;
+  // String? birthdate;
+  String? governorate;
   String? city;
-  String? town;
 }

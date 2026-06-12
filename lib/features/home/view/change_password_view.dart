@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/view/forgot_password_screen.dart';
-import 'package:untitled/features/auth/view/password_changed_screen.dart';
-import 'package:untitled/features/auth/view_model/bloc/login_bloc.dart';
-import 'package:untitled/features/home/Model/profile_repository.dart';
-import 'package:untitled/features/home/view%20model/profile_bloc.dart';
-import 'package:untitled/features/home/view/profile_view.dart';
+import '/features/auth/view/forgot_password_screen.dart';
+import '/features/auth/view/password_changed_screen.dart';
+import '/features/auth/view_model/bloc/login_bloc.dart';
+import '/features/home/Model/profile_repository.dart';
+import '/features/home/view%20model/profile_bloc.dart';
+import '/features/home/view/profile_view.dart';
 
 class ChangePasswordView extends StatefulWidget {
   const ChangePasswordView({super.key});
@@ -109,7 +109,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                                   child: const ForgotPasswordScreen(),
                                 ),
                           ),
-                        );                      },
+                        );
+                      },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
                         minimumSize: Size.zero,
@@ -140,7 +141,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                                 ),
                               );
                             }
-Navigator.pop(context);
+                            Navigator.pop(context);
                             //    Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
@@ -153,8 +154,14 @@ Navigator.pop(context);
                             //           child: const ProfileView(),
                             //         ),
                             //   ),
-                            // ); 
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const PasswordChangedScreen()));
+                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => const PasswordChangedScreen(),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _primaryColor,

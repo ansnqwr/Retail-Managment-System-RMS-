@@ -1,23 +1,24 @@
 // signup_repository.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:untitled/features/auth/view/SignupScreen.dart';
+import '/features/auth/view/SignupScreen.dart';
+import '/features/auth/data/models/Repository/signin_repository.dart';
 import 'auth_local_data.dart';
 
 class SignupRepository {
-  final String _apiBaseUrl = 'http://192.168.1.106:8000/api';
-
   Future<void> signup(Map<String, dynamic> userData) async {
     try {
       final response = await http
           .post(
-            Uri.parse('$_apiBaseUrl/auth/signup'),
+            Uri.parse('$baseUrl/auth/signup'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(userData),
           )
           .timeout(const Duration(seconds: 15));
 
-      if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204) {
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 204) {
         final responseData = jsonDecode(response.body);
 
         final String accessToken =
@@ -45,10 +46,10 @@ class SignupRepository {
     }
   }
 
-  Future<List<LocationItem>> getCities() async {
+  Future<List<LocationItem>> getGovernorates() async {
     try {
       final response = await http
-          .get(Uri.parse('$_apiBaseUrl/locations/cities'))
+          .get(Uri.parse('$baseUrl/locations/cities'))
           .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
@@ -72,10 +73,10 @@ class SignupRepository {
     }
   }
 
-  Future<List<LocationItem>> getTowns(int cityId) async {
+  Future<List<LocationItem>> getCities(int governorateId) async {
     try {
       final response = await http
-          .get(Uri.parse('$_apiBaseUrl/locations/cities/$cityId/towns'))
+          .get(Uri.parse('$baseUrl/locations/cities/$governorateId/towns'))
           .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
@@ -103,7 +104,7 @@ class SignupRepository {
     final String? token = TokenManager().accessToken;
 
     final response = await http.get(
-      Uri.parse('$_apiBaseUrl/protected-route'),
+      Uri.parse('$baseUrl/protected-route'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

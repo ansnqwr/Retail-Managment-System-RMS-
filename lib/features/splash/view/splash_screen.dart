@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untitled/features/auth/view/WelcomeLogin.dart';
-import 'package:untitled/features/home/view/HomeScreen.dart';
-import 'package:untitled/features/onboarding/view/onboarding_screen.dart';
+import '/features/auth/view/WelcomeLogin.dart';
+import '/features/onboarding/view/onboarding_screen.dart';
 import '../view model/splash_bloc.dart';
+import '/features/home/view/RootScreen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -14,13 +14,13 @@ class SplashScreen extends StatelessWidget {
       body: BlocConsumer<SplashBloc, SplashState>(
         listener: (context, state) {
           if (state is SplashNavigateToOnboarding) {
-            if (!context.mounted) return; 
+            if (!context.mounted) return;
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => OnboardingScreen()),
             );
           } else if (state is SplashNavigateToHome) {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const HomeScreen()),
+              MaterialPageRoute(builder: (_) => const RootScreen()),
             );
           } else if (state is SplashNavigateToWelcome) {
             Navigator.of(context).pushReplacement(
