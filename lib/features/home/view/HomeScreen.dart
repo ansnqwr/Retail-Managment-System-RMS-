@@ -1,8 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:delni_rms/core/widgets/PageTitle.dart';
 import 'package:delni_rms/core/widgets/ProductCard.dart';
+import 'package:delni_rms/core/widgets/ProductSilverGrid.dart';
 import 'package:delni_rms/features/home/Model/AdModel.dart';
-import 'package:delni_rms/features/home/Model/ProductCardModel.dart';
+import 'package:delni_rms/features/pagination/Model/ProductCardModel.dart';
+import 'package:delni_rms/features/pagination/View/PaginationScreen.dart';
 
+import '../../../core/widgets/SearchBarWidget.dart';
 import '/features/categories/Model/CategoryItemModel.dart';
 import '/features/home/view/Settings.dart';
 
@@ -36,12 +40,48 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     List<CategoryItemModel> categories = [
-      CategoryItemModel(id: 1, title: 'All'),
-      CategoryItemModel(id: 2, title: 'Clothing'),
-      CategoryItemModel(id: 3, title: 'Electronics'),
-      CategoryItemModel(id: 4, title: 'Sports'),
-      CategoryItemModel(id: 5, title: 'Home'),
-      CategoryItemModel(id: 6, title: 'Jewelry'),
+      CategoryItemModel(
+        id: 1,
+        title: 'All',
+        subCategories: [],
+        hasSubCategories: false,
+        imageUrl: '',
+      ),
+      CategoryItemModel(
+        id: 2,
+        title: 'Clothing',
+        subCategories: [],
+        hasSubCategories: false,
+        imageUrl: '',
+      ),
+      CategoryItemModel(
+        id: 3,
+        title: 'Electronics',
+        subCategories: [],
+        hasSubCategories: false,
+        imageUrl: '',
+      ),
+      CategoryItemModel(
+        id: 4,
+        title: 'Sports',
+        subCategories: [],
+        hasSubCategories: false,
+        imageUrl: '',
+      ),
+      CategoryItemModel(
+        id: 5,
+        title: 'Home',
+        subCategories: [],
+        hasSubCategories: false,
+        imageUrl: '',
+      ),
+      CategoryItemModel(
+        id: 6,
+        title: 'Jewelry',
+        subCategories: [],
+        hasSubCategories: false,
+        imageUrl: '',
+      ),
     ];
 
     String businessType = "Trending";
@@ -118,11 +158,11 @@ class _HomeScreenState extends State<HomeScreen> {
         hasDiscount: false,
       ),
     ];
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
-          // Top area: greeting, search, categories, ads, horizontal sliders
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -133,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     children: [
                       const SizedBox(width: 10),
-                      _buildGreetingText('Hello, User!', primaryColor),
+                      PageTitle(title: 'Hello, User!', color: primaryColor),
                       const Spacer(),
                       _buildSettingsButton(context, primaryColor),
                       const SizedBox(width: 12),
@@ -144,7 +184,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const SizedBox(height: 30),
-                  _buildSearchBar(),
+                  Container(
+                    margin: EdgeInsets.only(left: 10, right: 80),
+                    child: SearchBarWidget(),
+                  ),
                   const SizedBox(height: 30),
                   SizedBox(
                     height: 70,
@@ -173,23 +216,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          _buildProductCardsGrid(products, businessType),
-          _productGridSliver(products),
+          _buildBusinessTypeGrid(products, businessType),
+          ProductSilverGrid(products: products),
 
           SliverToBoxAdapter(child: const SizedBox(height: 40)),
         ],
-      ),
-    );
-  }
-
-  Widget _buildGreetingText(String text, Color color) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontFamily: 'Cairo',
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
-        color: color,
       ),
     );
   }
@@ -264,34 +295,6 @@ class _HomeScreenState extends State<HomeScreen> {
           //  image: categories[index]['image']!,
         );
       },
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Container(
-      margin: EdgeInsets.only(left: 10, right: 80),
-      child: SearchBar(
-        hintText: 'Search for products and stores',
-        hintStyle: WidgetStateProperty.all(
-          TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            fontStyle: FontStyle.normal,
-          ),
-        ),
-        enabled: true,
-        keyboardType: TextInputType.name,
-        leading: Icon(Icons.search),
-        shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(width: 1, color: Colors.grey.shade500),
-          ),
-        ),
-        padding: WidgetStateProperty.all(EdgeInsets.only(left: 10, right: 10)),
-        backgroundColor: WidgetStateProperty.all(Colors.white),
-        elevation: WidgetStatePropertyAll(0),
-      ),
     );
   }
 
@@ -372,7 +375,20 @@ class _HomeScreenState extends State<HomeScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => PaginationScreen(
+                        isProduct: true,
+                        isStore: false,
+                        isSubCategory: false,
+                        paginationTitle: businessType,
+                      ),
+                ),
+              );
+            },
             child: Row(
               children: [
                 Text(
@@ -432,7 +448,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildProductCardsGrid(
+  Widget _buildBusinessTypeGrid(
     List<ProductCardModel> products,
     String businessType,
   ) {
@@ -455,32 +471,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 8),
         ]),
-      ),
-    );
-  }
-
-  Widget _productGridSliver(List<ProductCardModel> products) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      sliver: SliverGrid(
-        delegate: SliverChildBuilderDelegate((context, index) {
-          final product = products[index];
-          return ProductCard(
-            imageUrl: product.imageUrl,
-            title: product.title,
-            price: product.price,
-            isNew: product.isNew,
-            hasDiscount: product.hasDiscount,
-            width: double.infinity,
-            onTap: () {},
-          );
-        }, childCount: products.length),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 0.68,
-        ),
       ),
     );
   }

@@ -13,7 +13,6 @@ import '/features/splash/view/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   runApp(const DelniApp());
 }
 
