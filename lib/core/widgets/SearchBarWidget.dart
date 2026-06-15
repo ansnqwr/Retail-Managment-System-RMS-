@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 
+import '../../features/pagination/View/PaginationScreen.dart';
+
 class SearchBarWidget extends StatefulWidget {
+  final bool isFromHomePage;
   final String? prefillSearchText;
   final Function(String)? onSearch;
 
-  const SearchBarWidget({super.key, this.prefillSearchText, this.onSearch});
+  const SearchBarWidget({
+    super.key,
+    required this.isFromHomePage,
+    this.prefillSearchText,
+    this.onSearch,
+  });
 
   @override
   State<SearchBarWidget> createState() => _SearchBarWidgetState();
@@ -15,6 +23,14 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
   late List<String> _searchChips;
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
+
+  // post search chips
+
+  // [
+  // { 'chipText' : '' },
+  // { 'chipText' : '' },
+  // { 'chipText' : '' },
+  // ]
 
   @override
   void initState() {
@@ -154,7 +170,27 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                       ),
                       style: const TextStyle(fontSize: 16),
                       keyboardType: TextInputType.name,
-                      onSubmitted: (value) => _addChip(value),
+                      onSubmitted: (value) {
+                        widget.isFromHomePage == true
+                            ? {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => PaginationScreen(
+                                        isProduct: false,
+                                        isStore: false,
+                                        isSubCategory: true,
+                                        // hasSubCategories: sub.hasSubCategories,
+                                        hasSubCategories: true,
+                                        paginationTitle: value,
+                                      ),
+                                ),
+                              ),
+                              // _controller.text = '',
+                            }
+                            : _addChip(value);
+                      },
                     ),
                   ),
                   const SizedBox(width: 10),

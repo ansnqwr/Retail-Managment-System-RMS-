@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/ColorCircleWidget.dart';
+import '../../../core/widgets/DropDownListWidget.dart';
 
 class FilterDropdownWidget extends StatefulWidget {
   final List<String> categories;
   final Map<String, List<String>> subCategories;
   final List<String> brands;
+  final List<String> governorates;
+  final Map<String, List<String>> cities;
+
   final Function(Map<String, dynamic>) onApplyFilters;
 
   const FilterDropdownWidget({
@@ -12,6 +17,8 @@ class FilterDropdownWidget extends StatefulWidget {
     required this.subCategories,
     required this.brands,
     required this.onApplyFilters,
+    required this.governorates,
+    required this.cities,
   });
 
   @override
@@ -24,7 +31,16 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
   String? _selectedCategory;
   String? _selectedSubCategory;
   String? _selectedBrand;
+  String? _selectedGovernorate;
+  String? _selectedCity;
   String? _selectedColor;
+
+  // get filter colors
+  // [
+  //   {'name': 'Red', 'value': Colors.red},
+  //   {'name': 'Blue', 'value': Colors.blue},
+  //   {'name': 'Green', 'value': Colors.green},
+  // ]
 
   final List<Map<String, dynamic>> _colors = [
     {'name': 'Red', 'value': Colors.red},
@@ -37,6 +53,16 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
     {'name': 'Orange', 'value': Colors.orange},
   ];
 
+  // post apply filter
+  //   'priceRange': _priceRange,
+  //   'inStockOnly': _inStockOnly,
+  //   'category': _selectedCategory,
+  //   'subCategory': _selectedSubCategory,
+  //   'brand': _selectedBrand,
+  //   'color': _selectedColor,
+  //   'governorate' : _selectedGovernorate,
+  //   'city': _selectedCity
+
   void _applyFilters() {
     widget.onApplyFilters({
       'priceRange': _priceRange,
@@ -45,8 +71,12 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
       'subCategory': _selectedSubCategory,
       'brand': _selectedBrand,
       'color': _selectedColor,
+      'governorate': _selectedGovernorate,
+      'city': _selectedCity,
     });
   }
+
+  // post reset filters
 
   void _resetFilters() {
     setState(() {
@@ -56,6 +86,8 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
       _selectedSubCategory = null;
       _selectedBrand = null;
       _selectedColor = null;
+      _selectedGovernorate = null;
+      _selectedCity = null;
     });
     _applyFilters();
   }
@@ -70,8 +102,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Price Range Slider
-            _buildSectionTitle('Price Range'),
+            FilterWidgetHelpers.buildSectionTitle('Price Range'),
             RangeSlider(
               values: _priceRange,
               min: 0,
@@ -96,8 +127,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
             ),
             const SizedBox(height: 20),
 
-            // Availability
-            _buildSectionTitle('Availability'),
+            FilterWidgetHelpers.buildSectionTitle('Availability'),
             CheckboxListTile(
               title: const Text('In Stock Only'),
               value: _inStockOnly,
@@ -110,139 +140,157 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
             ),
             const SizedBox(height: 20),
 
-            // Category Dropdown
-            _buildSectionTitle('Category'),
-            DropdownButtonFormField<String>(
-              value: _selectedCategory,
-              hint: const Text('Select Category'),
-              isExpanded: true,
-              items:
-                  widget.categories.map((category) {
-                    return DropdownMenuItem(
-                      value: category,
-                      child: Text(category),
-                    );
-                  }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedCategory = value;
-                  _selectedSubCategory = null;
-                });
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: FilterWidgetHelpers.buildSectionTitle('Category'),
+                ),
+                const SizedBox(width: 12),
+
+                (_selectedCategory != null &&
+                        widget.subCategories.containsKey(_selectedCategory!))
+                    ? Expanded(
+                      child: FilterWidgetHelpers.buildSectionTitle(
+                        'Sub Category',
+                      ),
+                    )
+                    : Expanded(child: SizedBox()),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: DropDownListWidget(
+                    value: _selectedCategory,
+                    hint: 'Select Category',
+                    items: widget.categories,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedCategory = value;
+                        _selectedSubCategory = null;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                (_selectedCategory != null &&
+                        widget.subCategories.containsKey(_selectedCategory!))
+                    ? Expanded(
+                      child: DropDownListWidget(
+                        value: _selectedSubCategory,
+                        hint: 'Select Sub Category',
+                        items: widget.subCategories[_selectedCategory!]!,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedSubCategory = value;
+                          });
+                        },
+                      ),
+                    )
+                    : Expanded(child: const SizedBox()),
+              ],
             ),
             const SizedBox(height: 16),
 
-            // SubCategory Dropdown
-            if (_selectedCategory != null &&
-                widget.subCategories.containsKey(_selectedCategory!)) ...[
-              _buildSectionTitle('Sub Category'),
-              DropdownButtonFormField<String>(
-                value: _selectedSubCategory,
-                hint: const Text('Select Sub Category'),
-                isExpanded: true,
-                items:
-                    widget.subCategories[_selectedCategory!]!.map((sub) {
-                      return DropdownMenuItem(value: sub, child: Text(sub));
-                    }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedSubCategory = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: FilterWidgetHelpers.buildSectionTitle('Governorate'),
                 ),
-              ),
-              const SizedBox(height: 16),
-            ],
+                const SizedBox(width: 12),
 
-            // Brand Dropdown
-            _buildSectionTitle('Brand'),
-            DropdownButtonFormField<String>(
+                (_selectedGovernorate != null &&
+                        widget.cities.containsKey(_selectedGovernorate!))
+                    ? Expanded(
+                      child: FilterWidgetHelpers.buildSectionTitle('City'),
+                    )
+                    : Expanded(child: SizedBox()),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: DropDownListWidget(
+                    value: _selectedGovernorate,
+                    hint: 'Select Governorate',
+                    items: widget.governorates,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedGovernorate = value;
+                        _selectedCity = null;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                (_selectedGovernorate != null &&
+                        widget.cities.containsKey(_selectedGovernorate!))
+                    ? Expanded(
+                      child: DropDownListWidget(
+                        value: _selectedCity,
+                        hint: 'Select City',
+                        items: widget.cities[_selectedGovernorate!]!,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedCity = value;
+                          });
+                        },
+                      ),
+                    )
+                    : Expanded(child: const SizedBox()),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            FilterWidgetHelpers.buildSectionTitle('Brand'),
+            DropDownListWidget(
               value: _selectedBrand,
-              hint: const Text('Select Brand'),
-              isExpanded: true,
-              items:
-                  widget.brands.map((brand) {
-                    return DropdownMenuItem(value: brand, child: Text(brand));
-                  }).toList(),
+              hint: 'Select Brand',
+              items: widget.brands,
               onChanged: (value) {
                 setState(() {
                   _selectedBrand = value;
                 });
               },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-              ),
             ),
             const SizedBox(height: 20),
 
-            // Color Radio Buttons
-            _buildSectionTitle('Color'),
+            FilterWidgetHelpers.buildSectionTitle('Color'),
             Wrap(
               spacing: 8,
               runSpacing: 8,
               children:
                   _colors.map((color) {
                     final isSelected = _selectedColor == color['name'];
-                    return InkWell(
+                    return ColorCircleWidget(
+                      color: color,
+                      isSelected: isSelected,
                       onTap: () {
                         setState(() {
                           _selectedColor = color['name'];
                         });
                       },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: color['value'],
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color:
-                                isSelected
-                                    ? Colors.black
-                                    : Colors.grey.shade300,
-                            width: isSelected ? 3 : 1,
-                          ),
-                        ),
-                        child:
-                            isSelected
-                                ? Icon(
-                                  Icons.check,
-                                  color:
-                                      color['name'] == 'White' ||
-                                              color['name'] == 'Yellow'
-                                          ? Colors.black
-                                          : Colors.white,
-                                  size: 20,
-                                )
-                                : null,
-                      ),
                     );
                   }).toList(),
             ),
             const SizedBox(height: 30),
 
-            // Action Buttons
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
+                  child: FilterWidgetHelpers.buildActionButton(
                     onPressed: _resetFilters,
-                    child: const Text('Reset'),
+                    label: 'Reset',
+                    isOutlined: true,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: ElevatedButton(
+                  child: FilterWidgetHelpers.buildActionButton(
                     onPressed: _applyFilters,
-                    child: const Text('Apply'),
+                    label: 'Apply',
                   ),
                 ),
               ],
@@ -252,8 +300,10 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
       ),
     );
   }
+}
 
-  Widget _buildSectionTitle(String title) {
+class FilterWidgetHelpers {
+  static Widget buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
@@ -261,5 +311,16 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     );
+  }
+
+  static Widget buildActionButton({
+    required VoidCallback onPressed,
+    required String label,
+    bool isOutlined = false,
+  }) {
+    if (isOutlined) {
+      return OutlinedButton(onPressed: onPressed, child: Text(label));
+    }
+    return ElevatedButton(onPressed: onPressed, child: Text(label));
   }
 }

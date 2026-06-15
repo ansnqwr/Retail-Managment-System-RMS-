@@ -31,6 +31,7 @@ class _ProductSilverGridState extends State<ProductSilverGrid> {
             hasDiscount: product.hasDiscount,
             width: double.infinity,
             onTap: () {},
+            discountPercentage: product.discountPercentage,
           );
         }, childCount: products.length),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

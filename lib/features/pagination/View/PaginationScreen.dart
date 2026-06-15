@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import '../../../core/widgets/PageTitle.dart';
 import '../../../core/widgets/ProductSilverGrid.dart';
 import '../../../core/widgets/SearchBarWidget.dart';
+import '../../../core/widgets/StoreSilverGrid.dart';
 import '../../../core/widgets/SubCategoryCard.dart';
 import '../../../core/widgets/SubCategoryCircleWidget.dart';
 import '../../Filter/View/FilterDropdownWidget.dart';
 import '../../categories/Model/CategoryItemModel.dart';
 import '../Model/ProductCardModel.dart';
+import '../Model/StoreCardItem.dart';
 
 class PaginationScreen extends StatefulWidget {
   final bool isProduct;
@@ -31,6 +33,15 @@ class PaginationScreen extends StatefulWidget {
 
 class _PaginationScreenState extends State<PaginationScreen> {
   final primaryColor = const Color(0xFF6B2D5C);
+
+  // get sub categories (always no subs)
+  // [
+  //{ 'id': 1
+  // 'title' : 'electronics'
+  // 'subCategories' : []
+  // 'hasSubCategories' : false
+  // 'imageUrl' : ''},
+  //]
 
   List<CategoryItemModel> categoriesList = [
     CategoryItemModel(
@@ -77,76 +88,224 @@ class _PaginationScreenState extends State<PaginationScreen> {
     ),
   ];
 
+  // get pagination products (10 MAX)
+  // [
+  // { 'id': 1
+  // 'title' : 'Lenovo Loq'
+  // 'price' : 17.99
+  // 'isNew' : false
+  // 'hasDiscount' : true
+  // 'discountPercentage': 0,
+  // 'imageUrl' : ''},
+  //]
+
   List<ProductCardModel> products = [
     ProductCardModel(
+      id: 6,
       imageUrl: '',
       title: 'Lenovo 1R5IV10',
       price: 17.99,
       isNew: true,
       hasDiscount: true,
+      discountPercentage: 0,
     ),
     ProductCardModel(
+      id: 6,
       imageUrl: '',
       title: 'Lenovo 1R5IV11',
       price: 17.99,
       isNew: false,
       hasDiscount: false,
+      discountPercentage: 0,
     ),
     ProductCardModel(
+      id: 6,
       imageUrl: '',
       title: 'Lenovo 1R5IV12',
       price: 17.99,
       isNew: false,
       hasDiscount: false,
+      discountPercentage: 0,
     ),
     ProductCardModel(
+      id: 6,
       imageUrl: '',
       title: 'Lenovo 1R5IV13',
       price: 17.99,
       isNew: false,
       hasDiscount: false,
+      discountPercentage: 0,
     ),
     ProductCardModel(
+      id: 6,
       imageUrl: '',
       title: 'Lenovo 1R5IV14',
       price: 17.99,
       isNew: false,
       hasDiscount: false,
+      discountPercentage: 0,
     ),
     ProductCardModel(
+      id: 6,
       imageUrl: '',
       title: 'Lenovo 1R5IV15',
       price: 17.99,
       isNew: false,
       hasDiscount: false,
+      discountPercentage: 0,
     ),
     ProductCardModel(
+      id: 6,
       imageUrl: '',
       title: 'Lenovo 1R5IV16',
       price: 17.99,
       isNew: false,
       hasDiscount: false,
+      discountPercentage: 0,
     ),
     ProductCardModel(
+      id: 6,
       imageUrl: '',
       title: 'Lenovo 1R5IV17',
       price: 17.99,
       isNew: false,
       hasDiscount: false,
+      discountPercentage: 0,
     ),
     ProductCardModel(
+      id: 6,
       imageUrl: '',
       title: 'Lenovo 1R5IV18',
       price: 17.99,
       isNew: false,
       hasDiscount: false,
+      discountPercentage: 0,
     ),
     ProductCardModel(
+      id: 6,
       imageUrl: '',
       title: 'Lenovo 1R5IV19',
       price: 17.99,
       isNew: false,
       hasDiscount: false,
+      discountPercentage: 0,
+    ),
+  ];
+
+  // get business intelligence stores (10 MAX)
+  // [
+  // id: 6,
+  // imageUrl: '',
+  // title: 'Lenovo 1R5IV10',
+  // isNew: true,
+  // governorate: 'Damascus',
+  // city: 'Meedan',
+  // isVerified: true,
+  // isBrand: true,
+  //]
+
+  // we might use 1-2 of these for the products
+
+  List<StoreCardModel> stores = [
+    StoreCardModel(
+      id: 6,
+      imageUrl: '',
+      title: 'Lenovo 1R5IV10',
+      isNew: true,
+      governorate: 'Damascus',
+      city: 'Meedan',
+      isVerified: true,
+      isBrand: true,
+    ),
+    StoreCardModel(
+      id: 6,
+      imageUrl: '',
+      title: 'Lenovo 1R5IV11',
+      isNew: false,
+      governorate: 'Damascus',
+      city: 'Meedan',
+      isVerified: true,
+      isBrand: false,
+    ),
+    StoreCardModel(
+      id: 6,
+      imageUrl: '',
+      title: 'Lenovo 1R5IV12',
+      isNew: false,
+      governorate: 'Damascus',
+      city: 'Meedan',
+      isVerified: true,
+      isBrand: false,
+    ),
+    StoreCardModel(
+      id: 6,
+      imageUrl: '',
+      title: 'Lenovo 1R5IV13',
+      isNew: false,
+      governorate: 'Damascus',
+      city: 'Meedan',
+      isVerified: true,
+      isBrand: false,
+    ),
+    StoreCardModel(
+      id: 6,
+      imageUrl: '',
+      title: 'Lenovo 1R5IV14',
+      isNew: false,
+      governorate: 'Damascus',
+      city: 'Meedan',
+      isVerified: true,
+      isBrand: false,
+    ),
+    StoreCardModel(
+      id: 6,
+      imageUrl: '',
+      title: 'Lenovo 1R5IV15',
+      isNew: false,
+      governorate: 'Damascus',
+      city: 'Meedan',
+      isVerified: true,
+      isBrand: false,
+    ),
+    StoreCardModel(
+      id: 6,
+      imageUrl: '',
+      title: 'Lenovo 1R5IV16',
+      isNew: false,
+      governorate: 'Damascus',
+      city: 'Meedan',
+      isVerified: true,
+      isBrand: false,
+    ),
+    StoreCardModel(
+      id: 6,
+      imageUrl: '',
+      title: 'Lenovo 1R5IV17',
+      isNew: false,
+      governorate: 'Damascus',
+      city: 'Meedan',
+      isVerified: true,
+      isBrand: false,
+    ),
+    StoreCardModel(
+      id: 6,
+      imageUrl: '',
+      title: 'Lenovo 1R5IV18',
+      isNew: false,
+      governorate: 'Damascus',
+      city: 'Meedan',
+      isVerified: true,
+      isBrand: false,
+    ),
+    StoreCardModel(
+      id: 6,
+      imageUrl: '',
+      title: 'Lenovo 1R5IV19',
+      isNew: false,
+      governorate: 'Damascus',
+      city: 'Meedan',
+      isVerified: true,
+      isBrand: false,
     ),
   ];
 
@@ -182,6 +341,7 @@ class _PaginationScreenState extends State<PaginationScreen> {
                         Expanded(
                           flex: 10,
                           child: SearchBarWidget(
+                            isFromHomePage: false,
                             prefillSearchText:
                                 widget.isSubCategory
                                     ? widget.paginationTitle
@@ -254,6 +414,25 @@ class _PaginationScreenState extends State<PaginationScreen> {
                                                     'Wear',
                                                   ],
                                                 },
+                                                governorates: [
+                                                  'Damascus',
+                                                  'Aleppo',
+                                                  'Homs',
+                                                  'Hama',
+                                                  'Daraa',
+                                                ],
+                                                cities: {
+                                                  'Damascus': [
+                                                    'Jaramana',
+                                                    'Meedan',
+                                                    'Bab Touma',
+                                                  ],
+                                                  'Aleppo': [
+                                                    'Meedan',
+                                                    'Khaldieh',
+                                                    'Ashrafieh',
+                                                  ],
+                                                },
                                                 brands: [
                                                   'Nike',
                                                   'Adidas',
@@ -305,7 +484,9 @@ class _PaginationScreenState extends State<PaginationScreen> {
             ),
           ),
 
-          ProductSilverGrid(products: products),
+          widget.isProduct
+              ? ProductSilverGrid(products: products)
+              : StoreSilverGrid(stores: stores),
 
           SliverToBoxAdapter(child: const SizedBox(height: 40)),
         ],

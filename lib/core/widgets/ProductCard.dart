@@ -8,6 +8,7 @@ class ProductCard extends StatelessWidget {
   final bool hasDiscount;
   final VoidCallback? onTap;
   final double width;
+  final int discountPercentage;
 
   const ProductCard({
     super.key,
@@ -16,6 +17,7 @@ class ProductCard extends StatelessWidget {
     required this.price,
     required this.isNew,
     required this.hasDiscount,
+    required this.discountPercentage,
     this.onTap,
     this.width = 160,
   });
@@ -44,7 +46,7 @@ class ProductCard extends StatelessWidget {
                   Positioned(
                     top: 8,
                     right: 8,
-                    child: _badge('-%', Colors.red.shade700),
+                    child: _badge('$discountPercentage%', Colors.red.shade700),
                   ),
               ],
             ),

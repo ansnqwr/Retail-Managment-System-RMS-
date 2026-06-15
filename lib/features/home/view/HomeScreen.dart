@@ -2,8 +2,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:delni_rms/core/widgets/PageTitle.dart';
 import 'package:delni_rms/core/widgets/ProductCard.dart';
 import 'package:delni_rms/core/widgets/ProductSilverGrid.dart';
+import 'package:delni_rms/core/widgets/StoreCard.dart';
 import 'package:delni_rms/features/home/Model/AdModel.dart';
 import 'package:delni_rms/features/pagination/Model/ProductCardModel.dart';
+import 'package:delni_rms/features/pagination/Model/StoreCardItem.dart';
 import 'package:delni_rms/features/pagination/View/PaginationScreen.dart';
 
 import '../../../core/widgets/SearchBarWidget.dart';
@@ -32,12 +34,29 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final primaryColor = const Color(0xFF6B2D5C);
 
+    // get ads
+    //   [
+    //   AdModel(id: 1, url: '', businessType: ''),
+    //   AdModel(id: 1, url: '', businessType: ''),
+    //   AdModel(id: 1, url: '', businessType: ''),
+    //   AdModel(id: 1, url: '', businessType: ''),
+    // ]
+
     List<AdModel> imageURLs = [
-      AdModel(url: '', businessType: ''),
-      AdModel(url: '', businessType: ''),
-      AdModel(url: '', businessType: ''),
-      AdModel(url: '', businessType: ''),
+      AdModel(id: 1, url: '', businessType: ''),
+      AdModel(id: 1, url: '', businessType: ''),
+      AdModel(id: 1, url: '', businessType: ''),
+      AdModel(id: 1, url: '', businessType: ''),
     ];
+
+    // get categories (always no subs)
+    // [
+    // { 'id': 1
+    // 'title' : 'electronics'
+    // 'subCategories' : []
+    // 'hasSubCategories' : false
+    // 'imageUrl' : ''},
+    //]
 
     List<CategoryItemModel> categories = [
       CategoryItemModel(
@@ -86,76 +105,226 @@ class _HomeScreenState extends State<HomeScreen> {
 
     String businessType = "Trending";
 
+    // get business intelligence products (10 MAX)
+    // [
+    // { 'id': 1
+    // 'title' : 'Lenovo Loq'
+    // 'price' : 17.99
+    // 'isNew' : false
+    // 'hasDiscount' : true
+    // 'discountPercentage': 0,
+    // 'imageUrl' : ''},
+    //]
+
+    // we might use 5-6 of these for the products
+
     List<ProductCardModel> products = [
       ProductCardModel(
+        id: 6,
         imageUrl: '',
         title: 'Lenovo 1R5IV10',
         price: 17.99,
         isNew: true,
         hasDiscount: true,
+        discountPercentage: 0,
       ),
       ProductCardModel(
+        id: 6,
         imageUrl: '',
         title: 'Lenovo 1R5IV11',
         price: 17.99,
         isNew: false,
         hasDiscount: false,
+        discountPercentage: 0,
       ),
       ProductCardModel(
+        id: 6,
         imageUrl: '',
         title: 'Lenovo 1R5IV12',
         price: 17.99,
         isNew: false,
         hasDiscount: false,
+        discountPercentage: 0,
       ),
       ProductCardModel(
+        id: 6,
         imageUrl: '',
         title: 'Lenovo 1R5IV13',
         price: 17.99,
         isNew: false,
         hasDiscount: false,
+        discountPercentage: 0,
       ),
       ProductCardModel(
+        id: 6,
         imageUrl: '',
         title: 'Lenovo 1R5IV14',
         price: 17.99,
         isNew: false,
         hasDiscount: false,
+        discountPercentage: 0,
       ),
       ProductCardModel(
+        id: 6,
         imageUrl: '',
         title: 'Lenovo 1R5IV15',
         price: 17.99,
         isNew: false,
         hasDiscount: false,
+        discountPercentage: 0,
       ),
       ProductCardModel(
+        id: 6,
         imageUrl: '',
         title: 'Lenovo 1R5IV16',
         price: 17.99,
         isNew: false,
         hasDiscount: false,
+        discountPercentage: 0,
       ),
       ProductCardModel(
+        id: 6,
         imageUrl: '',
         title: 'Lenovo 1R5IV17',
         price: 17.99,
         isNew: false,
         hasDiscount: false,
+        discountPercentage: 0,
       ),
       ProductCardModel(
+        id: 6,
         imageUrl: '',
         title: 'Lenovo 1R5IV18',
         price: 17.99,
         isNew: false,
         hasDiscount: false,
+        discountPercentage: 0,
       ),
       ProductCardModel(
+        id: 6,
         imageUrl: '',
         title: 'Lenovo 1R5IV19',
         price: 17.99,
         isNew: false,
         hasDiscount: false,
+        discountPercentage: 0,
+      ),
+    ];
+
+    // get business intelligence stores (10 MAX)
+    // [
+    // id: 6,
+    // imageUrl: '',
+    // title: 'Lenovo 1R5IV10',
+    // isNew: true,
+    // governorate: 'Damascus',
+    // city: 'Meedan',
+    // isVerified: true,
+    // isBrand: true,
+    //]
+
+    // we might use 1-2 of these for the products
+
+    List<StoreCardModel> stores = [
+      StoreCardModel(
+        id: 6,
+        imageUrl: '',
+        title: 'Lenovo 1R5IV10',
+        isNew: true,
+        governorate: 'Damascus',
+        city: 'Meedan',
+        isVerified: true,
+        isBrand: true,
+      ),
+      StoreCardModel(
+        id: 6,
+        imageUrl: '',
+        title: 'Lenovo 1R5IV11',
+        isNew: false,
+        governorate: 'Damascus',
+        city: 'Meedan',
+        isVerified: true,
+        isBrand: false,
+      ),
+      StoreCardModel(
+        id: 6,
+        imageUrl: '',
+        title: 'Lenovo 1R5IV12',
+        isNew: false,
+        governorate: 'Damascus',
+        city: 'Meedan',
+        isVerified: true,
+        isBrand: false,
+      ),
+      StoreCardModel(
+        id: 6,
+        imageUrl: '',
+        title: 'Lenovo 1R5IV13',
+        isNew: false,
+        governorate: 'Damascus',
+        city: 'Meedan',
+        isVerified: true,
+        isBrand: false,
+      ),
+      StoreCardModel(
+        id: 6,
+        imageUrl: '',
+        title: 'Lenovo 1R5IV14',
+        isNew: false,
+        governorate: 'Damascus',
+        city: 'Meedan',
+        isVerified: true,
+        isBrand: false,
+      ),
+      StoreCardModel(
+        id: 6,
+        imageUrl: '',
+        title: 'Lenovo 1R5IV15',
+        isNew: false,
+        governorate: 'Damascus',
+        city: 'Meedan',
+        isVerified: true,
+        isBrand: false,
+      ),
+      StoreCardModel(
+        id: 6,
+        imageUrl: '',
+        title: 'Lenovo 1R5IV16',
+        isNew: false,
+        governorate: 'Damascus',
+        city: 'Meedan',
+        isVerified: true,
+        isBrand: false,
+      ),
+      StoreCardModel(
+        id: 6,
+        imageUrl: '',
+        title: 'Lenovo 1R5IV17',
+        isNew: false,
+        governorate: 'Damascus',
+        city: 'Meedan',
+        isVerified: true,
+        isBrand: false,
+      ),
+      StoreCardModel(
+        id: 6,
+        imageUrl: '',
+        title: 'Lenovo 1R5IV18',
+        isNew: false,
+        governorate: 'Damascus',
+        city: 'Meedan',
+        isVerified: true,
+        isBrand: false,
+      ),
+      StoreCardModel(
+        id: 6,
+        imageUrl: '',
+        title: 'Lenovo 1R5IV19',
+        isNew: false,
+        governorate: 'Damascus',
+        city: 'Meedan',
+        isVerified: true,
+        isBrand: false,
       ),
     ];
 
@@ -186,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 30),
                   Container(
                     margin: EdgeInsets.only(left: 10, right: 80),
-                    child: SearchBarWidget(),
+                    child: SearchBarWidget(isFromHomePage: true),
                   ),
                   const SizedBox(height: 30),
                   SizedBox(
@@ -203,12 +372,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 30),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: _buildProductCardsSlider(products, businessType),
+                    child: _buildProductCardsSlider(products, 'On Sale'),
                   ),
                   const SizedBox(height: 30),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: _buildProductCardsSlider(products, businessType),
+                    child: _buildProductCardsSlider(products, 'Most Bought'),
+                  ),
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: _buildProductCardsSlider(products, 'Newest'),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: _buildStoresCardsSlider(stores, 'Brands'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: _buildStoresCardsSlider(stores, 'Stores Nearby'),
                   ),
                   const SizedBox(height: 20),
                 ],
@@ -216,7 +399,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          _buildBusinessTypeGrid(products, businessType),
+          _buildBusinessTypeGrid('just For You'),
           ProductSilverGrid(products: products),
 
           SliverToBoxAdapter(child: const SizedBox(height: 40)),
@@ -439,6 +622,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   hasDiscount: product.hasDiscount,
                   width: 170,
                   onTap: () {},
+                  discountPercentage: product.discountPercentage,
                 ),
               );
             },
@@ -448,10 +632,94 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildBusinessTypeGrid(
-    List<ProductCardModel> products,
+  Widget _buildStoresCardsSlider(
+    List<StoreCardModel> stores,
     String businessType,
   ) {
+    final primaryColor = const Color(0xFF6B2D5C);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => PaginationScreen(
+                        isProduct: false,
+                        isStore: true,
+                        isSubCategory: false,
+                        paginationTitle: businessType,
+                      ),
+                ),
+              );
+            },
+            child: Row(
+              children: [
+                Text(
+                  businessType,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: primaryColor,
+                  ),
+                  textAlign: TextAlign.start,
+                ),
+
+                const Spacer(),
+                Text(
+                  "See all",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: primaryColor,
+                  ),
+                ),
+                SizedBox(width: 10),
+                IconCircleWidget(
+                  icon: Icons.arrow_forward,
+                  color: primaryColor,
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 230,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            itemCount: stores.length,
+            itemBuilder: (context, index) {
+              final store = stores[index];
+              return Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: StoreCard(
+                  imageUrl: store.imageUrl,
+                  title: store.title,
+                  isNew: store.isNew,
+                  width: 170,
+                  onTap: () {},
+                  governorate: store.governorate,
+                  city: store.city,
+                  isVerified: store.isVerified,
+                  isBrand: store.isBrand,
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBusinessTypeGrid(String businessType) {
     final primaryColor = const Color(0xFF6B2D5C);
 
     return SliverPadding(

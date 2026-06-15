@@ -16,6 +16,15 @@ class Categories extends StatefulWidget {
 class _CategoriesState extends State<Categories> {
   int? _expandedCategoryId;
 
+  // get categories and their subs
+  // [
+  //{ 'id': 1
+  // 'title' : 'electronics'
+  // 'subCategories' : []
+  // 'hasSubCategories' : false
+  // 'imageUrl' : ''},
+  //]
+
   List<CategoryItemModel> categoriesList = [
     CategoryItemModel(
       id: 1,
