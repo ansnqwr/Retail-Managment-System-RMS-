@@ -35,9 +35,9 @@ class _ProductSilverGridState extends State<ProductSilverGrid> {
         }, childCount: products.length),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          mainAxisSpacing: 12,
+          mainAxisSpacing: 0,
           crossAxisSpacing: 12,
-          childAspectRatio: 0.68,
+          childAspectRatio: 0.75,
         ),
       ),
     );

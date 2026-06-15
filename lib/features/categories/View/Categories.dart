@@ -196,6 +196,8 @@ class _CategoriesState extends State<Categories> {
                         isProduct: false,
                         isStore: false,
                         isSubCategory: true,
+                        // hasSubCategories: sub.hasSubCategories,
+                        hasSubCategories: true,
                         paginationTitle: "$categoryTitle / ${sub.title}",
                       ),
                 ),
