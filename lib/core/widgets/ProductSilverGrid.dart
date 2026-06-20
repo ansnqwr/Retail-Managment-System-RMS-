@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../features/pagination/Model/ProductCardModel.dart';
+import '../../features/home/Model/ProductCardModel.dart';
 import 'ProductCard.dart';
 
 class ProductSilverGrid extends StatefulWidget {

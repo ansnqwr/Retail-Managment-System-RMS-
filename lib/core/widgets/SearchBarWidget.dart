@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-
 import '../../features/pagination/View/PaginationScreen.dart';
 
 class SearchBarWidget extends StatefulWidget {
   final bool isFromHomePage;
   final String? prefillSearchText;
   final Function(String)? onSearch;
+  final VoidCallback? onChipRemoved;
 
   const SearchBarWidget({
     super.key,
     required this.isFromHomePage,
     this.prefillSearchText,
     this.onSearch,
+    this.onChipRemoved,
   });
 
   @override
@@ -23,14 +24,6 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
   late List<String> _searchChips;
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
-
-  // post search chips
-
-  // [
-  // { 'chipText' : '' },
-  // { 'chipText' : '' },
-  // { 'chipText' : '' },
-  // ]
 
   @override
   void initState() {
@@ -61,6 +54,9 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
     setState(() {
       _searchChips.removeAt(index);
     });
+    if (widget.onChipRemoved != null) {
+      widget.onChipRemoved!();
+    }
   }
 
   void _addChip(String text) {
@@ -150,6 +146,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                       ),
                     );
                   }),
+                  // Text input
                   SizedBox(
                     width: 180,
                     child: TextField(
@@ -171,25 +168,23 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                       style: const TextStyle(fontSize: 16),
                       keyboardType: TextInputType.name,
                       onSubmitted: (value) {
-                        widget.isFromHomePage == true
-                            ? {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => PaginationScreen(
-                                        isProduct: false,
-                                        isStore: false,
-                                        isSubCategory: true,
-                                        // hasSubCategories: sub.hasSubCategories,
-                                        hasSubCategories: true,
-                                        paginationTitle: value,
-                                      ),
-                                ),
-                              ),
-                              // _controller.text = '',
-                            }
-                            : _addChip(value);
+                        if (widget.isFromHomePage) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => PaginationScreen(
+                                    isProduct: false,
+                                    isStore: false,
+                                    isSubCategory: true,
+                                    hasSubCategories: true,
+                                    paginationTitle: value,
+                                  ),
+                            ),
+                          );
+                        } else {
+                          _addChip(value);
+                        }
                       },
                     ),
                   ),

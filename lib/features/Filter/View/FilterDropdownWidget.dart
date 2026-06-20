@@ -3,8 +3,10 @@ import '../../../core/widgets/ColorCircleWidget.dart';
 import '../../../core/widgets/DropDownListWidget.dart';
 
 class FilterDropdownWidget extends StatefulWidget {
+  final bool isStore;
+  final bool isSubCategory;
   final List<String> categories;
-  final Map<String, List<String>> subCategories;
+  final Map<String, List<String>> subcategories;
   final List<String> brands;
   final List<String> governorates;
   final Map<String, List<String>> cities;
@@ -14,11 +16,13 @@ class FilterDropdownWidget extends StatefulWidget {
   const FilterDropdownWidget({
     super.key,
     required this.categories,
-    required this.subCategories,
+    required this.subcategories,
     required this.brands,
     required this.onApplyFilters,
     required this.governorates,
     required this.cities,
+    required this.isStore,
+    required this.isSubCategory,
   });
 
   @override
@@ -26,6 +30,12 @@ class FilterDropdownWidget extends StatefulWidget {
 }
 
 class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
+  // int minPrice
+  // int maxPrice
+  // List<Map<String,dynamic>> brands [{'title':'Adidas','id':1},{'title':'Puma','id':2}]
+  // List<Map<String,dynamic>> colors [{'name':'red','id':1},{'name':'blue','id':2}]
+  // List<Map<String,dynamic>> categories [{ 'id': 1,'title' : 'electronics','hasSubCategories' : true,'subcategories' : [{ 'id': 11,'title' : 'electronics','subcategories' : [],'hasSubCategories' : false},] },]
+  // List<Map<String,dynamic>> governorates [{ 'id': 1,'title' : 'Homs','cities' : [{ 'id': 11,'title' : 'Hamidieh'}] },]
   RangeValues _priceRange = const RangeValues(0, 1000);
   bool _inStockOnly = false;
   String? _selectedCategory;
@@ -102,96 +112,117 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            FilterWidgetHelpers.buildSectionTitle('Price Range'),
-            RangeSlider(
-              values: _priceRange,
-              min: 0,
-              max: 1000,
-              divisions: 100,
-              labels: RangeLabels(
-                '\$${_priceRange.start.toStringAsFixed(0)}',
-                '\$${_priceRange.end.toStringAsFixed(0)}',
-              ),
-              onChanged: (values) {
-                setState(() {
-                  _priceRange = values;
-                });
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('\$${_priceRange.start.toStringAsFixed(0)}'),
-                Text('\$${_priceRange.end.toStringAsFixed(0)}'),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            FilterWidgetHelpers.buildSectionTitle('Availability'),
-            CheckboxListTile(
-              title: const Text('In Stock Only'),
-              value: _inStockOnly,
-              onChanged: (value) {
-                setState(() {
-                  _inStockOnly = value ?? false;
-                });
-              },
-              contentPadding: EdgeInsets.zero,
-            ),
-            const SizedBox(height: 20),
-
-            Row(
-              children: [
-                Expanded(
-                  child: FilterWidgetHelpers.buildSectionTitle('Category'),
-                ),
-                const SizedBox(width: 12),
-
-                (_selectedCategory != null &&
-                        widget.subCategories.containsKey(_selectedCategory!))
-                    ? Expanded(
-                      child: FilterWidgetHelpers.buildSectionTitle(
-                        'Sub Category',
+            widget.isStore == false
+                ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FilterWidgetHelpers.buildSectionTitle('Price Range'),
+                    RangeSlider(
+                      values: _priceRange,
+                      min: 0,
+                      max: 1000,
+                      divisions: 100,
+                      labels: RangeLabels(
+                        '\$${_priceRange.start.toStringAsFixed(0)}',
+                        '\$${_priceRange.end.toStringAsFixed(0)}',
                       ),
-                    )
-                    : Expanded(child: SizedBox()),
-              ],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: DropDownListWidget(
-                    value: _selectedCategory,
-                    hint: 'Select Category',
-                    items: widget.categories,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedCategory = value;
-                        _selectedSubCategory = null;
-                      });
-                    },
-                  ),
-                ),
-                const SizedBox(width: 12),
-                (_selectedCategory != null &&
-                        widget.subCategories.containsKey(_selectedCategory!))
-                    ? Expanded(
-                      child: DropDownListWidget(
-                        value: _selectedSubCategory,
-                        hint: 'Select Sub Category',
-                        items: widget.subCategories[_selectedCategory!]!,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedSubCategory = value;
-                          });
-                        },
-                      ),
-                    )
-                    : Expanded(child: const SizedBox()),
-              ],
-            ),
-            const SizedBox(height: 16),
+                      onChanged: (values) {
+                        setState(() {
+                          _priceRange = values;
+                        });
+                      },
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('\$${_priceRange.start.toStringAsFixed(0)}'),
+                        Text('\$${_priceRange.end.toStringAsFixed(0)}'),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    FilterWidgetHelpers.buildSectionTitle('Availability'),
+                    CheckboxListTile(
+                      title: const Text('In Stock Only'),
+                      value: _inStockOnly,
+                      onChanged: (value) {
+                        setState(() {
+                          _inStockOnly = value ?? false;
+                        });
+                      },
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                )
+                : SizedBox(),
+
+            widget.isSubCategory == false
+                ? Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: FilterWidgetHelpers.buildSectionTitle(
+                            'Category',
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+
+                        (_selectedCategory != null &&
+                                widget.subcategories.containsKey(
+                                  _selectedCategory!,
+                                ))
+                            ? Expanded(
+                              child: FilterWidgetHelpers.buildSectionTitle(
+                                'Sub Category',
+                              ),
+                            )
+                            : Expanded(child: SizedBox()),
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: DropDownListWidget(
+                            value: _selectedCategory,
+                            hint: 'Select Category',
+                            items: widget.categories,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedCategory = value;
+                                _selectedSubCategory = null;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        (_selectedCategory != null &&
+                                widget.subcategories.containsKey(
+                                  _selectedCategory!,
+                                ))
+                            ? Expanded(
+                              child: DropDownListWidget(
+                                value: _selectedSubCategory,
+                                hint: 'Select Sub Category',
+                                items:
+                                    widget.subcategories[_selectedCategory!]!,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedSubCategory = value;
+                                  });
+                                },
+                              ),
+                            )
+                            : Expanded(child: const SizedBox()),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                )
+                : SizedBox(),
 
             Row(
               children: [
@@ -257,25 +288,31 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
             ),
             const SizedBox(height: 20),
 
-            FilterWidgetHelpers.buildSectionTitle('Color'),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children:
-                  _colors.map((color) {
-                    final isSelected = _selectedColor == color['name'];
-                    return ColorCircleWidget(
-                      color: color,
-                      isSelected: isSelected,
-                      onTap: () {
-                        setState(() {
-                          _selectedColor = color['name'];
-                        });
-                      },
-                    );
-                  }).toList(),
-            ),
-            const SizedBox(height: 30),
+            widget.isStore == false
+                ? Column(
+                  children: [
+                    FilterWidgetHelpers.buildSectionTitle('Color'),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children:
+                          _colors.map((color) {
+                            final isSelected = _selectedColor == color['name'];
+                            return ColorCircleWidget(
+                              color: color,
+                              isSelected: isSelected,
+                              onTap: () {
+                                setState(() {
+                                  _selectedColor = color['name'];
+                                });
+                              },
+                            );
+                          }).toList(),
+                    ),
+                    const SizedBox(height: 30),
+                  ],
+                )
+                : SizedBox(),
 
             Row(
               children: [

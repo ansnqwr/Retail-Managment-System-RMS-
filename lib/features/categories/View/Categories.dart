@@ -1,183 +1,188 @@
-import 'package:delni_rms/features/categories/Model/CategoryItemModel.dart';
-import 'package:delni_rms/features/pagination/View/PaginationScreen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/widgets/CategoryCard.dart';
 import '../../../core/widgets/PageTitle.dart';
 import '../../../core/widgets/SubCategoryCard.dart';
+import '../../pagination/View/PaginationScreen.dart';
+import '../Model/CategoryItemModel.dart';
+import '../ViewModel/Categories_bloc.dart';
+import '../ViewModel/Categories_event.dart';
+import '../ViewModel/Categories_repository.dart';
+import '../ViewModel/Categories_state.dart';
 
-class Categories extends StatefulWidget {
+class Categories extends StatelessWidget {
   const Categories({super.key});
 
   @override
-  State<Categories> createState() => _CategoriesState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create:
+          (context) =>
+              CategoriesBloc(categoryRepository: CategoryRepository())
+                ..add(const CategoriesLoadEvent()),
+      child: const _CategoriesContent(),
+    );
+  }
 }
 
-class _CategoriesState extends State<Categories> {
-  int? _expandedCategoryId;
-
-  // get categories and their subs
-  // [
-  //{ 'id': 1
-  // 'title' : 'electronics'
-  // 'subCategories' : []
-  // 'hasSubCategories' : false
-  // 'imageUrl' : ''},
-  //]
-
-  List<CategoryItemModel> categoriesList = [
-    CategoryItemModel(
-      id: 1,
-      title: 'All',
-      subCategories: [],
-      hasSubCategories: false,
-      imageUrl: '',
-    ),
-    CategoryItemModel(
-      id: 2,
-      title: 'Clothing',
-      hasSubCategories: true,
-      imageUrl: '',
-      subCategories: [
-        CategoryItemModel(
-          id: 21,
-          title: 'Shoes',
-          subCategories: [],
-          hasSubCategories: false,
-          imageUrl: '',
-        ),
-        CategoryItemModel(
-          id: 22,
-          title: 'Hats',
-          subCategories: [],
-          hasSubCategories: false,
-          imageUrl: '',
-        ),
-        CategoryItemModel(
-          id: 23,
-          title: 'Pants',
-          subCategories: [],
-          hasSubCategories: false,
-          imageUrl: '',
-        ),
-        CategoryItemModel(
-          id: 24,
-          title: 'Shirts',
-          subCategories: [],
-          hasSubCategories: false,
-          imageUrl: '',
-        ),
-      ],
-    ),
-    CategoryItemModel(
-      id: 3,
-      title: 'Electronics',
-      subCategories: [],
-      hasSubCategories: false,
-      imageUrl: '',
-    ),
-    CategoryItemModel(
-      id: 4,
-      title: 'Sports',
-      subCategories: [],
-      hasSubCategories: false,
-      imageUrl: '',
-    ),
-    CategoryItemModel(
-      id: 5,
-      title: 'Home',
-      subCategories: [],
-      hasSubCategories: false,
-      imageUrl: '',
-    ),
-    CategoryItemModel(
-      id: 6,
-      title: 'Jewelry',
-      subCategories: [],
-      hasSubCategories: false,
-      imageUrl: '',
-    ),
-  ];
-
-  void _toggleCategoryExpansion(CategoryItemModel category) {
-    final hasSubs = (category.subCategories ?? []).isNotEmpty;
-    if (!hasSubs) {
-      return;
-    }
-    setState(() {
-      if (_expandedCategoryId == category.id) {
-        _expandedCategoryId = null;
-      } else {
-        _expandedCategoryId = category.id;
-      }
-    });
-  }
+class _CategoriesContent extends StatelessWidget {
+  const _CategoriesContent();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 18,
-                  ),
-                  child: Row(
-                    children: const [
-                      SizedBox(width: 10),
-                      PageTitle(title: "Categories", color: Color(0xFF6B2D5C)),
-                      Spacer(),
-                    ],
-                  ),
+      body: BlocConsumer<CategoriesBloc, CategoriesState>(
+        listener: (context, state) {
+          if (state is CategoriesErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+                action: SnackBarAction(
+                  label: 'Retry',
+                  onPressed: () {
+                    context.read<CategoriesBloc>().add(
+                      const CategoriesRefreshRequested(),
+                    );
+                  },
                 ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-          _buildCategoriesSliverList(),
-          const SliverToBoxAdapter(child: SizedBox(height: 40)),
-        ],
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is CategoriesInitialState ||
+              state is CategoriesLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is CategoriesErrorState) {
+            return _buildErrorState(context, state.message);
+          }
+
+          if (state is CategoriesLoadedState) {
+            return _buildLoadedContent(context, state);
+          }
+
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
 
-  Widget _buildCategoriesSliverList() {
+  Widget _buildErrorState(BuildContext context, String message) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.grey),
+            const SizedBox(height: 16),
+            const Text(
+              'Something went wrong',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF6B2D5C),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () {
+                context.read<CategoriesBloc>().add(
+                  const CategoriesRefreshRequested(),
+                );
+              },
+              icon: const Icon(Icons.refresh),
+              label: const Text('Try Again'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6B2D5C),
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadedContent(
+    BuildContext context,
+    CategoriesLoadedState state,
+  ) {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 18),
+                child: Row(
+                  children: [
+                    SizedBox(width: 10),
+                    PageTitle(title: "Categories", color: Color(0xFF6B2D5C)),
+                    Spacer(),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+        _buildCategoriesSliverList(state),
+        const SliverToBoxAdapter(child: SizedBox(height: 40)),
+      ],
+    );
+  }
+
+  Widget _buildCategoriesSliverList(CategoriesLoadedState state) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
-          final category = categoriesList[index];
-          final isExpanded = _expandedCategoryId == category.id;
+          final category = state.categoriesList[index];
+          final isExpanded = state.expandedCategoryId == category.id;
           final subCategories = category.subCategories ?? [];
 
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               CategoryCard(
-                imageUrl: category.imageUrl ?? '',
-                title: category.title ?? '',
+                imageUrl: category.imageUrl,
+                title: category.title,
                 isExpanded: isExpanded,
                 width: double.infinity,
-                onTap: () => _toggleCategoryExpansion(category),
+                onTap: () {
+                  context.read<CategoriesBloc>().add(
+                    CategoriesCategoryTapped(
+                      categoryIndex: index,
+                      categoryId: category.id,
+                    ),
+                  );
+                },
               ),
               if (isExpanded && subCategories.isNotEmpty)
-                _buildSubCategoriesGrid(subCategories, category.title),
+                _buildSubCategoriesGrid(context, subCategories, category.title),
             ],
           );
-        }, childCount: categoriesList.length),
+        }, childCount: state.categoriesList.length),
       ),
     );
   }
 
   Widget _buildSubCategoriesGrid(
+    BuildContext context,
     List<CategoryItemModel> subCategories,
-    String categoryTitle,
+    String parentCategoryTitle,
   ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
@@ -194,9 +199,16 @@ class _CategoriesState extends State<Categories> {
         itemBuilder: (context, index) {
           final sub = subCategories[index];
           return SubCategoryCard(
-            title: sub.title ?? '',
+            title: sub.title,
             width: double.infinity,
             onTap: () {
+              context.read<CategoriesBloc>().add(
+                CategoriesSubcategoryTapped(
+                  subcategoryId: sub.id,
+                  pageTitle: "$parentCategoryTitle / ${sub.title}",
+                ),
+              );
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -205,9 +217,8 @@ class _CategoriesState extends State<Categories> {
                         isProduct: false,
                         isStore: false,
                         isSubCategory: true,
-                        // hasSubCategories: sub.hasSubCategories,
-                        hasSubCategories: true,
-                        paginationTitle: "$categoryTitle / ${sub.title}",
+                        subCategoryId: sub.id,
+                        paginationTitle: "$parentCategoryTitle / ${sub.title}",
                       ),
                 ),
               );

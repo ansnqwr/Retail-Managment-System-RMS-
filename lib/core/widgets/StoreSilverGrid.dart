@@ -1,6 +1,6 @@
-import 'package:delni_rms/core/widgets/StoreCard.dart';
+import '/core/widgets/StoreCard.dart';
 import 'package:flutter/material.dart';
-import '../../features/pagination/Model/StoreCardItem.dart';
+import '../../features/home/Model/StoreCardItem.dart';
 
 class StoreSilverGrid extends StatefulWidget {
   final List<StoreCardModel> stores;

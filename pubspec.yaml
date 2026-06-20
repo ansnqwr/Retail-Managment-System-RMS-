@@ -46,6 +46,8 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   firebase_core: ^4.10.0
   carousel_slider: ^5.1.2
+  icons_launcher: ^3.0.3
+  dio: ^5.9.2
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +59,22 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+
+icons_launcher:
+  image_path: "assets/images/logo.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
+    web:
+      enable: false
+    macos:
+      enable: false
+    windows:
+      enable: false
+    linux:
+      enable: false
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
