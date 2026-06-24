@@ -26,10 +26,14 @@ class CategoriesLoadedState extends CategoriesState {
 
   CategoriesLoadedState copyWith({
     int? expandedCategoryId,
+    bool clearExpanded = false,
     List<CategoryItemModel>? categoriesList,
   }) {
     return CategoriesLoadedState(
-      expandedCategoryId: expandedCategoryId ?? this.expandedCategoryId,
+      expandedCategoryId:
+          clearExpanded
+              ? null
+              : (expandedCategoryId ?? this.expandedCategoryId),
       categoriesList: categoriesList ?? this.categoriesList,
     );
   }

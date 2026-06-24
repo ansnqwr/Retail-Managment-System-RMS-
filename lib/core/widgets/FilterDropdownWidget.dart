@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../core/widgets/ColorCircleWidget.dart';
-import '../../../core/widgets/DropDownListWidget.dart';
+import 'ColorCircleWidget.dart';
+import 'DropDownListWidget.dart';
+import '../../features/pagination/Model/FiltersModel.dart';
 
 class FilterDropdownWidget extends StatefulWidget {
   final bool isStore;
@@ -10,6 +11,8 @@ class FilterDropdownWidget extends StatefulWidget {
   final List<String> brands;
   final List<String> governorates;
   final Map<String, List<String>> cities;
+  final List<ColorOption> colors;
+  final Map<String, dynamic>? initialFilters;
 
   final Function(Map<String, dynamic>) onApplyFilters;
 
@@ -23,6 +26,8 @@ class FilterDropdownWidget extends StatefulWidget {
     required this.cities,
     required this.isStore,
     required this.isSubCategory,
+    required this.colors,
+    this.initialFilters,
   });
 
   @override
@@ -30,48 +35,39 @@ class FilterDropdownWidget extends StatefulWidget {
 }
 
 class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
-  // int minPrice
-  // int maxPrice
-  // List<Map<String,dynamic>> brands [{'title':'Adidas','id':1},{'title':'Puma','id':2}]
-  // List<Map<String,dynamic>> colors [{'name':'red','id':1},{'name':'blue','id':2}]
-  // List<Map<String,dynamic>> categories [{ 'id': 1,'title' : 'electronics','hasSubCategories' : true,'subcategories' : [{ 'id': 11,'title' : 'electronics','subcategories' : [],'hasSubCategories' : false},] },]
-  // List<Map<String,dynamic>> governorates [{ 'id': 1,'title' : 'Homs','cities' : [{ 'id': 11,'title' : 'Hamidieh'}] },]
-  RangeValues _priceRange = const RangeValues(0, 1000);
-  bool _inStockOnly = false;
-  String? _selectedCategory;
-  String? _selectedSubCategory;
-  String? _selectedBrand;
-  String? _selectedGovernorate;
-  String? _selectedCity;
-  String? _selectedColor;
+  late RangeValues _priceRange;
+  late bool _inStockOnly;
+  late String? _selectedCategory;
+  late String? _selectedSubCategory;
+  late String? _selectedBrand;
+  late String? _selectedGovernorate;
+  late String? _selectedCity;
+  late String? _selectedColor;
 
-  // get filter colors
-  // [
-  //   {'name': 'Red', 'value': Colors.red},
-  //   {'name': 'Blue', 'value': Colors.blue},
-  //   {'name': 'Green', 'value': Colors.green},
-  // ]
+  @override
+  void initState() {
+    super.initState();
+    _initializeFromFilters();
+  }
 
-  final List<Map<String, dynamic>> _colors = [
-    {'name': 'Red', 'value': Colors.red},
-    {'name': 'Blue', 'value': Colors.blue},
-    {'name': 'Green', 'value': Colors.green},
-    {'name': 'Black', 'value': Colors.black},
-    {'name': 'White', 'value': Colors.white},
-    {'name': 'Yellow', 'value': Colors.yellow},
-    {'name': 'Purple', 'value': Colors.purple},
-    {'name': 'Orange', 'value': Colors.orange},
-  ];
+  void _initializeFromFilters() {
+    final filters = widget.initialFilters ?? {};
 
-  // post apply filter
-  //   'priceRange': _priceRange,
-  //   'inStockOnly': _inStockOnly,
-  //   'category': _selectedCategory,
-  //   'subCategory': _selectedSubCategory,
-  //   'brand': _selectedBrand,
-  //   'color': _selectedColor,
-  //   'governorate' : _selectedGovernorate,
-  //   'city': _selectedCity
+    final priceRange = filters['priceRange'];
+    if (priceRange != null && priceRange is RangeValues) {
+      _priceRange = priceRange;
+    } else {
+      _priceRange = const RangeValues(0, 1000);
+    }
+
+    _inStockOnly = filters['inStockOnly'] == true;
+    _selectedCategory = filters['category'];
+    _selectedSubCategory = filters['subCategory'];
+    _selectedBrand = filters['brand'];
+    _selectedGovernorate = filters['governorate'];
+    _selectedCity = filters['city'];
+    _selectedColor = filters['color'];
+  }
 
   void _applyFilters() {
     widget.onApplyFilters({
@@ -85,8 +81,6 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
       'city': _selectedCity,
     });
   }
-
-  // post reset filters
 
   void _resetFilters() {
     setState(() {
@@ -156,7 +150,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                     const SizedBox(height: 20),
                   ],
                 )
-                : SizedBox(),
+                : const SizedBox(),
 
             widget.isSubCategory == false
                 ? Column(
@@ -179,7 +173,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                                 'Sub Category',
                               ),
                             )
-                            : Expanded(child: SizedBox()),
+                            : const Expanded(child: SizedBox()),
                       ],
                     ),
                     Row(
@@ -216,13 +210,13 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                                 },
                               ),
                             )
-                            : Expanded(child: const SizedBox()),
+                            : const Expanded(child: SizedBox()),
                       ],
                     ),
                     const SizedBox(height: 16),
                   ],
                 )
-                : SizedBox(),
+                : const SizedBox(),
 
             Row(
               children: [
@@ -236,7 +230,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                     ? Expanded(
                       child: FilterWidgetHelpers.buildSectionTitle('City'),
                     )
-                    : Expanded(child: SizedBox()),
+                    : const Expanded(child: SizedBox()),
               ],
             ),
             Row(
@@ -270,7 +264,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                         },
                       ),
                     )
-                    : Expanded(child: const SizedBox()),
+                    : const Expanded(child: SizedBox()),
               ],
             ),
             const SizedBox(height: 16),
@@ -296,14 +290,15 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                       spacing: 8,
                       runSpacing: 8,
                       children:
-                          _colors.map((color) {
-                            final isSelected = _selectedColor == color['name'];
-                            return ColorCircleWidget(
-                              color: color,
+                          widget.colors.map((colorOption) {
+                            final isSelected =
+                                _selectedColor == colorOption.name;
+                            return _ColorCircleFromBackend(
+                              colorOption: colorOption,
                               isSelected: isSelected,
                               onTap: () {
                                 setState(() {
-                                  _selectedColor = color['name'];
+                                  _selectedColor = colorOption.name;
                                 });
                               },
                             );
@@ -312,7 +307,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                     const SizedBox(height: 30),
                   ],
                 )
-                : SizedBox(),
+                : const SizedBox(),
 
             Row(
               children: [
@@ -334,6 +329,52 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ColorCircleFromBackend extends StatelessWidget {
+  final ColorOption colorOption;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _ColorCircleFromBackend({
+    required this.colorOption,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: colorOption.colorValue,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isSelected ? const Color(0xFF6B2D5C) : Colors.grey.shade300,
+            width: isSelected ? 3 : 1,
+          ),
+          boxShadow:
+              isSelected
+                  ? [
+                    BoxShadow(
+                      color: const Color(0xFF6B2D5C).withOpacity(0.3),
+                      blurRadius: 6,
+                      spreadRadius: 1,
+                    ),
+                  ]
+                  : null,
+        ),
+        child:
+            isSelected
+                ? const Icon(Icons.check, size: 18, color: Colors.white)
+                : null,
       ),
     );
   }

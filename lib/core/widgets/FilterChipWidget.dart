@@ -1,14 +1,15 @@
-// lib/core/widgets/FilterChipWidget.dart
 import 'package:flutter/material.dart';
 
 class FilterChipsWidget extends StatelessWidget {
   final Map<String, dynamic> filters;
-  final Function(Map<String, dynamic>) onRemoveFilter;
+  final Function(String) onRemoveFilter;
+  final VoidCallback? onClearAllFilters;
 
   const FilterChipsWidget({
     super.key,
     required this.filters,
     required this.onRemoveFilter,
+    this.onClearAllFilters,
   });
 
   @override
@@ -19,27 +20,70 @@ class FilterChipsWidget extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Wrap(
-        spacing: 5,
-        runSpacing: 0,
-        children:
-            chips.map((chip) {
-              return Chip(
-                label: Text(chip['label']),
-                deleteIcon: const Icon(Icons.close, size: 14),
-                onDeleted: () {
-                  final updatedFilters = Map<String, dynamic>.from(filters);
-                  updatedFilters.remove(chip['key']);
-                  onRemoveFilter(updatedFilters);
-                },
-                backgroundColor: Colors.grey.shade200,
-                side: BorderSide(color: Colors.grey.shade400),
-                labelStyle: const TextStyle(
-                  color: Color(0xFF6B2D5C),
-                  fontSize: 10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (onClearAllFilters != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: InkWell(
+                onTap: onClearAllFilters,
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF6B2D5C).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color(0xFF6B2D5C).withOpacity(0.3),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.filter_list_off,
+                        size: 14,
+                        color: const Color(0xFF6B2D5C),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Clear All',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF6B2D5C),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              );
-            }).toList(),
+              ),
+            ),
+          Wrap(
+            spacing: 5,
+            runSpacing: 0,
+            children:
+                chips.map((chip) {
+                  return Chip(
+                    label: Text(chip['label']),
+                    deleteIcon: const Icon(Icons.close, size: 14),
+                    onDeleted: () {
+                      onRemoveFilter(chip['key']);
+                    },
+                    backgroundColor: Colors.grey.shade200,
+                    side: BorderSide(color: Colors.grey.shade400),
+                    labelStyle: const TextStyle(
+                      color: Color(0xFF6B2D5C),
+                      fontSize: 10,
+                    ),
+                  );
+                }).toList(),
+          ),
+        ],
       ),
     );
   }

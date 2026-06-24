@@ -64,3 +64,31 @@ class HomeNotificationsTapped extends HomeEvent {
 class HomeSignUpTapped extends HomeEvent {
   const HomeSignUpTapped();
 }
+
+class HomeLoadMoreJustForYouRequested extends HomeEvent {
+  const HomeLoadMoreJustForYouRequested();
+}
+
+class HomeSearchSubmitted extends HomeEvent {
+  final String query;
+  final bool isSearchingProducts;
+
+  const HomeSearchSubmitted({
+    required this.query,
+    required this.isSearchingProducts,
+  });
+
+  @override
+  List<Object?> get props => [query, isSearchingProducts];
+}
+
+class HomeSearchToggleChanged extends HomeEvent {
+  final bool isSearchingProducts;
+  const HomeSearchToggleChanged({required this.isSearchingProducts});
+  @override
+  List<Object?> get props => [isSearchingProducts];
+}
+
+class HomeSearchCleared extends HomeEvent {
+  const HomeSearchCleared();
+}

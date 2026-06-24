@@ -14,6 +14,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeLoadRequested>(_onLoadRequested);
     on<HomeCategorySelected>(_onCategorySelected);
     on<HomeRefreshRequested>(_onRefreshRequested);
+    on<HomeLoadMoreJustForYouRequested>(_onLoadMoreJustForYouRequested);
+    on<HomeSearchSubmitted>(_onSearchSubmitted);
+    on<HomeSearchToggleChanged>(_onSearchToggleChanged);
+    on<HomeSearchCleared>(_onSearchCleared);
     on<HomeSectionSeeAllTapped>(_onSectionSeeAllTapped);
     on<HomeProductTapped>(_onProductTapped);
     on<HomeStoreTapped>(_onStoreTapped);
@@ -46,6 +50,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           brandStores: data.brandStores,
           nearbyStores: data.nearbyStores,
           justForYouProducts: data.justForYouProducts,
+          justForYouHasMoreData: data.justForYouProducts.length >= 10,
+          justForYouCurrentPage: 1,
+          isLoadingMoreJustForYou: false,
+          homeSearchQuery: null,
+          isSearchingProducts: true,
           isGuest: event.isGuest,
         ),
       );
@@ -65,32 +74,49 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final current = state as HomeLoaded;
 
     emit(current.copyWith(selectedCategoryIndex: event.categoryIndex));
-    if (event.categoryId == 1) {
-      try {
-        final products = await _homeRepository.fetchJustForYou();
-        emit(
-          current.copyWith(
-            selectedCategoryIndex: event.categoryIndex,
-            justForYouProducts: products,
-          ),
-        );
-      } catch (e) {
-        emit(current.copyWith(selectedCategoryIndex: event.categoryIndex));
-      }
-    } else {
-      try {
-        final products = await _homeRepository.fetchProductsByCategory(
-          event.categoryId,
+
+    try {
+      if (event.categoryId == 1) {
+        final products = await _homeRepository.fetchProducts(
+          businessType: 'Just For You',
+          searchQuery: current.homeSearchQuery,
+          filters: {},
+          subCategoryId: null,
+          page: 1,
+          limit: 10,
         );
         emit(
           current.copyWith(
             selectedCategoryIndex: event.categoryIndex,
             justForYouProducts: products,
+            justForYouCurrentPage: 1,
+            justForYouHasMoreData: products.length >= 10,
           ),
         );
-      } catch (e) {
-        emit(current.copyWith(selectedCategoryIndex: event.categoryIndex));
+      } else {
+        final products = await _homeRepository.fetchProducts(
+          businessType: 'Just For You',
+          searchQuery: current.homeSearchQuery,
+          filters: {'category': event.categoryId.toString()},
+          subCategoryId: null,
+          page: 1,
+          limit: 10,
+        );
+        emit(
+          current.copyWith(
+            selectedCategoryIndex: event.categoryIndex,
+            justForYouProducts: products,
+            justForYouCurrentPage: 1,
+            justForYouHasMoreData: products.length >= 10,
+          ),
+        );
       }
+    } on HomeRepositoryException catch (e) {
+      emit(current.copyWith(selectedCategoryIndex: event.categoryIndex));
+      emit(HomeError(e.message));
+      emit(current.copyWith(selectedCategoryIndex: event.categoryIndex));
+    } catch (e) {
+      emit(current.copyWith(selectedCategoryIndex: event.categoryIndex));
     }
   }
 
@@ -101,14 +127,181 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     add(HomeLoadRequested(_isGuest));
   }
 
+  Future<void> _onLoadMoreJustForYouRequested(
+    HomeLoadMoreJustForYouRequested event,
+    Emitter<HomeState> emit,
+  ) async {
+    if (state is! HomeLoaded) return;
+
+    final current = state as HomeLoaded;
+    if (!current.justForYouHasMoreData || current.isLoadingMoreJustForYou) {
+      return;
+    }
+
+    final nextPage = current.justForYouCurrentPage + 1;
+
+    emit(current.copyWith(isLoadingMoreJustForYou: true));
+
+    try {
+      Map<String, dynamic> filters = {};
+      if (current.selectedCategoryIndex > 0 && current.categories.isNotEmpty) {
+        final selectedCategory =
+            current.categories[current.selectedCategoryIndex];
+        filters['category'] = selectedCategory.id.toString();
+      }
+
+      final newProducts = await _homeRepository.fetchProducts(
+        businessType: 'Just For You',
+        searchQuery: current.homeSearchQuery,
+        filters: filters,
+        subCategoryId: null,
+        page: nextPage,
+        limit: 10,
+      );
+
+      final allProducts = [...current.justForYouProducts, ...newProducts];
+
+      emit(
+        current.copyWith(
+          justForYouProducts: allProducts,
+          justForYouCurrentPage: nextPage,
+          justForYouHasMoreData: newProducts.length >= 10,
+          isLoadingMoreJustForYou: false,
+        ),
+      );
+    } on HomeRepositoryException catch (e) {
+      emit(current.copyWith(isLoadingMoreJustForYou: false));
+      emit(HomeError(e.message));
+      emit(current.copyWith(isLoadingMoreJustForYou: false));
+    } catch (e) {
+      emit(current.copyWith(isLoadingMoreJustForYou: false));
+    }
+  }
+
+  Future<void> _onSearchSubmitted(
+    HomeSearchSubmitted event,
+    Emitter<HomeState> emit,
+  ) async {
+    if (state is! HomeLoaded) return;
+
+    final current = state as HomeLoaded;
+    final trimmedQuery = event.query.trim();
+
+    if (trimmedQuery.isEmpty) {
+      add(const HomeSearchCleared());
+      return;
+    }
+
+    emit(
+      current.copyWith(
+        homeSearchQuery: trimmedQuery,
+        isSearchingProducts: event.isSearchingProducts,
+      ),
+    );
+
+    try {
+      if (event.isSearchingProducts) {
+        final products = await _homeRepository.fetchProducts(
+          businessType: 'Just For You',
+          searchQuery: trimmedQuery,
+          filters: {},
+          subCategoryId: null,
+          page: 1,
+          limit: 10,
+        );
+        emit(
+          current.copyWith(
+            homeSearchQuery: trimmedQuery,
+            isSearchingProducts: true,
+            justForYouProducts: products,
+            justForYouCurrentPage: 1,
+            justForYouHasMoreData: products.length >= 10,
+          ),
+        );
+      } else {
+        final stores = await _homeRepository.fetchStores(
+          businessType: 'Stores Nearby',
+          searchQuery: trimmedQuery,
+          filters: {},
+          subCategoryId: null,
+          page: 1,
+          limit: 10,
+        );
+        emit(
+          current.copyWith(
+            homeSearchQuery: trimmedQuery,
+            isSearchingProducts: false,
+            justForYouProducts: [],
+            justForYouCurrentPage: 1,
+            justForYouHasMoreData: false,
+          ),
+        );
+      }
+    } on HomeRepositoryException catch (e) {
+      emit(HomeError(e.message));
+      emit(
+        current.copyWith(
+          homeSearchQuery: trimmedQuery,
+          isSearchingProducts: event.isSearchingProducts,
+        ),
+      );
+    } catch (e) {
+      emit(
+        current.copyWith(
+          homeSearchQuery: trimmedQuery,
+          isSearchingProducts: event.isSearchingProducts,
+        ),
+      );
+    }
+  }
+
+  void _onSearchToggleChanged(
+    HomeSearchToggleChanged event,
+    Emitter<HomeState> emit,
+  ) {
+    if (state is! HomeLoaded) return;
+    final current = state as HomeLoaded;
+    emit(current.copyWith(isSearchingProducts: event.isSearchingProducts));
+  }
+
+  Future<void> _onSearchCleared(
+    HomeSearchCleared event,
+    Emitter<HomeState> emit,
+  ) async {
+    if (state is! HomeLoaded) return;
+
+    final current = state as HomeLoaded;
+
+    try {
+      final products = await _homeRepository.fetchProducts(
+        businessType: 'Just For You',
+        searchQuery: null,
+        filters: {},
+        subCategoryId: null,
+        page: 1,
+        limit: 10,
+      );
+
+      emit(
+        current.copyWith(
+          homeSearchQuery: null,
+          isSearchingProducts: true,
+          justForYouProducts: products,
+          justForYouCurrentPage: 1,
+          justForYouHasMoreData: products.length >= 10,
+        ),
+      );
+    } catch (e) {
+      emit(current.copyWith(homeSearchQuery: null));
+    }
+  }
+
   void _onSectionSeeAllTapped(
     HomeSectionSeeAllTapped event,
     Emitter<HomeState> emit,
   ) {
     if (state is! HomeLoaded) return;
-
     final current = state as HomeLoaded;
-
     emit(current.copyWith(selectedSeeAllIndex: event.sectionId));
   }
 

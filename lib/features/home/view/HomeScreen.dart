@@ -11,7 +11,6 @@ import '../../../core/widgets/IconCircleWidget.dart';
 import '../../../core/widgets/BadgeIconWidget.dart';
 import '../../../core/widgets/OfflineFallbackWidget.dart';
 import '../../../core/widgets/CategorySliderItem.dart';
-
 import '../../../features/categories/Model/CategoryItemModel.dart';
 import '../../../features/home/Model/AdModel.dart';
 import '../Model/ProductCardModel.dart';
@@ -41,10 +40,44 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _HomeScreenContent extends StatelessWidget {
+class _HomeScreenContent extends StatefulWidget {
   final bool isGuest;
 
   const _HomeScreenContent({required this.isGuest});
+
+  @override
+  State<_HomeScreenContent> createState() => _HomeScreenContentState();
+}
+
+class _HomeScreenContentState extends State<_HomeScreenContent> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      context.read<HomeBloc>().add(const HomeLoadMoreJustForYouRequested());
+    }
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +161,6 @@ class _HomeScreenContent extends StatelessWidget {
         ),
       ),
     );
-    // OfflineFallbackWidget();
   }
 
   Widget _buildLoadedContent(
@@ -137,6 +169,7 @@ class _HomeScreenContent extends StatelessWidget {
     Color primaryColor,
   ) {
     return CustomScrollView(
+      controller: _scrollController,
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
@@ -152,18 +185,67 @@ class _HomeScreenContent extends StatelessWidget {
                     const Spacer(),
                     _buildSettingsButton(context, primaryColor),
                     const SizedBox(width: 12),
-                    isGuest == false
+                    widget.isGuest == false
                         ? _buildNotificationsButton(context, primaryColor)
                         : _buildGuestSignUpButton(context, primaryColor),
                     const SizedBox(width: 10),
                   ],
                 ),
                 const SizedBox(height: 30),
+
                 Container(
-                  margin: const EdgeInsets.only(left: 10, right: 80),
-                  child: SearchBarWidget(isFromHomePage: true),
+                  margin: const EdgeInsets.only(left: 10, right: 10),
+                  child: Column(
+                    children: [
+                      SearchBarWidget(
+                        isFromHomePage: true,
+                        onSearch: (query) {
+                          context.read<HomeBloc>().add(
+                            HomeSearchSubmitted(
+                              query: query,
+                              isSearchingProducts: state.isSearchingProducts,
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildToggleButton(
+                            label: 'Products',
+                            isSelected: state.isSearchingProducts,
+                            onTap: () {
+                              if (!state.isSearchingProducts) {
+                                context.read<HomeBloc>().add(
+                                  const HomeSearchToggleChanged(
+                                    isSearchingProducts: true,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          const SizedBox(width: 12),
+                          _buildToggleButton(
+                            label: 'Stores',
+                            isSelected: !state.isSearchingProducts,
+                            onTap: () {
+                              if (state.isSearchingProducts) {
+                                context.read<HomeBloc>().add(
+                                  const HomeSearchToggleChanged(
+                                    isSearchingProducts: false,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
+
                 SizedBox(
                   height: 70,
                   child: _buildCategoriesSlider(context, state),
@@ -223,8 +305,56 @@ class _HomeScreenContent extends StatelessWidget {
         ),
         _buildBusinessTypeGrid('Just For You', primaryColor),
         ProductSilverGrid(products: state.justForYouProducts),
+
+        if (state.isLoadingMoreJustForYou)
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          ),
+
+        if (!state.justForYouHasMoreData && !state.isLoadingMoreJustForYou)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Center(
+                child: Text(
+                  'No more items',
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                ),
+              ),
+            ),
+          ),
+
         const SliverToBoxAdapter(child: SizedBox(height: 40)),
       ],
+    );
+  }
+
+  Widget _buildToggleButton({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF6B2D5C) : Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: isSelected ? Colors.white : const Color(0xFF6B2D5C),
+          ),
+        ),
+      ),
     );
   }
 
@@ -337,6 +467,7 @@ class _HomeScreenContent extends StatelessWidget {
                 MaterialPageRoute(
                   builder:
                       (context) => PaginationScreen(
+                        businessType: businessType,
                         isProduct: true,
                         isStore: false,
                         isSubCategory: false,
@@ -429,6 +560,7 @@ class _HomeScreenContent extends StatelessWidget {
                 MaterialPageRoute(
                   builder:
                       (context) => PaginationScreen(
+                        businessType: businessType,
                         isProduct: false,
                         isStore: true,
                         isSubCategory: false,

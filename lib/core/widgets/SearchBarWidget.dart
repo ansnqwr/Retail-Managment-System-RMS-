@@ -4,15 +4,19 @@ import '../../features/pagination/View/PaginationScreen.dart';
 class SearchBarWidget extends StatefulWidget {
   final bool isFromHomePage;
   final String? prefillSearchText;
+  final List<String> searchChips;
   final Function(String)? onSearch;
-  final VoidCallback? onChipRemoved;
+  final Function(int)? onChipRemoved;
+  final VoidCallback? onClearAllChips;
 
   const SearchBarWidget({
     super.key,
     required this.isFromHomePage,
     this.prefillSearchText,
+    this.searchChips = const [],
     this.onSearch,
     this.onChipRemoved,
+    this.onClearAllChips,
   });
 
   @override
@@ -21,14 +25,12 @@ class SearchBarWidget extends StatefulWidget {
 
 class _SearchBarWidgetState extends State<SearchBarWidget> {
   late TextEditingController _controller;
-  late List<String> _searchChips;
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _searchChips = _parsePrefillText(widget.prefillSearchText);
     _controller = TextEditingController();
   }
 
@@ -36,36 +38,24 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
   void didUpdateWidget(covariant SearchBarWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.prefillSearchText != oldWidget.prefillSearchText) {
-      _searchChips = _parsePrefillText(widget.prefillSearchText);
       _controller.clear();
     }
   }
 
-  List<String> _parsePrefillText(String? text) {
-    if (text == null || text.trim().isEmpty) return [];
-    return text
-        .split('/')
-        .map((s) => s.trim())
-        .where((s) => s.isNotEmpty)
-        .toList();
+  void _removeChip(int index) {
+    if (widget.onChipRemoved != null) {
+      widget.onChipRemoved!(index);
+    }
   }
 
-  void _removeChip(int index) {
-    setState(() {
-      _searchChips.removeAt(index);
-    });
-    if (widget.onChipRemoved != null) {
-      widget.onChipRemoved!();
+  void _clearAllChips() {
+    if (widget.onClearAllChips != null) {
+      widget.onClearAllChips!();
     }
   }
 
   void _addChip(String text) {
     if (text.trim().isEmpty) return;
-    setState(() {
-      _searchChips.add(text.trim());
-      _controller.clear();
-    });
-    _scrollToEnd();
     if (widget.onSearch != null) {
       widget.onSearch!(text.trim());
     }
@@ -98,6 +88,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
 
   Widget _buildSearchBar() {
     final primaryColor = const Color(0xFF6B2D5C);
+    final hasChips = widget.searchChips.isNotEmpty;
 
     return Container(
       height: 48,
@@ -118,7 +109,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ..._searchChips.asMap().entries.map((entry) {
+                  ...widget.searchChips.asMap().entries.map((entry) {
                     final index = entry.key;
                     final chip = entry.value;
                     return Padding(
@@ -153,7 +144,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                       controller: _controller,
                       focusNode: _focusNode,
                       decoration: InputDecoration(
-                        hintText: _searchChips.isEmpty ? 'Search here' : '',
+                        hintText: hasChips ? '' : 'Search here',
                         hintStyle: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
@@ -184,6 +175,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                           );
                         } else {
                           _addChip(value);
+                          _controller.clear();
                         }
                       },
                     ),
@@ -193,6 +185,22 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
               ),
             ),
           ),
+          if (hasChips)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: InkWell(
+                onTap: _clearAllChips,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.close, size: 16, color: primaryColor),
+                ),
+              ),
+            ),
         ],
       ),
     );

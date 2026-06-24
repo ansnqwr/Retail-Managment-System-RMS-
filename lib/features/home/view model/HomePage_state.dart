@@ -30,6 +30,11 @@ class HomeLoaded extends HomeState {
   final List<StoreCardModel> brandStores;
   final List<StoreCardModel> nearbyStores;
   final List<ProductCardModel> justForYouProducts;
+  final bool justForYouHasMoreData;
+  final int justForYouCurrentPage;
+  final bool isLoadingMoreJustForYou;
+  final String? homeSearchQuery;
+  final bool isSearchingProducts;
   final bool isGuest;
 
   const HomeLoaded({
@@ -44,6 +49,11 @@ class HomeLoaded extends HomeState {
     required this.brandStores,
     required this.nearbyStores,
     required this.justForYouProducts,
+    this.justForYouHasMoreData = true,
+    this.justForYouCurrentPage = 1,
+    this.isLoadingMoreJustForYou = false,
+    this.homeSearchQuery,
+    this.isSearchingProducts = true,
     required this.isGuest,
   });
 
@@ -59,6 +69,11 @@ class HomeLoaded extends HomeState {
     List<StoreCardModel>? brandStores,
     List<StoreCardModel>? nearbyStores,
     List<ProductCardModel>? justForYouProducts,
+    bool? justForYouHasMoreData,
+    int? justForYouCurrentPage,
+    bool? isLoadingMoreJustForYou,
+    String? homeSearchQuery,
+    bool? isSearchingProducts,
     bool? isGuest,
   }) {
     return HomeLoaded(
@@ -74,6 +89,14 @@ class HomeLoaded extends HomeState {
       brandStores: brandStores ?? this.brandStores,
       nearbyStores: nearbyStores ?? this.nearbyStores,
       justForYouProducts: justForYouProducts ?? this.justForYouProducts,
+      justForYouHasMoreData:
+          justForYouHasMoreData ?? this.justForYouHasMoreData,
+      justForYouCurrentPage:
+          justForYouCurrentPage ?? this.justForYouCurrentPage,
+      isLoadingMoreJustForYou:
+          isLoadingMoreJustForYou ?? this.isLoadingMoreJustForYou,
+      homeSearchQuery: homeSearchQuery ?? this.homeSearchQuery,
+      isSearchingProducts: isSearchingProducts ?? this.isSearchingProducts,
       isGuest: isGuest ?? this.isGuest,
     );
   }
@@ -91,6 +114,11 @@ class HomeLoaded extends HomeState {
     brandStores,
     nearbyStores,
     justForYouProducts,
+    justForYouHasMoreData,
+    justForYouCurrentPage,
+    isLoadingMoreJustForYou,
+    homeSearchQuery,
+    isSearchingProducts,
     isGuest,
   ];
 }

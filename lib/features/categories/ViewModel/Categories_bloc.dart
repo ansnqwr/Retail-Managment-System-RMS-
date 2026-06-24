@@ -45,13 +45,14 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
     if (state is! CategoriesLoadedState) return;
 
     final current = state as CategoriesLoadedState;
+    final isSameCategory = current.expandedCategoryId == event.categoryId;
 
-    final newExpandedId =
-        (current.expandedCategoryId == event.categoryId)
-            ? null
-            : event.categoryId;
-
-    emit(current.copyWith(expandedCategoryId: newExpandedId));
+    emit(
+      current.copyWith(
+        expandedCategoryId: isSameCategory ? null : event.categoryId,
+        clearExpanded: isSameCategory,
+      ),
+    );
   }
 
   void _onSubcategoryTapped(
