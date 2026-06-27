@@ -24,96 +24,187 @@ class PaginationRepository {
       ),
     );
 
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          await TokenManager().loadTokens();
-          final token = TokenManager().accessToken;
-          if (token != null && token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
-          handler.next(options);
-        },
-      ),
-    );
+    // dio.interceptors.add(
+    //   InterceptorsWrapper(
+    //     onRequest: (options, handler) async {
+    //       await TokenManager().loadTokens();
+    //       final token = TokenManager().accessToken;
+    //       if (token != null && token.isNotEmpty) {
+    //         options.headers['Authorization'] = 'Bearer $token';
+    //       }
+    //       handler.next(options);
+    //     },
+    //   ),
+    // );
 
     return dio;
   }
 
   Future<List<ProductCardModel>> fetchProducts({
     required String? businessType,
-    required String? searchQuery,
+    required dynamic searchQuery,
     required Map<String, dynamic> filters,
     required int? subCategoryId,
     required int page,
     required int limit,
   }) async {
     try {
-      final queryParams = <String, dynamic>{
-        'page': page,
-        'limit': limit,
-        'businessType': businessType,
-        'search': searchQuery,
-        'category': filters['category'],
-        'subCategory': filters['subCategory'],
-        'governorate': filters['governorate'],
-        'city': filters['city'],
-        'brand': filters['brand'],
-        'color': filters['color'],
-        'inStock': filters['inStockOnly'],
-      };
+      final queryParams = <String, dynamic>{'page': page, 'limit': limit};
+
+      if (businessType != null) queryParams['businessType'] = businessType;
+      if (searchQuery != null) {
+        if (searchQuery is Map<String, dynamic>) {
+          queryParams['search'] = searchQuery;
+        } else if (searchQuery.isNotEmpty) {
+          queryParams['search'] = searchQuery;
+        }
+      }
+      if (subCategoryId != null) queryParams['subCategoryId'] = subCategoryId;
+
+      final categoryName = filters['category'] as String?;
+      final subCategoryName = filters['subCategory'] as String?;
+      final governorateName = filters['governorate'] as String?;
+      final cityName = filters['city'] as String?;
+      final brandName = filters['brand'] as String?;
+      final colorName = filters['color'] as String?;
+      final inStock = filters['inStockOnly'] as bool?;
+      final filtersModel = filters['filtersModel'] as FiltersModel?;
+
+      if (filtersModel != null) {
+        if (categoryName != null) {
+          final id = filtersModel.categoryIdByName(categoryName);
+          if (id != null) queryParams['category'] = id;
+        }
+        if (subCategoryName != null && categoryName != null) {
+          final id = filtersModel.subcategoryIdByName(
+            categoryName,
+            subCategoryName,
+          );
+          if (id != null) queryParams['subCategory'] = id;
+        }
+        if (governorateName != null) {
+          final id = filtersModel.governorateIdByName(governorateName);
+          if (id != null) queryParams['governorate'] = id;
+        }
+        if (cityName != null && governorateName != null) {
+          final id = filtersModel.cityIdByName(governorateName, cityName);
+          if (id != null) queryParams['city'] = id;
+        }
+        if (brandName != null) {
+          final id = filtersModel.brandIdByName(brandName);
+          if (id != null) {
+            queryParams['brand'] = brandName;
+          }
+        }
+      } else {
+        if (categoryName != null) queryParams['category'] = categoryName;
+        if (subCategoryName != null) {
+          queryParams['subCategory'] = subCategoryName;
+        }
+        if (governorateName != null) {
+          queryParams['governorate'] = governorateName;
+        }
+        if (cityName != null) queryParams['city'] = cityName;
+        if (brandName != null) queryParams['brand'] = brandName;
+      }
+
+      if (colorName != null) queryParams['color'] = colorName;
+      queryParams['inStock'] = (inStock ?? true) ? 1 : 0;
 
       final priceRange = filters['priceRange'];
       if (priceRange != null && priceRange is RangeValues) {
-        queryParams['minPrice'] = priceRange.start;
-        queryParams['maxPrice'] = priceRange.end;
-      } else {
-        queryParams['minPrice'] = null;
-        queryParams['maxPrice'] = null;
+        queryParams['minPrice'] = priceRange.start.toInt();
+        queryParams['maxPrice'] = priceRange.end.toInt();
       }
 
-      // queryParams.removeWhere((key, value) => value == null);
-
-      print(queryParams);
+      print('PRODUCT QUERY PARAMS: $queryParams');
 
       final response = await _dio.get(
-        '/products',
+        '/products/filtered',
         queryParameters: queryParams,
       );
       final List<dynamic> data = response.data;
       return data.map((json) => ProductCardModel.fromJson(json)).toList();
     } on DioException catch (e) {
-      throw PaginationRepositoryException(_handleDioError(e));
+      throw PaginationRepositoryException(handleDioError(e));
     }
   }
 
   Future<List<StoreCardModel>> fetchStores({
     required String? businessType,
-    required String? searchQuery,
+    required dynamic searchQuery,
     required Map<String, dynamic> filters,
     required int? subCategoryId,
     required int page,
     required int limit,
   }) async {
     try {
-      final queryParams = <String, dynamic>{
-        'page': page,
-        'limit': limit,
-        'businessType': businessType,
-        'search': searchQuery,
-        'category': filters['category'],
-        'subCategory': filters['subCategory'],
-        'governorate': filters['governorate'],
-        'city': filters['city'],
-        'brand': filters['brand'],
-      };
+      final queryParams = <String, dynamic>{'page': page, 'limit': limit};
 
-      final response = await _dio.get('/stores', queryParameters: queryParams);
+      if (businessType != null) queryParams['businessType'] = businessType;
+      if (searchQuery != null) {
+        if (searchQuery is Map<String, dynamic>) {
+          queryParams['search'] = searchQuery;
+        } else if (searchQuery.isNotEmpty) {
+          queryParams['search'] = searchQuery;
+        }
+      }
+      if (subCategoryId != null) queryParams['subCategoryId'] = subCategoryId;
+
+      final categoryName = filters['category'] as String?;
+      final subCategoryName = filters['subCategory'] as String?;
+      final governorateName = filters['governorate'] as String?;
+      final cityName = filters['city'] as String?;
+      final brandName = filters['brand'] as String?;
+      final filtersModel = filters['filtersModel'] as FiltersModel?;
+
+      if (filtersModel != null) {
+        if (categoryName != null) {
+          final id = filtersModel.categoryIdByName(categoryName);
+          if (id != null) queryParams['category'] = id;
+        }
+        if (subCategoryName != null && categoryName != null) {
+          final id = filtersModel.subcategoryIdByName(
+            categoryName,
+            subCategoryName,
+          );
+          if (id != null) queryParams['subCategory'] = id;
+        }
+        if (governorateName != null) {
+          final id = filtersModel.governorateIdByName(governorateName);
+          if (id != null) queryParams['governorate'] = id;
+        }
+        if (cityName != null && governorateName != null) {
+          final id = filtersModel.cityIdByName(governorateName, cityName);
+          if (id != null) queryParams['city'] = id;
+        }
+        if (brandName != null) {
+          final id = filtersModel.brandIdByName(brandName);
+          if (id != null) queryParams['brand'] = brandName;
+        }
+      } else {
+        if (categoryName != null) queryParams['category'] = categoryName;
+        if (subCategoryName != null) {
+          queryParams['subCategory'] = subCategoryName;
+        }
+        if (governorateName != null) {
+          queryParams['governorate'] = governorateName;
+        }
+        if (cityName != null) queryParams['city'] = cityName;
+        if (brandName != null) queryParams['brand'] = brandName;
+      }
+
+      print('STORE QUERY PARAMS: $queryParams');
+
+      final response = await _dio.get(
+        '/stores/filtered',
+        queryParameters: queryParams,
+      );
       final List<dynamic> data = response.data;
 
       return data.map((json) => StoreCardModel.fromJson(json)).toList();
     } on DioException catch (e) {
-      throw PaginationRepositoryException(_handleDioError(e));
+      throw PaginationRepositoryException(handleDioError(e));
     }
   }
 
@@ -123,20 +214,20 @@ class PaginationRepository {
       final List<dynamic> data = response.data;
       return data.map((json) => CategoryItemModel.fromJson(json)).toList();
     } on DioException catch (e) {
-      throw PaginationRepositoryException(_handleDioError(e));
+      throw PaginationRepositoryException(handleDioError(e));
     }
   }
 
   Future<FiltersModel> fetchFilters() async {
     try {
-      final response = await _dio.get('/filters');
+      final response = await _dio.get('/filters/options');
       return FiltersModel.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw PaginationRepositoryException(_handleDioError(e));
+      throw PaginationRepositoryException(handleDioError(e));
     }
   }
 
-  String _handleDioError(DioException error) {
+  String handleDioError(DioException error) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
@@ -146,6 +237,13 @@ class PaginationRepository {
         final statusCode = error.response?.statusCode;
         if (statusCode == 401) return 'Unauthorized. Please login again.';
         if (statusCode == 404) return 'Data not found.';
+        if (statusCode == 422) {
+          final data = error.response?.data;
+          if (data is Map<String, dynamic>) {
+            return 'Validation error: ${data['message'] ?? data.toString()}';
+          }
+          return 'Invalid request data. Please check your filters.';
+        }
         if (statusCode == 500) return 'Server error. Please try later.';
         return 'Server error: $statusCode';
       case DioExceptionType.connectionError:

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../features/auth/data/models/Repository/signin_repository.dart';
+import 'ImageHelper.dart';
+
 class SubCategoryCircleWidget extends StatelessWidget {
   final String title;
   final VoidCallback? onTap;
@@ -60,7 +63,7 @@ class SubCategoryCircleWidget extends StatelessWidget {
   }
 
   Widget _buildImage(double size) {
-    final url = imageUrl.trim();
+    final url = getImageUrl(imageUrl);
     if (url.isEmpty) {
       return Container(
         color: Colors.grey.shade200,

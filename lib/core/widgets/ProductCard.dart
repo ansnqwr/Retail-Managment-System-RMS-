@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../features/auth/data/models/Repository/signin_repository.dart';
+import 'ImageHelper.dart';
+
 class ProductCard extends StatelessWidget {
   final String imageUrl;
   final String title;
@@ -112,7 +115,7 @@ class ProductCard extends StatelessWidget {
   }
 
   Widget _buildImage() {
-    final url = imageUrl.trim();
+    final url = getImageUrl(imageUrl);
     if (url.isEmpty) {
       return Container(
         color: Colors.grey.shade200,

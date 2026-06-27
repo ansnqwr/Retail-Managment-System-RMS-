@@ -7,6 +7,7 @@ class StoreCardModel {
   final bool isNew;
   final bool isVerified;
   final bool isBrand;
+  final List<dynamic> branches;
 
   StoreCardModel({
     required this.id,
@@ -17,9 +18,9 @@ class StoreCardModel {
     required this.city,
     required this.isVerified,
     required this.isBrand,
+    required this.branches,
   });
 
-  // Parse from API JSON
   factory StoreCardModel.fromJson(Map<String, dynamic> json) {
     return StoreCardModel(
       id: json['id'] as int,
@@ -28,6 +29,7 @@ class StoreCardModel {
       isNew: json['isNew'] as bool,
       governorate: json['governorate'] as String,
       city: json['city'] as String,
+      branches: json['branches'] as List<dynamic>,
       isVerified: json['isVerified'] as bool,
       isBrand: json['isBrand'] as bool,
     );

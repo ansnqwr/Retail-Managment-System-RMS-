@@ -9,7 +9,7 @@ class CategoryRepository {
   CategoryRepository({Dio? dio}) : _dio = dio ?? _createDio();
 
   static Dio _createDio() {
-    return Dio(
+    final dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
         connectTimeout: const Duration(seconds: 10),
@@ -20,21 +20,26 @@ class CategoryRepository {
         },
       ),
     );
+
+    // dio.interceptors.add(
+    //   InterceptorsWrapper(
+    //     onRequest: (options, handler) async {
+    //       await TokenManager().loadTokens();
+    //       final token = TokenManager().accessToken;
+    //       if (token != null && token.isNotEmpty) {
+    //         options.headers['Authorization'] = 'Bearer $token';
+    //       }
+    //       handler.next(options);
+    //     },
+    //   ),
+    // );
+
+    return dio;
   }
 
   Future<List<CategoryItemModel>> fetchCategories() async {
     try {
-      await TokenManager().loadTokens();
-      final token = TokenManager().accessToken;
-
-      final options = Options(
-        headers:
-            token != null && token.isNotEmpty
-                ? {'Authorization': 'Bearer $token'}
-                : null,
-      );
-
-      final response = await _dio.get('/categories', options: options);
+      final response = await _dio.get('/categories');
 
       final List<dynamic> data = response.data;
       return data.map((json) => CategoryItemModel.fromJson(json)).toList();

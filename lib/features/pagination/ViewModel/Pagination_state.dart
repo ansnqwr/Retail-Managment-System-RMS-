@@ -30,7 +30,7 @@ class PaginationLoaded extends PaginationState {
   final String paginationTitle;
   final Map<String, dynamic> activeFilters;
   final FiltersModel? filtersModel;
-  final String? searchQuery;
+  final dynamic searchQuery;
   final List<String> searchChips;
   final bool hasMoreData;
   final int currentPage;

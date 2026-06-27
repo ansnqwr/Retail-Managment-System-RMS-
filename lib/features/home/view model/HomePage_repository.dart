@@ -25,18 +25,18 @@ class HomeRepository {
       ),
     );
 
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          await TokenManager().loadTokens();
-          final token = TokenManager().accessToken;
-          if (token != null && token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
-          handler.next(options);
-        },
-      ),
-    );
+    // dio.interceptors.add(
+    //   InterceptorsWrapper(
+    //     onRequest: (options, handler) async {
+    //       await TokenManager().loadTokens();
+    //       final token = TokenManager().accessToken;
+    //       if (token != null && token.isNotEmpty) {
+    //         options.headers['Authorization'] = 'Bearer $token';
+    //       }
+    //       handler.next(options);
+    //     },
+    //   ),
+    // );
 
     return dio;
   }
@@ -74,19 +74,32 @@ class HomeRepository {
     required int limit,
   }) async {
     try {
-      final queryParams = <String, dynamic>{
-        'page': page,
-        'limit': limit,
-        'businessType': businessType,
-        'search': searchQuery,
-        'category': filters['category'],
-        'subCategory': filters['subCategory'],
-        'governorate': filters['governorate'],
-        'city': filters['city'],
-        'brand': filters['brand'],
-        'color': filters['color'],
-        'inStock': filters['inStockOnly'],
-      };
+      final queryParams = <String, dynamic>{'page': page, 'limit': limit};
+
+      if (businessType != null) queryParams['businessType'] = businessType;
+      if (searchQuery != null) {
+        if (searchQuery is Map<String, dynamic>) {
+          queryParams['search'] = searchQuery;
+        } else if (searchQuery.isNotEmpty) {
+          queryParams['search'] = searchQuery;
+        }
+      }
+      if (subCategoryId != null) queryParams['subCategoryId'] = subCategoryId;
+
+      // For filters, check null before adding:
+      if (filters['category'] != null) {
+        queryParams['category'] = filters['category'];
+      }
+      if (filters['subCategory'] != null) {
+        queryParams['subCategory'] = filters['subCategory'];
+      }
+      if (filters['governorate'] != null) {
+        queryParams['governorate'] = filters['governorate'];
+      }
+      if (filters['city'] != null) queryParams['city'] = filters['city'];
+      if (filters['brand'] != null) queryParams['brand'] = filters['brand'];
+      if (filters['color'] != null) queryParams['color'] = filters['color'];
+      if (filters['inStockOnly'] == true) queryParams['inStock'] = true;
 
       final priceRange = filters['priceRange'];
       if (priceRange != null && priceRange is RangeValues) {
@@ -98,7 +111,7 @@ class HomeRepository {
       }
 
       final response = await _dio.get(
-        '/products',
+        '/products/filtered',
         queryParameters: queryParams,
       );
       final List<dynamic> data = response.data;
@@ -117,19 +130,37 @@ class HomeRepository {
     required int limit,
   }) async {
     try {
-      final queryParams = <String, dynamic>{
-        'page': page,
-        'limit': limit,
-        'businessType': businessType,
-        'search': searchQuery,
-        'category': filters['category'],
-        'subCategory': filters['subCategory'],
-        'governorate': filters['governorate'],
-        'city': filters['city'],
-        'brand': filters['brand'],
-      };
+      final queryParams = <String, dynamic>{'page': page, 'limit': limit};
 
-      final response = await _dio.get('/stores', queryParameters: queryParams);
+      if (businessType != null) queryParams['businessType'] = businessType;
+      if (searchQuery != null) {
+        if (searchQuery is Map<String, dynamic>) {
+          queryParams['search'] = searchQuery;
+        } else if (searchQuery.isNotEmpty) {
+          queryParams['search'] = searchQuery;
+        }
+      }
+      if (subCategoryId != null) queryParams['subCategoryId'] = subCategoryId;
+
+      // For filters, check null before adding:
+      if (filters['category'] != null) {
+        queryParams['category'] = filters['category'];
+      }
+      if (filters['subCategory'] != null) {
+        queryParams['subCategory'] = filters['subCategory'];
+      }
+      if (filters['governorate'] != null) {
+        queryParams['governorate'] = filters['governorate'];
+      }
+      if (filters['city'] != null) queryParams['city'] = filters['city'];
+      if (filters['brand'] != null) queryParams['brand'] = filters['brand'];
+      if (filters['color'] != null) queryParams['color'] = filters['color'];
+      if (filters['inStockOnly'] == true) queryParams['inStock'] = true;
+
+      final response = await _dio.get(
+        '/stores/filtered',
+        queryParameters: queryParams,
+      );
       final List<dynamic> data = response.data;
       return data.map((json) => StoreCardModel.fromJson(json)).toList();
     } on DioException catch (e) {
@@ -140,10 +171,10 @@ class HomeRepository {
   Future<HomeDataBundle> fetchAllHomeData() async {
     try {
       final results = await Future.wait([
-        fetchAds(),
+        // fetchAds(), // COMMENTED: backend broken
         fetchCategories(),
         fetchProducts(
-          businessType: 'Trending',
+          businessType: '<Trending>',
           searchQuery: null,
           filters: {},
           subCategoryId: null,
@@ -158,14 +189,14 @@ class HomeRepository {
           page: 1,
           limit: 10,
         ),
-        fetchProducts(
-          businessType: 'Most Bought',
-          searchQuery: null,
-          filters: {},
-          subCategoryId: null,
-          page: 1,
-          limit: 10,
-        ),
+        // fetchProducts(
+        //   businessType: 'Most Bought',
+        //   searchQuery: null,
+        //   filters: {},
+        //   subCategoryId: null,
+        //   page: 1,
+        //   limit: 10,
+        // ),
         fetchProducts(
           businessType: 'Newest',
           searchQuery: null,
@@ -200,16 +231,18 @@ class HomeRepository {
         ),
       ]);
 
+      // FIXED: indices aligned with Future.wait results
+      // 7 results from Future.wait, mapped to correct fields
       return HomeDataBundle(
-        ads: results[0] as List<AdModel>,
-        categories: results[1] as List<CategoryItemModel>,
-        trendingProducts: results[2] as List<ProductCardModel>,
-        onSaleProducts: results[3] as List<ProductCardModel>,
-        mostBoughtProducts: results[4] as List<ProductCardModel>,
-        newestProducts: results[5] as List<ProductCardModel>,
-        brandStores: results[6] as List<StoreCardModel>,
-        nearbyStores: results[7] as List<StoreCardModel>,
-        justForYouProducts: results[8] as List<ProductCardModel>,
+        ads: [], // ads fetching broken in backend
+        categories: results[0] as List<CategoryItemModel>,
+        trendingProducts: results[1] as List<ProductCardModel>,
+        onSaleProducts: results[2] as List<ProductCardModel>,
+        mostBoughtProducts: [], // COMMENTED in Future.wait
+        newestProducts: results[3] as List<ProductCardModel>,
+        brandStores: results[4] as List<StoreCardModel>,
+        nearbyStores: results[5] as List<StoreCardModel>,
+        justForYouProducts: results[6] as List<ProductCardModel>,
       );
     } catch (e) {
       throw HomeRepositoryException('Failed to load home data: $e');

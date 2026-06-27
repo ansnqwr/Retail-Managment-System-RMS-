@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import '../../../core/widgets/ImageHelper.dart';
 import '../../../core/widgets/PageTitle.dart';
 import '../../../core/widgets/ProductCard.dart';
 import '../../../core/widgets/ProductSilverGrid.dart';
@@ -13,6 +14,7 @@ import '../../../core/widgets/OfflineFallbackWidget.dart';
 import '../../../core/widgets/CategorySliderItem.dart';
 import '../../../features/categories/Model/CategoryItemModel.dart';
 import '../../../features/home/Model/AdModel.dart';
+import '../../auth/data/models/Repository/signin_repository.dart';
 import '../Model/ProductCardModel.dart';
 import '../Model/StoreCardItem.dart';
 import '../../../features/pagination/View/PaginationScreen.dart';
@@ -251,8 +253,9 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   child: _buildCategoriesSlider(context, state),
                 ),
                 const SizedBox(height: 20),
-                _buildAdsSlider(state.ads),
+                // if (state.ads.isNotEmpty) _buildAdsSlider(state.ads),
                 const SizedBox(height: 30),
+
                 _buildProductSection(
                   context,
                   1,
@@ -269,13 +272,13 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   primaryColor,
                 ),
                 const SizedBox(height: 30),
-                _buildProductSection(
-                  context,
-                  3,
-                  'Most Bought',
-                  state.mostBoughtProducts,
-                  primaryColor,
-                ),
+                // _buildProductSection(
+                //   context,
+                //   3,
+                //   'Most Bought',
+                //   state.mostBoughtProducts,
+                //   primaryColor,
+                // ),
                 const SizedBox(height: 30),
                 _buildProductSection(
                   context,
@@ -415,7 +418,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
       child: CarouselSlider.builder(
         itemCount: validUrls.length,
         itemBuilder: (context, index, realIndex) {
-          final url = validUrls[index];
+          final url = getImageUrl(validUrls[index]);
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: ClipRRect(
@@ -612,6 +615,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                     imageUrl: store.imageUrl,
                     title: store.title,
                     isNew: store.isNew,
+                    branchesCount: store.branches.length,
                     width: 170,
                     onTap: () {
                       context.read<HomeBloc>().add(HomeStoreTapped(store.id));

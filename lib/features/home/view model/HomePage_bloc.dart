@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../Model/ProductCardModel.dart';
+import '../Model/StoreCardItem.dart';
 import 'HomePage_event.dart';
 import 'HomePage_repository.dart';
 import 'HomePage_state.dart';
@@ -7,6 +9,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final HomeRepository _homeRepository;
 
   bool _isGuest = false;
+  int? _selectedCategoryId; // Track selected category across reloads
 
   HomeBloc({required HomeRepository homeRepository})
     : _homeRepository = homeRepository,
@@ -31,6 +34,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     _isGuest = event.isGuest;
+    _selectedCategoryId = null; // Reset on full reload
 
     emit(const HomeLoading());
 
@@ -73,50 +77,115 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     final current = state as HomeLoaded;
 
-    emit(current.copyWith(selectedCategoryIndex: event.categoryIndex));
+    // "All" category is id 0 or 1 depending on your backend
+    // From your response: {"id": 0, "title": "all"} or {"id": 1, "title": "electronics"}
+    final isAllCategory = event.categoryId == 0;
+    _selectedCategoryId = isAllCategory ? null : event.categoryId;
+
+    // Optimistically update UI with loading state for justForYou
+    emit(
+      current.copyWith(
+        selectedCategoryIndex: event.categoryIndex,
+        isLoadingMoreJustForYou: true,
+      ),
+    );
 
     try {
-      if (event.categoryId == 1) {
-        final products = await _homeRepository.fetchProducts(
-          businessType: 'Just For You',
-          searchQuery: current.homeSearchQuery,
-          filters: {},
+      // Fetch ALL sections with the category filter
+      final filters =
+          isAllCategory
+              ? <String, dynamic>{}
+              : <String, dynamic>{'category': event.categoryId.toString()};
+
+      // Fetch all sections in parallel
+      final results = await Future.wait([
+        _homeRepository.fetchProducts(
+          businessType: 'Trending',
+          searchQuery: null,
+          filters: filters,
           subCategoryId: null,
           page: 1,
           limit: 10,
-        );
-        emit(
-          current.copyWith(
-            selectedCategoryIndex: event.categoryIndex,
-            justForYouProducts: products,
-            justForYouCurrentPage: 1,
-            justForYouHasMoreData: products.length >= 10,
-          ),
-        );
-      } else {
-        final products = await _homeRepository.fetchProducts(
-          businessType: 'Just For You',
-          searchQuery: current.homeSearchQuery,
-          filters: {'category': event.categoryId.toString()},
+        ),
+        _homeRepository.fetchProducts(
+          businessType: 'On Sale',
+          searchQuery: null,
+          filters: filters,
           subCategoryId: null,
           page: 1,
           limit: 10,
-        );
-        emit(
-          current.copyWith(
-            selectedCategoryIndex: event.categoryIndex,
-            justForYouProducts: products,
-            justForYouCurrentPage: 1,
-            justForYouHasMoreData: products.length >= 10,
-          ),
-        );
-      }
+        ),
+        _homeRepository.fetchProducts(
+          businessType: 'Newest',
+          searchQuery: null,
+          filters: filters,
+          subCategoryId: null,
+          page: 1,
+          limit: 10,
+        ),
+        _homeRepository.fetchStores(
+          businessType: 'Brands',
+          searchQuery: null,
+          filters: filters,
+          subCategoryId: null,
+          page: 1,
+          limit: 10,
+        ),
+        _homeRepository.fetchStores(
+          businessType: 'Stores Nearby',
+          searchQuery: null,
+          filters: filters,
+          subCategoryId: null,
+          page: 1,
+          limit: 10,
+        ),
+        _homeRepository.fetchProducts(
+          businessType: 'Just For You',
+          searchQuery: null,
+          filters: filters,
+          subCategoryId: null,
+          page: 1,
+          limit: 10,
+        ),
+      ]);
+
+      emit(
+        current.copyWith(
+          selectedCategoryIndex: event.categoryIndex,
+          trendingProducts: results[0] as List<ProductCardModel>,
+          onSaleProducts: results[1] as List<ProductCardModel>,
+          newestProducts: results[2] as List<ProductCardModel>,
+          brandStores: results[3] as List<StoreCardModel>,
+          nearbyStores: results[4] as List<StoreCardModel>,
+          justForYouProducts: results[5] as List<ProductCardModel>,
+          justForYouCurrentPage: 1,
+          justForYouHasMoreData:
+              (results[5] as List<ProductCardModel>).length >= 10,
+          isLoadingMoreJustForYou: false,
+        ),
+      );
     } on HomeRepositoryException catch (e) {
-      emit(current.copyWith(selectedCategoryIndex: event.categoryIndex));
+      // Revert to previous state but keep selected category
+      emit(
+        current.copyWith(
+          selectedCategoryIndex: event.categoryIndex,
+          isLoadingMoreJustForYou: false,
+        ),
+      );
       emit(HomeError(e.message));
-      emit(current.copyWith(selectedCategoryIndex: event.categoryIndex));
+      emit(
+        current.copyWith(
+          selectedCategoryIndex: event.categoryIndex,
+          isLoadingMoreJustForYou: false,
+        ),
+      );
     } catch (e) {
-      emit(current.copyWith(selectedCategoryIndex: event.categoryIndex));
+      emit(
+        current.copyWith(
+          selectedCategoryIndex: event.categoryIndex,
+          isLoadingMoreJustForYou: false,
+        ),
+      );
     }
   }
 
@@ -144,10 +213,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     try {
       Map<String, dynamic> filters = {};
-      if (current.selectedCategoryIndex > 0 && current.categories.isNotEmpty) {
-        final selectedCategory =
-            current.categories[current.selectedCategoryIndex];
-        filters['category'] = selectedCategory.id.toString();
+      if (_selectedCategoryId != null) {
+        filters['category'] = _selectedCategoryId.toString();
       }
 
       final newProducts = await _homeRepository.fetchProducts(
@@ -200,11 +267,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
 
     try {
+      Map<String, dynamic> filters = {};
+      if (_selectedCategoryId != null) {
+        filters['category'] = _selectedCategoryId.toString();
+      }
+
       if (event.isSearchingProducts) {
         final products = await _homeRepository.fetchProducts(
           businessType: 'Just For You',
           searchQuery: trimmedQuery,
-          filters: {},
+          filters: filters,
           subCategoryId: null,
           page: 1,
           limit: 10,
@@ -222,7 +294,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final stores = await _homeRepository.fetchStores(
           businessType: 'Stores Nearby',
           searchQuery: trimmedQuery,
-          filters: {},
+          filters: filters,
           subCategoryId: null,
           page: 1,
           limit: 10,
@@ -273,10 +345,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final current = state as HomeLoaded;
 
     try {
+      Map<String, dynamic> filters = {};
+      if (_selectedCategoryId != null) {
+        filters['category'] = _selectedCategoryId.toString();
+      }
+
       final products = await _homeRepository.fetchProducts(
         businessType: 'Just For You',
         searchQuery: null,
-        filters: {},
+        filters: filters,
         subCategoryId: null,
         page: 1,
         limit: 10,

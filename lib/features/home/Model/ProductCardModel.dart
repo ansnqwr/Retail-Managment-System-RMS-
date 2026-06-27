@@ -7,8 +7,6 @@ class ProductCardModel {
   final bool hasDiscount;
   final int discountPercentage;
 
-  // [{'id':1,'imageUrl':'','title':'lenovo'}]
-
   ProductCardModel({
     required this.id,
     required this.imageUrl,

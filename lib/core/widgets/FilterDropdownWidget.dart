@@ -13,6 +13,8 @@ class FilterDropdownWidget extends StatefulWidget {
   final Map<String, List<String>> cities;
   final List<ColorOption> colors;
   final Map<String, dynamic>? initialFilters;
+  final double minPrice;
+  final double maxPrice;
 
   final Function(Map<String, dynamic>) onApplyFilters;
 
@@ -28,6 +30,8 @@ class FilterDropdownWidget extends StatefulWidget {
     required this.isSubCategory,
     required this.colors,
     this.initialFilters,
+    required this.maxPrice,
+    required this.minPrice,
   });
 
   @override
@@ -57,10 +61,12 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
     if (priceRange != null && priceRange is RangeValues) {
       _priceRange = priceRange;
     } else {
-      _priceRange = const RangeValues(0, 1000);
+      _priceRange = RangeValues(widget.minPrice, widget.maxPrice);
     }
 
-    _inStockOnly = filters['inStockOnly'] == true;
+    _inStockOnly =
+        filters['inStockOnly'] == true || filters['inStockOnly'] == null;
+
     _selectedCategory = filters['category'];
     _selectedSubCategory = filters['subCategory'];
     _selectedBrand = filters['brand'];
@@ -84,8 +90,8 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
 
   void _resetFilters() {
     setState(() {
-      _priceRange = const RangeValues(0, 1000);
-      _inStockOnly = false;
+      _priceRange = RangeValues(widget.minPrice, widget.maxPrice);
+      _inStockOnly = true;
       _selectedCategory = null;
       _selectedSubCategory = null;
       _selectedBrand = null;
@@ -114,8 +120,8 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                     FilterWidgetHelpers.buildSectionTitle('Price Range'),
                     RangeSlider(
                       values: _priceRange,
-                      min: 0,
-                      max: 1000,
+                      min: widget.minPrice,
+                      max: widget.maxPrice,
                       divisions: 100,
                       labels: RangeLabels(
                         '\$${_priceRange.start.toStringAsFixed(0)}',

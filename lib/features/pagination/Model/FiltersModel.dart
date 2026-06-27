@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 
+class NamedId {
+  final int id;
+  final String title;
+
+  const NamedId({required this.id, required this.title});
+
+  factory NamedId.fromJson(Map<String, dynamic> json) {
+    return NamedId(id: json['id'] as int, title: json['title'] as String);
+  }
+}
+
 class FiltersModel {
-  final List<String> categories;
-  final Map<String, List<String>> subcategories;
-  final List<String> brands;
-  final List<String> governorates;
-  final Map<String, List<String>> cities;
+  final List<NamedId> categories;
+  final Map<String, List<NamedId>> subcategories;
+  final List<NamedId> brands;
+  final List<NamedId> governorates;
+  final Map<String, List<NamedId>> cities;
   final List<ColorOption> colors;
   final double minPrice;
   final double maxPrice;
@@ -25,8 +36,7 @@ class FiltersModel {
     return FiltersModel(
       categories:
           (json['categories'] as List<dynamic>?)
-              ?.map((e) => (e as Map<String, dynamic>)['title'] as String)
-              .where((s) => s.isNotEmpty)
+              ?.map((e) => NamedId.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
       subcategories:
@@ -34,23 +44,19 @@ class FiltersModel {
             (key, value) => MapEntry(
               key,
               (value as List<dynamic>)
-                  .map((e) => (e as Map<String, dynamic>)['title'] as String)
-                  .where((s) => s.isNotEmpty)
+                  .map((e) => NamedId.fromJson(e as Map<String, dynamic>))
                   .toList(),
             ),
           ) ??
           {},
-
       brands:
           (json['brands'] as List<dynamic>?)
-              ?.map((e) => (e as Map<String, dynamic>)['title'] as String)
-              .where((s) => s.isNotEmpty)
+              ?.map((e) => NamedId.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
       governorates:
           (json['governorates'] as List<dynamic>?)
-              ?.map((e) => (e as Map<String, dynamic>)['title'] as String)
-              .where((s) => s.isNotEmpty)
+              ?.map((e) => NamedId.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
       cities:
@@ -58,8 +64,7 @@ class FiltersModel {
             (key, value) => MapEntry(
               key,
               (value as List<dynamic>)
-                  .map((e) => (e as Map<String, dynamic>)['title'] as String)
-                  .where((s) => s.isNotEmpty)
+                  .map((e) => NamedId.fromJson(e as Map<String, dynamic>))
                   .toList(),
             ),
           ) ??
@@ -74,15 +79,71 @@ class FiltersModel {
     );
   }
 
-  List<String> get categoryNames => categories;
+  List<String> get categoryNames => categories.map((e) => e.title).toList();
+  List<String> get brandNames => brands.map((e) => e.title).toList();
+  List<String> get governorateNames =>
+      governorates.map((e) => e.title).toList();
+  Map<String, List<String>> get cityNamesByGovernorate =>
+      cities.map((k, v) => MapEntry(k, v.map((e) => e.title).toList()));
+  Map<String, List<String>> get subcategoryNamesByCategory =>
+      subcategories.map((k, v) => MapEntry(k, v.map((e) => e.title).toList()));
 
-  List<String> get brandNames => brands;
+  int? categoryIdByName(String name) =>
+      categories
+                  .firstWhere(
+                    (e) => e.title == name,
+                    orElse: () => const NamedId(id: -1, title: ''),
+                  )
+                  .id ==
+              -1
+          ? null
+          : categories.firstWhere((e) => e.title == name).id;
 
-  List<String> get governorateNames => governorates;
+  int? brandIdByName(String name) =>
+      brands
+                  .firstWhere(
+                    (e) => e.title == name,
+                    orElse: () => const NamedId(id: -1, title: ''),
+                  )
+                  .id ==
+              -1
+          ? null
+          : brands.firstWhere((e) => e.title == name).id;
 
-  Map<String, List<String>> get cityNamesByGovernorate => cities;
+  int? governorateIdByName(String name) =>
+      governorates
+                  .firstWhere(
+                    (e) => e.title == name,
+                    orElse: () => const NamedId(id: -1, title: ''),
+                  )
+                  .id ==
+              -1
+          ? null
+          : governorates.firstWhere((e) => e.title == name).id;
 
-  Map<String, List<String>> get subcategoryNamesByCategory => subcategories;
+  int? cityIdByName(String governorateName, String cityName) =>
+      cities[governorateName]
+                  ?.firstWhere(
+                    (e) => e.title == cityName,
+                    orElse: () => const NamedId(id: -1, title: ''),
+                  )
+                  .id ==
+              -1
+          ? null
+          : cities[governorateName]?.firstWhere((e) => e.title == cityName).id;
+
+  int? subcategoryIdByName(String categoryName, String subcategoryName) =>
+      subcategories[categoryName]
+                  ?.firstWhere(
+                    (e) => e.title == subcategoryName,
+                    orElse: () => const NamedId(id: -1, title: ''),
+                  )
+                  .id ==
+              -1
+          ? null
+          : subcategories[categoryName]
+              ?.firstWhere((e) => e.title == subcategoryName)
+              .id;
 }
 
 class ColorOption {

@@ -32,6 +32,7 @@ class _StoreSilverGridState extends State<StoreSilverGrid> {
             city: store.city,
             isVerified: store.isVerified,
             isBrand: store.isBrand,
+            branchesCount: store.branches.length,
           );
         }, childCount: stores.length),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

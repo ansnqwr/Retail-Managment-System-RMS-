@@ -102,8 +102,10 @@ class FilterChipsWidget extends StatelessWidget {
       }
     }
 
-    if (filters['inStockOnly'] == true) {
-      chips.add({'key': 'inStockOnly', 'label': 'In Stock'});
+    if (filters['inStockOnly'] == true || filters['inStockOnly'] == null) {
+      if (filters.containsKey('inStockOnly')) {
+        chips.add({'key': 'inStockOnly', 'label': 'In Stock'});
+      }
     }
 
     if (filters['category'] != null) {

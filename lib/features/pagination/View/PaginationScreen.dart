@@ -400,13 +400,15 @@ class _PaginationContentState extends State<_PaginationContent> {
             builder: (context, scrollController) {
               return FilterDropdownWidget(
                 isStore: state.isStore,
+                minPrice: options?.minPrice ?? 0,
+                maxPrice: options?.maxPrice ?? 1000,
                 isSubCategory: state.isSubCategory,
                 initialFilters: state.activeFilters,
                 categories:
-                    options?.categories ??
+                    options?.categoryNames ??
                     ['Clothing', 'Electronics', 'Sports', 'Home', 'Jewelry'],
                 subcategories:
-                    options?.subcategories ??
+                    options?.subcategoryNamesByCategory ??
                     {
                       'Clothing': [
                         'Dresses',
@@ -424,16 +426,16 @@ class _PaginationContentState extends State<_PaginationContent> {
                       'Sports': ['Shoes', 'Equipment', 'Wear'],
                     },
                 governorates:
-                    options?.governorates ??
+                    options?.governorateNames ??
                     ['Damascus', 'Aleppo', 'Homs', 'Hama', 'Daraa'],
                 cities:
-                    options?.cities ??
+                    options?.cityNamesByGovernorate ??
                     {
                       'Damascus': ['Jaramana', 'Meedan', 'Bab Touma'],
                       'Aleppo': ['Meedan', 'Khaldieh', 'Ashrafieh'],
                     },
                 brands:
-                    options?.brands ??
+                    options?.brandNames ??
                     [
                       'Nike',
                       'Adidas',

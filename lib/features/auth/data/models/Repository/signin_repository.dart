@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'auth_local_data.dart';
 
-final String baseUrl = 'http://192.168.1.3:8000/api';
+final String baseUrl2 = 'http://192.168.137.213:8000';
+final String baseUrl = '$baseUrl2/api';
 
 class SigninRepository {
   Future<void> loginWithEmailAndPassword(String email, String password) async {

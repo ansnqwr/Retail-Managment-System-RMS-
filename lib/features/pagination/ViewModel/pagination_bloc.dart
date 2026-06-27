@@ -1,4 +1,4 @@
-import 'package:delni_rms/features/pagination/Model/FiltersModel.dart';
+import '/features/pagination/Model/FiltersModel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../categories/Model/CategoryItemModel.dart';
 import '../../home/Model/ProductCardModel.dart';
@@ -53,8 +53,9 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
     _subCategoryId = event.subCategoryId;
     _paginationTitle = event.paginationTitle;
     _searchChips = _parsePaginationTitleToChips(event.paginationTitle);
-    _currentFilters = {};
+    _currentFilters = {'inStockOnly': true};
     _currentPage = 1;
+    filtersModel = null;
     await _loadData(emit, isRefresh: true);
   }
 
@@ -86,7 +87,10 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
     final trimmedQuery = event.query.trim();
     if (trimmedQuery.isEmpty) return;
 
-    if (_searchChips.contains(trimmedQuery)) {
+    // Check for duplicates
+    if (_searchChips.any(
+      (chip) => chip.toLowerCase() == trimmedQuery.toLowerCase(),
+    )) {
       return;
     }
 
@@ -187,9 +191,14 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
         .toList();
   }
 
-  String? _buildSearchQueryFromChips() {
+  Map<String, dynamic>? _buildSearchQueryFromChips() {
     if (_searchChips.isEmpty) return null;
-    return _searchChips.join(' ');
+
+    final searchMap = <String, String>{};
+    for (int i = 0; i < _searchChips.length; i++) {
+      searchMap['chip${i + 1}'] = _searchChips[i];
+    }
+    return searchMap;
   }
 
   Future<void> _loadData(
@@ -208,7 +217,9 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
       final List<ProductCardModel> products;
       final List<StoreCardModel> stores;
       List<CategoryItemModel> subcategories = [];
+
       final searchQuery = _buildSearchQueryFromChips();
+      bool newBatchHasMoreData = false;
 
       if (filtersModel == null && !isLoadMore) {
         try {
@@ -226,16 +237,20 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
         subcategories = (state as PaginationLoaded).subcategories;
       }
 
+      final filtersWithModel = Map<String, dynamic>.from(_currentFilters);
+      filtersWithModel['filtersModel'] = filtersModel;
+
       if (_isProduct || _isSubCategory) {
-        print(searchQuery);
         final newProducts = await _paginationRepository.fetchProducts(
           businessType: _businessType,
           searchQuery: searchQuery,
-          filters: _currentFilters,
+          filters: filtersWithModel,
           subCategoryId: _subCategoryId,
           page: _currentPage,
           limit: _limit,
         );
+
+        newBatchHasMoreData = newProducts.length >= _limit;
 
         if (isLoadMore && state is PaginationLoaded) {
           final currentState = state as PaginationLoaded;
@@ -248,11 +263,13 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
         final newStores = await _paginationRepository.fetchStores(
           businessType: _businessType,
           searchQuery: searchQuery,
-          filters: _currentFilters,
+          filters: filtersWithModel,
           subCategoryId: _subCategoryId,
           page: _currentPage,
           limit: _limit,
         );
+
+        newBatchHasMoreData = newStores.length >= _limit;
 
         if (isLoadMore && state is PaginationLoaded) {
           final currentState = state as PaginationLoaded;
@@ -265,11 +282,13 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
         final newProducts = await _paginationRepository.fetchProducts(
           businessType: _businessType,
           searchQuery: searchQuery,
-          filters: _currentFilters,
+          filters: filtersWithModel,
           subCategoryId: _subCategoryId,
           page: _currentPage,
           limit: _limit,
         );
+
+        newBatchHasMoreData = newProducts.length >= _limit;
 
         if (isLoadMore && state is PaginationLoaded) {
           final currentState = state as PaginationLoaded;
@@ -293,11 +312,10 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
           paginationTitle: _paginationTitle,
           activeFilters: _currentFilters,
           filtersModel: filtersModel,
-          searchQuery: searchQuery,
+          searchQuery:
+              searchQuery is String ? searchQuery : _searchChips.join(' '),
           searchChips: List<String>.from(_searchChips),
-          hasMoreData:
-              (products.length >= _limit && _isProduct) ||
-              (stores.length >= _limit && _isStore),
+          hasMoreData: newBatchHasMoreData,
           currentPage: _currentPage,
           isLoadingMore: false,
         ),
