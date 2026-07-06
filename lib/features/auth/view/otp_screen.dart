@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/view/reset_password_screen.dart';
 import '../view_model/bloc/login_bloc.dart';
-import 'verification_success_screen.dart';
 
 class OtpScreen extends StatefulWidget {
   final String email;

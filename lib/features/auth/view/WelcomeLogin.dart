@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '/features/auth/data/models/Repository/signin_repository.dart';
 import '/features/auth/view_model/bloc/login_bloc.dart';
 import '/features/auth/view/login_screen.dart';
 import '/features/auth/view/register_first_step.dart';
-import '../../profiles/Model/profile_repository.dart';
 import '../../profiles/ViewModel/profile_bloc.dart';
 import '/features/home/view/RootScreen.dart';
 

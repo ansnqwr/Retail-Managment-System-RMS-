@@ -1,6 +1,11 @@
+import 'package:delni_rms/features/home/view%20model/store_details_bloc.dart';
+import 'package:delni_rms/features/home/view%20model/store_details_event.dart';
+import 'package:delni_rms/features/home/view%20model/store_details_repository.dart';
+import 'package:delni_rms/features/home/view/store_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../core/widgets/ImageHelper.dart';
 import '../../../core/widgets/PageTitle.dart';
@@ -10,11 +15,8 @@ import '../../../core/widgets/StoreCard.dart';
 import '../../../core/widgets/SearchBarWidget.dart';
 import '../../../core/widgets/IconCircleWidget.dart';
 import '../../../core/widgets/BadgeIconWidget.dart';
-import '../../../core/widgets/OfflineFallbackWidget.dart';
 import '../../../core/widgets/CategorySliderItem.dart';
-import '../../../features/categories/Model/CategoryItemModel.dart';
 import '../../../features/home/Model/AdModel.dart';
-import '../../auth/data/models/Repository/signin_repository.dart';
 import '../Model/ProductCardModel.dart';
 import '../Model/StoreCardItem.dart';
 import '../../../features/pagination/View/PaginationScreen.dart';
@@ -72,6 +74,8 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
     final currentScroll = _scrollController.offset;
     return currentScroll >= (maxScroll * 0.9);
   }
+  
+final client = http.Client();
 
   @override
   void dispose() {
@@ -84,7 +88,6 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = const Color(0xFF6B2D5C);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: BlocConsumer<HomeBloc, HomeState>(
@@ -253,7 +256,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   child: _buildCategoriesSlider(context, state),
                 ),
                 const SizedBox(height: 20),
-                // if (state.ads.isNotEmpty) _buildAdsSlider(state.ads),
+                if (state.ads.isNotEmpty) _buildAdsSlider(state.ads),
                 const SizedBox(height: 30),
 
                 _buildProductSection(
@@ -293,6 +296,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   'Brands',
                   state.brandStores,
                   primaryColor,
+                  client,
                 ),
                 _buildStoresSection(
                   context,
@@ -300,6 +304,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   'Stores Nearby',
                   state.nearbyStores,
                   primaryColor,
+                  client,
                 ),
                 const SizedBox(height: 20),
               ],
@@ -541,12 +546,13 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
     );
   }
 
-  Widget _buildStoresSection(
+Widget _buildStoresSection(
     BuildContext context,
     int sectionId,
     String businessType,
     List<StoreCardModel> stores,
     Color primaryColor,
+    http.Client client,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -555,9 +561,6 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
         children: [
           InkWell(
             onTap: () {
-              context.read<HomeBloc>().add(
-                HomeSectionSeeAllTapped(businessType, sectionId),
-              );
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -619,6 +622,20 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                     width: 170,
                     onTap: () {
                       context.read<HomeBloc>().add(HomeStoreTapped(store.id));
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (_) => BlocProvider(
+                                create:
+                                    (_) => StoreDetailsBloc(
+                                      StoreDetailsRepository(client),
+                                    )..add(LoadStoreDetails(store.id)),
+                                child: StoreDetailsScreen(storeId: store.id),
+                              ),
+                        ),
+                      );
                     },
                     governorate: store.governorate,
                     city: store.city,

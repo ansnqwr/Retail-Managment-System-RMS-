@@ -232,7 +232,7 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoField(String label, String value, {VoidCallback? onEdit}) {
+  Widget _buildInfoField(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Column(

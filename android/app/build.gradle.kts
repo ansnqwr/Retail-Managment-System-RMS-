@@ -8,7 +8,9 @@ plugins {
 android {
     namespace = "com.example.delni_rms"
     compileSdk = 35
-    ndkVersion = "28.0.12916984"
+ //   ndkVersion = "28.0.12916984"
+    ndkVersion = "26.3.11579264"
+
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

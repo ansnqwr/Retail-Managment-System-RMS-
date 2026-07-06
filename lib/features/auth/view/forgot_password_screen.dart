@@ -129,8 +129,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       color: Colors.black87,
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty)
+                      if (value == null || value.isEmpty) {
                         return 'رجاءً أدخل البريد الإلكتروني';
+                      }
                       if (!RegExp(
                         r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                       ).hasMatch(value)) {

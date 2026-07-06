@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/view/forgot_password_screen.dart';
 import '/features/auth/view/password_changed_screen.dart';
 import '/features/auth/view_model/bloc/login_bloc.dart';
-import '../Model/profile_repository.dart';
 import '../ViewModel/profile_bloc.dart';
-import 'profile_view.dart';
 
 class ChangePasswordView extends StatefulWidget {
   const ChangePasswordView({super.key});

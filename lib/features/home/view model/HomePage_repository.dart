@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import '../../auth/data/models/Repository/auth_local_data.dart';
 import '../../auth/data/models/Repository/signin_repository.dart';
 import '../Model/ProductCardModel.dart';
 import '../Model/StoreCardItem.dart';

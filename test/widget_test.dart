@@ -7,9 +7,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/features/splash/view/splash_screen.dart';
+import 'package:delni_rms/features/splash/view/splash_screen.dart';
 
-import '../lib/main.dart';
+import 'package:delni_rms/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

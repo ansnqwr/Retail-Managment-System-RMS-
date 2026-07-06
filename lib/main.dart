@@ -1,5 +1,7 @@
+import 'package:delni_rms/features/home/view%20model/store_details_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 
 import '/features/auth/data/models/Repository/signin_repository.dart';
 import '/features/auth/data/models/Repository/signup_repository.dart';
@@ -26,6 +28,7 @@ class DelniApp extends StatelessWidget {
         RepositoryProvider(create: (context) => SigninRepository()),
         RepositoryProvider(create: (context) => SignupRepository()),
         RepositoryProvider(create: (context) => ProfileRepository()),
+        RepositoryProvider(create: (context) => StoreDetailsRepository(http.Client())),
       ],
       child: MultiBlocProvider(
         providers: [
