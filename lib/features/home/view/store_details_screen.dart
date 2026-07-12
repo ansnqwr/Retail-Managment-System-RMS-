@@ -3,6 +3,7 @@ import 'package:delni_rms/features/home/view%20model/store_details_bloc.dart';
 import 'package:delni_rms/features/home/view%20model/store_details_event.dart';
 import 'package:delni_rms/features/home/view%20model/store_details_repository.dart';
 import 'package:delni_rms/features/home/view%20model/store_details_state.dart';
+import 'package:delni_rms/features/home/view/ProductDetailsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -481,7 +482,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
     );
   }
 
-  Widget _buildProductsTab(BuildContext context, StoreDetailsLoaded state) {
+Widget _buildProductsTab(BuildContext context, StoreDetailsLoaded state) {
     return Column(
       children: [
         Padding(
@@ -531,114 +532,126 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
                 return const Center(child: CircularProgressIndicator());
               }
               final product = state.products[index];
-              return Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(10),
-                        ),
-                        child:
-                            product.imageUrl != null &&
-                                    product.imageUrl.isNotEmpty
-                                ? Image.network(
-                                  product.imageUrl,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      width: double.infinity,
-                                      color: Colors.grey.shade200,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.shopping_bag_rounded,
-                                            size: 40,
-                                            color: Colors.grey.shade400,
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'No Image',
-                                            style: TextStyle(
-                                              color: Colors.grey.shade500,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                )
-                                : Container(
-                                  width: double.infinity,
-                                  color: Colors.grey.shade200,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.shopping_bag_rounded,
-                                        size: 40,
-                                        color: Colors.grey.shade400,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        'No Image',
-                                        style: TextStyle(
-                                          color: Colors.grey.shade500,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                      ),
+
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => ProductDetailsScreen(productId: product.id),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                            ),
+                  );
+                },
+                child: Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(10),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${product.price.toStringAsFixed(0)} SYP',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: _primaryColor,
-                              fontSize: 14,
-                            ),
-                          ),
-                          if (product.hasDiscount) ...[
-                            const SizedBox(height: 4),
+                          child:
+                              product.imageUrl.isNotEmpty
+                                  ? Image.network(
+                                    product.imageUrl,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        width: double.infinity,
+                                        color: Colors.grey.shade200,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.shopping_bag_rounded,
+                                              size: 40,
+                                              color: Colors.grey.shade400,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              'No Image',
+                                              style: TextStyle(
+                                                color: Colors.grey.shade500,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  )
+                                  : Container(
+                                    width: double.infinity,
+                                    color: Colors.grey.shade200,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.shopping_bag_rounded,
+                                          size: 40,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'No Image',
+                                          style: TextStyle(
+                                            color: Colors.grey.shade500,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              'Discount: ${product.discountPercentage}%',
+                              product.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                color: Colors.red,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
                               ),
                             ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${product.price.toStringAsFixed(0)} SYP',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: _primaryColor,
+                                fontSize: 14,
+                              ),
+                            ),
+                            if (product.hasDiscount) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                'Discount: ${product.discountPercentage}%',
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },

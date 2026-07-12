@@ -1,6 +1,7 @@
 import 'package:delni_rms/features/home/view%20model/store_details_bloc.dart';
 import 'package:delni_rms/features/home/view%20model/store_details_event.dart';
 import 'package:delni_rms/features/home/view%20model/store_details_repository.dart';
+import 'package:delni_rms/features/home/view/ProductDetailsScreen.dart';
 import 'package:delni_rms/features/home/view/store_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -453,7 +454,7 @@ final client = http.Client();
     );
   }
 
-  Widget _buildProductSection(
+Widget _buildProductSection(
     BuildContext context,
     int sectionId,
     String businessType,
@@ -533,6 +534,14 @@ final client = http.Client();
                     onTap: () {
                       context.read<HomeBloc>().add(
                         HomeProductTapped(product.id),
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (_) =>
+                                  ProductDetailsScreen(productId: product.id),
+                        ),
                       );
                     },
                     discountPercentage: product.discountPercentage,

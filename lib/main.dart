@@ -1,3 +1,7 @@
+import 'package:delni_rms/features/home/view%20model/CartBloc.dart';
+import 'package:delni_rms/features/home/view%20model/CartRepository.dart';
+import 'package:delni_rms/features/home/view%20model/FavoritesRepository.dart';
+import 'package:delni_rms/features/home/view%20model/favorites_bloc.dart';
 import 'package:delni_rms/features/home/view%20model/store_details_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +33,14 @@ class DelniApp extends StatelessWidget {
         RepositoryProvider(create: (context) => SignupRepository()),
         RepositoryProvider(create: (context) => ProfileRepository()),
         RepositoryProvider(create: (context) => StoreDetailsRepository(http.Client())),
+        BlocProvider(
+          create: (context) => CartBloc(CartRepository(http.Client())),
+        ),
+        BlocProvider(
+          create:
+              (context) => FavoritesBloc(FavoritesRepository(http.Client())),
+        ),
+
       ],
       child: MultiBlocProvider(
         providers: [

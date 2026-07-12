@@ -26,7 +26,7 @@ class _RootScreenState extends State<RootScreen> {
       HomeScreen(isGuest: widget.isGuest),
       Favorites(),
       Categories(),
-      Cart(),
+      CartScreen(),
       InkWell(
         onTap: () {
           Navigator.push(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/view/otp_screen.dart';
-import '/features/auth/view/reset_password_screen.dart';
 import '../view_model/bloc/login_bloc.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
