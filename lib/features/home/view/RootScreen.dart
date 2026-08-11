@@ -27,6 +27,16 @@ class _RootScreenState extends State<RootScreen> {
       Favorites(),
       Categories(),
       CartScreen(),
+      BlocProvider(
+        create: (context) {
+          final bloc = ProfileBloc(ProfileRepository());
+          if (!widget.isGuest) {
+            bloc.add(LoadProfileEvent());
+          }
+          return bloc;
+        },
+        child: ProfileView(),
+      ),
       InkWell(
         onTap: () {
           Navigator.push(

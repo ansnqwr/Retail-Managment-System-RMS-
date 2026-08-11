@@ -41,7 +41,6 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
       body: SafeArea(
         child: BlocListener<ProfileBloc, ProfileState>(
           listener: (context, state) {
-            // الانتقال يتم هنا فقط وبشكل آمن بعد نجاح العملية تماماً
             if (state is ProfileActionSuccess && state.requiresRelogin) {
               ScaffoldMessenger.of(
                 context,

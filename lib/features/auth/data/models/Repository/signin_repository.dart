@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'auth_local_data.dart';
 
-final String baseUrl2 = 'http://192.168.1.109:8000';
+final String baseUrl2 = 'http://192.168.1.106:8000';
 final String baseUrl = '$baseUrl2/api';
 
 class SigninRepository {

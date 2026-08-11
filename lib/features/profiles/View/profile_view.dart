@@ -5,14 +5,7 @@ import '/features/auth/data/models/Repository/signin_repository.dart'
 import '/features/auth/view/login_screen.dart';
 import '/features/auth/view_model/bloc/login_bloc.dart';
 import '../ViewModel/profile_bloc.dart'
-    show
-        ProfileBloc,
-        ProfileError,
-        ProfileGuestMode,
-        ProfileInitial,
-        ProfileLoaded,
-        ProfileLoading,
-        ProfileState;
+    show LoadProfileEvent, ProfileBloc, ProfileError, ProfileGuestMode, ProfileInitial, ProfileLoaded, ProfileLoading, ProfileState;
 import 'change_email_view.dart';
 import 'change_password_view.dart';
 import 'edit_profile_view.dart';
@@ -38,7 +31,7 @@ class ProfileView extends StatelessWidget {
 
           if (state is ProfileInitial) {
             return const Center(
-              child: Text("يرجى الضغط على زر التحميل أو أنت في وضع الضيف"),
+              child: Text("please Enter your credentials to view profile."),
             );
           }
 
@@ -63,8 +56,7 @@ class ProfileView extends StatelessWidget {
                         _buildInfoField('Email', user.email),
                         _buildInfoField('Number', user.phone),
                         _buildInfoField('Governorate', user.governorate),
-
-                        _buildInfoField('Governorate', user.city),
+                        _buildInfoField('City', user.city),
 
                         const SizedBox(height: 20),
                         Row(
@@ -195,7 +187,7 @@ class ProfileView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Row(
+             Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
@@ -207,13 +199,25 @@ class ProfileView extends StatelessWidget {
                         ),
                         const SizedBox(width: 10),
                         GestureDetector(
-                          onTap:
-                              () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const EditProfileView(),
-                                ),
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (_) => BlocProvider.value(
+                                      value: context.read<ProfileBloc>(),
+                                      child: const EditProfileView(),
+                                    ),
                               ),
+                            );
+
+                            // 2. بعد العودة (إغلاق شاشة التعديل)، نقوم بتحديث البيانات
+                            if (context.mounted) {
+                              context.read<ProfileBloc>().add(
+                                LoadProfileEvent(),
+                              );
+                            }
+                          },
                           child: const Icon(
                             Icons.edit,
                             color: Colors.white,
@@ -221,7 +225,7 @@ class ProfileView extends StatelessWidget {
                           ),
                         ),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),

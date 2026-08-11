@@ -1,6 +1,7 @@
+import 'package:delni_rms/features/auth/data/models/Repository/signup_repository.dart';
+import 'package:delni_rms/features/auth/view_model/bloc/signup_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '/features/auth/view_model/bloc/login_bloc.dart';
 import '/features/auth/view/SignupScreen.dart';
 import '/features/auth/data/models/registration_data.dart';
 
@@ -79,16 +80,35 @@ class RegisterFirstStep extends StatelessWidget {
                           ..firstName = _firstCtrl.text.trim()
                           ..lastName = _lastCtrl.text.trim();
 
-                    Navigator.push(
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder:
+                    //         (currentContext) => BlocProvider.value(
+                    //           value: context.read<LoginBloc>(),
+                    //           child: SignupScreen(userData: data),
+                    //         ),
+                    //   ),
+                    // );
+
+
+Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder:
-                            (currentContext) => BlocProvider.value(
-                              value: context.read<LoginBloc>(),
+                            (context) => BlocProvider(
+                              create:
+                                  (context) => SignupBloc(
+                                    SignupRepository(),
+                                  ), 
                               child: SignupScreen(userData: data),
                             ),
                       ),
                     );
+
+
+
+
                   } else {
                     debugPrint("***********Form validation failed**********");
                   }

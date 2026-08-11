@@ -28,8 +28,6 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passCtrl = TextEditingController();
   final TextEditingController _confirmPassCtrl = TextEditingController();
   final TextEditingController _numberCtrl = TextEditingController();
-  // final TextEditingController _jobCtrl = TextEditingController();
-  // final TextEditingController _birthCtrl = TextEditingController();
 
   List<LocationItem> _governorates = [];
   List<LocationItem> _cities = [];
@@ -47,6 +45,14 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   @override
+  void dispose() {
+    _passCtrl.dispose();
+    _confirmPassCtrl.dispose();
+    _numberCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
@@ -55,23 +61,52 @@ class _SignupScreenState extends State<SignupScreen> {
       body: SafeArea(
         child: BlocListener<SignupBloc, SignupState>(
           listener: (context, state) {
+            // معالجة حالات المحافظات
             if (state is GovernoratesLoadedState) {
               setState(() {
                 _governorates = state.governorates;
+                print(
+                  'تم تحميل ${state.governorates.length} محافظة',
+                ); // للتصحيح
               });
-            } else if (state is CitiesLoadingState) {
+            } else if (state is GovernoratesErrorState) {
+              print('خطأ في المحافظات: ${state.message}'); // للتصحيح
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+            else if (state is CitiesLoadingState) {
               setState(() {
                 _isLoadingCities = true;
                 _cities = [];
                 _selectedCityId = null;
+                _selectedCityName = null;
               });
+              print('جاري تحميل المدن...'); // للتصحيح
             } else if (state is CitiesLoadedState) {
               setState(() {
                 _isLoadingCities = false;
                 _cities = state.cities;
               });
-            } else if (state is SignupSuccess) {
-              // 1. التعديل الأول: الانتقال للشاشة الرئيسية يحدث هنا فقط عند النجاح
+              print('تم تحميل ${state.cities.length} مدينة'); // للتصحيح
+            } else if (state is CitiesErrorState) {
+              setState(() {
+                _isLoadingCities = false;
+              });
+              print('خطأ في المدن: ${state.message}'); // للتصحيح
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+            // معالجة حالات التسجيل
+            else if (state is SignupSuccess) {
+              print('تم التسجيل بنجاح'); // للتصحيح
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -79,7 +114,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               );
             } else if (state is SignupFailure) {
-              // إظهار رسالة خطأ في حال فشل السيرفر في تسجيل الدخول
+              print('خطأ في التسجيل: ${state.errorMessage}'); // للتصحيح
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.errorMessage),
@@ -115,9 +150,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   isObscure: true,
                 ),
                 _buildField("Number", _numberCtrl),
-
-                // _buildField("Job", _jobCtrl),
-                // _buildField("Birthday", _birthCtrl),
                 const SizedBox(height: 15),
 
                 Row(
@@ -132,14 +164,18 @@ class _SignupScreenState extends State<SignupScreen> {
                         (val) {
                           setState(() {
                             _selectedGovernorateId = val;
-                            // حفظ اسم المدينة لإرساله للسيرفر
-                            _selectedGovernorateName =
-                                _governorates
-                                    .firstWhere(
-                                      (governorate) => governorate.id == val,
-                                    )
-                                    .name;
+                            _selectedCityId = null;
+                            _selectedCityName = null;
+                            _cities = [];
+
+                            if (val != null) {
+                              _selectedGovernorateName =
+                                  _governorates
+                                      .firstWhere((g) => g.id == val)
+                                      .name;
+                            }
                           });
+
                           if (val != null) {
                             context.read<SignupBloc>().add(
                               FetchCitiesEvent(governorateId: val),
@@ -150,35 +186,23 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     SizedBox(width: size.width * 0.04),
 
-                    // قائمة البلدات
+                    // قائمة المدن مع حالة التحميل
                     Expanded(
-                      child:
-                          _isLoadingCities
-                              ? const Padding(
-                                padding: EdgeInsets.only(top: 30),
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color: Color(0xFF6B2D5C),
-                                  ),
-                                ),
-                              )
-                              : _buildDropdown(
-                                "City",
-                                _cities,
-                                _selectedCityId,
-                                (val) {
-                                  setState(() {
-                                    _selectedCityId = val;
-                                    // حفظ اسم البلدة لإرساله للسيرفر
-                                    _selectedCityName =
-                                        _cities
-                                            .firstWhere(
-                                              (city) => city.id == val,
-                                            )
-                                            .name;
-                                  });
-                                },
-                              ),
+                      child: _buildDropdownWithLoading(
+                        "City",
+                        _cities,
+                        _selectedCityId,
+                        (val) {
+                          setState(() {
+                            _selectedCityId = val;
+                            if (val != null) {
+                              _selectedCityName =
+                                  _cities.firstWhere((c) => c.id == val).name;
+                            }
+                          });
+                        },
+                        _isLoadingCities,
+                      ),
                     ),
                   ],
                 ),
@@ -214,9 +238,6 @@ class _SignupScreenState extends State<SignupScreen> {
           controller: controller,
           obscureText: isObscure,
           validator: (val) {
-            // تجاهل التحقق من حقلي الوظيفة وتاريخ الميلاد
-            // if (label == "Job" || label == "Birthday") return null;
-
             if (val == null || val.isEmpty) return 'Required';
             if (label == "Confirm Password" && val != _passCtrl.text) {
               return 'Passwords do not match';
@@ -250,19 +271,75 @@ class _SignupScreenState extends State<SignupScreen> {
         DropdownButtonFormField<int>(
           isExpanded: true,
           value: value,
+          hint: Text(' $label'),
           items:
-              items
-                  .map(
-                    (item) => DropdownMenuItem<int>(
-                      value: item.id,
-                      child: Text(item.name, overflow: TextOverflow.ellipsis),
-                    ),
-                  )
-                  .toList(),
+              items.map((item) {
+                return DropdownMenuItem<int>(
+                  value: item.id,
+                  child: Text(item.name, overflow: TextOverflow.ellipsis),
+                );
+              }).toList(),
           onChanged: onChanged,
           decoration: _inputDecoration(),
           validator: (val) => val == null ? 'Select $label' : null,
         ),
+      ],
+    );
+  }
+
+  // دالة جديدة للـ Dropdown مع حالة التحميل
+  Widget _buildDropdownWithLoading(
+    String label,
+    List<LocationItem> items,
+    int? value,
+    Function(int?) onChanged,
+    bool isLoading,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF6B2D5C),
+          ),
+        ),
+        const SizedBox(height: 5),
+        if (isLoading)
+          Container(
+            height: 55,
+            decoration: BoxDecoration(
+              color: const Color(0xFFDED3DC).withOpacity(0.4),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  color: Color(0xFF6B2D5C),
+                  strokeWidth: 2.5,
+                ),
+              ),
+            ),
+          )
+        else
+          DropdownButtonFormField<int>(
+            isExpanded: true,
+            value: value,
+            hint: Text(' $label'),
+            items:
+                items.map((item) {
+                  return DropdownMenuItem<int>(
+                    value: item.id,
+                    child: Text(item.name, overflow: TextOverflow.ellipsis),
+                  );
+                }).toList(),
+            onChanged: onChanged,
+            decoration: _inputDecoration(),
+            validator: (val) => val == null ? 'Select $label' : null,
+          ),
       ],
     );
   }
@@ -292,10 +369,9 @@ class _SignupScreenState extends State<SignupScreen> {
                         "governorate": _selectedGovernorateName ?? '',
                         "phone_number": _numberCtrl.text,
                         "city": _selectedCityName ?? '',
-                        // "job": _jobCtrl.text,
-                        // "birthday": _birthCtrl.text,
                       };
 
+                      print('بيانات التسجيل: $finalRequest'); // للتصحيح
                       context.read<SignupBloc>().add(
                         SubmitSignupEvent(finalRequest),
                       );

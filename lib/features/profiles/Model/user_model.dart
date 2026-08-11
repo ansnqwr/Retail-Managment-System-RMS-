@@ -6,6 +6,7 @@ class UserModel {
   final String phone;
   final String governorate;
   final String city;
+  final String? access_token;
 
   UserModel({
     required this.id,
@@ -16,6 +17,7 @@ class UserModel {
 
     required this.governorate,
     required this.city,
+    this.access_token,
   });
 
   factory UserModel.guest() {
@@ -27,6 +29,7 @@ class UserModel {
       phone: '',
       governorate: '',
       city: '',
+      access_token: null,
     );
   }
 
@@ -39,6 +42,7 @@ class UserModel {
       phone: json['phone'] ?? '',
       governorate: json['governorate'] ?? '',
       city: json['city'] ?? '',
+      access_token: json['access_token'] ?? null,
     );
   }
 
@@ -49,6 +53,7 @@ class UserModel {
       'phone': phone,
       'governorate': governorate,
       'city': city,
+      'access_token': access_token,
     };
   }
 }

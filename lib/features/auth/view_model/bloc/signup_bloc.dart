@@ -18,11 +18,14 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     });
 
     on<FetchCitiesEvent>((event, emit) async {
+      print('FetchCitiesEvent: ${event.governorateId}'); // للتصحيح
       emit(CitiesLoadingState());
       try {
         final cities = await repository.getCities(event.governorateId);
+        print('تم جلب المدن: ${cities.length}'); // للتصحيح
         emit(CitiesLoadedState(cities));
       } catch (e) {
+        print('خطأ في FetchCitiesEvent: $e'); // للتصحيح
         emit(CitiesErrorState(e.toString()));
       }
     });

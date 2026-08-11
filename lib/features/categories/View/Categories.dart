@@ -169,6 +169,13 @@ class _CategoriesContent extends StatelessWidget {
                     ),
                   );
                 },
+
+
+
+
+
+
+                
               ),
               if (isExpanded && subCategories.isNotEmpty)
                 _buildSubCategoriesGrid(context, subCategories, category.title),

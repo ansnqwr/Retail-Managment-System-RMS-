@@ -1,4 +1,3 @@
-// signup_repository.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '/features/auth/view/SignupScreen.dart';
@@ -48,15 +47,21 @@ class SignupRepository {
 
   Future<List<LocationItem>> getGovernorates() async {
     try {
+      print('جاري جلب المحافظات...');
+
       final response = await http
-          .get(Uri.parse('$baseUrl/locations/cities'))
+          .get(Uri.parse('$baseUrl/locations/governorates'))
           .timeout(const Duration(seconds: 10));
 
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        final List data = responseData['data'] ?? [];
+      print('Governorates Response status: ${response.statusCode}');
+      print('Governorates Response body: ${response.body}');
 
-        return data
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = jsonDecode(response.body);
+
+        print('عدد المحافظات: ${responseData.length}');
+
+        return responseData
             .map(
               (json) => LocationItem(
                 id: json['id'] as int,
@@ -69,21 +74,30 @@ class SignupRepository {
         throw Exception(errorData['message'] ?? 'فشل في جلب المحافظات');
       }
     } catch (e) {
+      print('خطأ في getGovernorates: $e');
       throw Exception('لم نتمكن من تحميل المحافظات: $e');
     }
   }
 
   Future<List<LocationItem>> getCities(int governorateId) async {
     try {
+      print('جاري جلب المدن للمحافظة رقم: $governorateId');
+
       final response = await http
-          .get(Uri.parse('$baseUrl/locations/cities/$governorateId/towns'))
+          .get(
+            Uri.parse('$baseUrl/locations/governorates/$governorateId/cities'),
+          )
           .timeout(const Duration(seconds: 10));
 
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        final List data = responseData['data'] ?? [];
+      print('Cities Response status: ${response.statusCode}');
+      print('Cities Response body: ${response.body}');
 
-        return data
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = jsonDecode(response.body);
+
+        print('عدد المدن: ${responseData.length}');
+
+        return responseData
             .map(
               (json) => LocationItem(
                 id: json['id'] as int,
@@ -96,6 +110,7 @@ class SignupRepository {
         throw Exception(errorData['message'] ?? 'فشل في جلب البلدات');
       }
     } catch (e) {
+      print('خطأ في getCities: $e');
       throw Exception('لم نتمكن من تحميل البلدات: $e');
     }
   }

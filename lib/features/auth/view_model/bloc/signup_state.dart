@@ -1,4 +1,4 @@
-import '/features/auth/view/SignupScreen.dart';
+import 'package:delni_rms/features/auth/view/SignupScreen.dart';
 
 abstract class SignupState {}
 

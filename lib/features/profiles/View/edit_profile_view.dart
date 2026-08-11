@@ -1,10 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/data/models/Repository/signup_repository.dart';
 import '../Model/user_model.dart';
 import '../ViewModel/profile_bloc.dart';
-
 import '/features/auth/view/SignupScreen.dart';
 
 class EditProfileView extends StatefulWidget {
@@ -16,7 +14,6 @@ class EditProfileView extends StatefulWidget {
 
 class _EditProfileViewState extends State<EditProfileView> {
   final _formKey = GlobalKey<FormState>();
-
   final SignupRepository _signupRepository = SignupRepository();
 
   late TextEditingController _fNameCtrl;
@@ -31,7 +28,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   LocationItem? selectedCity;
 
   bool isLoadingLocations = true;
-  bool isLoadingGovernorates = false;
+  bool isLoadingCities = false; 
 
   @override
   void initState() {
@@ -85,13 +82,12 @@ class _EditProfileViewState extends State<EditProfileView> {
           setState(() {
             selectedGovernorate = matchedGov;
           });
-          await _loadGovernorates(
+          await _loadCities(
             matchedGov.id,
-            preselectedGovernorateName: _initialUser.governorate,
+            preselectedCityName: _initialUser.city,
           );
         } catch (e) {
           setState(() {
-            selectedGovernorate = null;
             selectedGovernorate = null;
           });
         }
@@ -104,39 +100,36 @@ class _EditProfileViewState extends State<EditProfileView> {
     }
   }
 
-  Future<void> _loadGovernorates(
+  Future<void> _loadCities(
     int governorateId, {
-    String? preselectedGovernorateName,
+    String? preselectedCityName,
   }) async {
     setState(() {
-      isLoadingGovernorates = true;
+      isLoadingCities = true;
     });
     try {
-      final fetchedGovernorates = await _signupRepository.getCities(
-        governorateId,
-      );
+      final fetchedCities = await _signupRepository.getCities(governorateId);
       setState(() {
-        governorates = fetchedGovernorates;
-        isLoadingGovernorates = false;
+        cities = fetchedCities;
+        isLoadingCities = false;
       });
 
-      if (preselectedGovernorateName != null &&
-          preselectedGovernorateName.isNotEmpty) {
+      if (preselectedCityName != null && preselectedCityName.isNotEmpty) {
         try {
           setState(() {
-            selectedGovernorate = governorates.firstWhere(
-              (c) => c.name == preselectedGovernorateName,
+            selectedCity = cities.firstWhere(
+              (c) => c.name == preselectedCityName,
             );
           });
         } catch (e) {
           setState(() {
-            selectedGovernorate = null;
+            selectedCity = null;
           });
         }
       }
     } catch (e) {
       setState(() {
-        isLoadingGovernorates = false;
+        isLoadingCities = false;
       });
       _showSnackBar(e.toString());
     }
@@ -144,19 +137,16 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   void _showSnackBar(String message) {
     if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
     }
   }
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        // backgroundColor: const Color(0xFFB180A0),
-        // backgroundColor:  Gradient.linear(TickerFuture.complete(), TickerFuture.complete(), [const Color(0xFFB180A0), const Color(0xFFF2A488)]),
         title: const Text(
           'Edit Profile',
           style: TextStyle(color: Color(0xFFF2A488)),
@@ -167,21 +157,16 @@ class _EditProfileViewState extends State<EditProfileView> {
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state is ProfileActionSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
             if (state.requiresRelogin == false) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.message)));
               Navigator.pop(context);
             }
-
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
-            Navigator.pop(context);
           } else if (state is ProfileError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
           }
         },
         builder: (context, state) {
@@ -220,27 +205,27 @@ class _EditProfileViewState extends State<EditProfileView> {
               label: 'Governorate',
               items: governorates,
               selectedItem: selectedGovernorate,
-              isLoading: false,
+              isLoading: false, 
               onChanged: (LocationItem? newValue) {
                 if (newValue != null && newValue != selectedGovernorate) {
                   setState(() {
                     selectedGovernorate = newValue;
-                    selectedGovernorate = null;
-                    governorates = [];
+                    selectedCity = null;
+                    cities = [];
                   });
-                  _loadGovernorates(newValue.id);
+                  _loadCities(newValue.id);
                 }
               },
             ),
-
+            
             _buildLocationDropdown(
-              label: 'Governorate',
-              items: governorates,
-              selectedItem: selectedGovernorate,
-              isLoading: isLoadingGovernorates,
+              label: 'City',
+              items: cities,
+              selectedItem: selectedCity,
+              isLoading: isLoadingCities,
               onChanged: (LocationItem? newValue) {
                 setState(() {
-                  selectedGovernorate = newValue;
+                  selectedCity = newValue;
                 });
               },
             ),
@@ -259,13 +244,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    if (selectedGovernorate == null ||
-                        selectedGovernorate == null) {
-                      _showSnackBar("الرجاء اختيار المحافظة والمدينة أولاً");
+                    if (selectedGovernorate == null || selectedCity == null) {
+                      _showSnackBar("please select both governorate and city.");
                       return;
                     }
-
-                    final updatedUser = UserModel(
+ final updatedUser = UserModel(
                       id: _initialUser.id,
                       firstName: _fNameCtrl.text.trim(),
                       lastName: _lNameCtrl.text.trim(),
@@ -273,6 +256,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       phone: _phoneCtrl.text.trim(),
                       governorate: selectedGovernorate!.name,
                       city: selectedCity!.name,
+                      access_token: _initialUser.access_token,
                     );
 
                     context.read<ProfileBloc>().add(
@@ -285,8 +269,6 @@ class _EditProfileViewState extends State<EditProfileView> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    // color: Colors.white,
-                    // background: #F2A488,
                     color: Color(0xFFF2A488),
                   ),
                 ),
@@ -328,11 +310,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            validator:
-                (val) =>
-                    val == null || val.trim().isEmpty
-                        ? 'Field cannot be empty'
-                        : null,
+            validator: (val) =>
+                val == null || val.trim().isEmpty ? 'Field cannot be empty' : null,
           ),
         ],
       ),
@@ -361,30 +340,27 @@ class _EditProfileViewState extends State<EditProfileView> {
           const SizedBox(height: 8),
           DropdownButtonFormField<LocationItem>(
             value: items.contains(selectedItem) ? selectedItem : null,
-            icon:
-                isLoading
-                    ? const SizedBox(
-                      height: 18,
-                      width: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Color(0xFF6B2D5C),
-                      ),
-                    )
-                    : const Icon(Icons.arrow_drop_down),
-            items:
-                items.map((item) {
-                  return DropdownMenuItem<LocationItem>(
-                    value: item,
-                    child: Text(item.name),
-                  );
-                }).toList(),
+            icon: isLoading
+                ? const SizedBox(
+                    height: 18,
+                    width: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Color(0xFF6B2D5C),
+                    ),
+                  )
+                : const Icon(Icons.arrow_drop_down),
+            items: items.map((item) {
+              return DropdownMenuItem<LocationItem>(
+                value: item,
+                child: Text(item.name),
+              );
+            }).toList(),
             onChanged: items.isEmpty || isLoading ? null : onChanged,
             decoration: InputDecoration(
-              hintText:
-                  items.isEmpty && !isLoading
-                      ? 'اختر الحقل السابق أولاً'
-                      : 'Select $label',
+              hintText: items.isEmpty && !isLoading
+                  ? 'اختر الحقل السابق أولاً'
+                  : 'Select $label',
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 14,
