@@ -1,3 +1,7 @@
+import 'package:delni_rms/features/auth/data/models/Repository/signup_repository.dart';
+import 'package:delni_rms/features/auth/view/SignupScreen.dart';
+import 'package:delni_rms/features/auth/view/register_first_step.dart';
+import 'package:delni_rms/features/auth/view_model/bloc/signup_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/data/models/Repository/signin_repository.dart'
@@ -29,11 +33,13 @@ class ProfileView extends StatelessWidget {
         builder: (context, state) {
           print("Current Profile State: $state");
 
-          if (state is ProfileInitial) {
-            return const Center(
-              child: Text("please Enter your credentials to view profile."),
-            );
-          }
+          // if (state is ProfileInitial) {
+          //   return const Center(
+          //     child:
+          //       Text("please Enter your credentials to view profile."),
+              
+          //   );
+          // }
 
           if (state is ProfileGuestMode) return _buildGuestView(context);
 
@@ -147,6 +153,18 @@ class ProfileView extends StatelessWidget {
             },
             child: const Text('Login', style: TextStyle(color: Colors.white)),
           ),
+          TextButton(onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => BlocProvider(
+                  create: (BuildContext context) { 
+                    return SignupBloc(SignupRepository());
+                  },
+                  child:  RegisterFirstStep(),
+                ),
+              ),
+            );
+          }, child: Text('Sign Up', style: TextStyle(color: Color(0xFF6B2D5C)))),
         ],
       ),
     );
@@ -211,7 +229,6 @@ class ProfileView extends StatelessWidget {
                               ),
                             );
 
-                            // 2. بعد العودة (إغلاق شاشة التعديل)، نقوم بتحديث البيانات
                             if (context.mounted) {
                               context.read<ProfileBloc>().add(
                                 LoadProfileEvent(),

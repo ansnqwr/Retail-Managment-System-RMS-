@@ -6,6 +6,7 @@ import 'package:delni_rms/features/home/view%20model/store_details_repository.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart'; // تمت إضافة المكتبة هنا
 
 import '/features/auth/data/models/Repository/signin_repository.dart';
 import '/features/auth/data/models/Repository/signup_repository.dart';
@@ -19,11 +20,19 @@ import '/features/splash/view/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const DelniApp());
+
+  final prefs = await SharedPreferences.getInstance();
+  final bool isGuest = prefs.getBool('is_guest') ?? false;
+  final bool isLoggedIn = prefs.getBool('is_logged_in') ?? false;
+
+  runApp(DelniApp(isGuest: isGuest, isLoggedIn: isLoggedIn));
 }
 
 class DelniApp extends StatelessWidget {
-  const DelniApp({super.key});
+  final bool isGuest;
+  final bool isLoggedIn;
+
+  const DelniApp({super.key, required this.isGuest, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +41,9 @@ class DelniApp extends StatelessWidget {
         RepositoryProvider(create: (context) => SigninRepository()),
         RepositoryProvider(create: (context) => SignupRepository()),
         RepositoryProvider(create: (context) => ProfileRepository()),
-        RepositoryProvider(create: (context) => StoreDetailsRepository(http.Client())),
+        RepositoryProvider(
+          create: (context) => StoreDetailsRepository(http.Client()),
+        ),
         BlocProvider(
           create: (context) => CartBloc(CartRepository(http.Client())),
         ),
@@ -40,7 +51,6 @@ class DelniApp extends StatelessWidget {
           create:
               (context) => FavoritesBloc(FavoritesRepository(http.Client())),
         ),
-
       ],
       child: MultiBlocProvider(
         providers: [
@@ -66,24 +76,17 @@ class DelniApp extends StatelessWidget {
             primaryColor: const Color(0xFF6B2D5C),
             colorScheme: ColorScheme.fromSeed(
               seedColor: const Color(0xFF6B2D5C),
-
               primary: const Color(0xFF6B2D5C),
-
               secondary: const Color(0xFFF2A488),
             ),
-
-            // fontFamily: 'Cairo',
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.transparent,
-
               elevation: 0,
-
               iconTheme: IconThemeData(color: Color(0xFF6B2D5C)),
-
               centerTitle: true,
             ),
           ),
-          home: const SplashScreen(),
+          home: SplashScreen(isGuest: isGuest, isLoggedIn: isLoggedIn),
         ),
       ),
     );

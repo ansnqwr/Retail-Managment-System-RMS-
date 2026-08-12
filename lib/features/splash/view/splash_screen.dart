@@ -6,7 +6,14 @@ import '../view model/splash_bloc.dart';
 import '/features/home/view/RootScreen.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
+  final bool isGuest;
+  final bool isLoggedIn;
+
+  const SplashScreen({
+    super.key,
+    required this.isGuest,
+    required this.isLoggedIn,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,18 +23,25 @@ class SplashScreen extends StatelessWidget {
           if (state is SplashNavigateToOnboarding) {
             if (!context.mounted) return;
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => OnboardingScreen()),
+              MaterialPageRoute(builder: (_) =>  OnboardingScreen()),
             );
           } else if (state is SplashNavigateToHome) {
+            if (!context.mounted) return;
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (_) => const RootScreen(isGuest: false),
-              ),
+              MaterialPageRoute(builder: (_) => RootScreen(isGuest: isGuest)),
             );
           } else if (state is SplashNavigateToWelcome) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const WelcomeLoginScreen()),
-            );
+            if (!context.mounted) return;
+
+            if (isGuest || isLoggedIn) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => RootScreen(isGuest: isGuest)),
+              );
+            } else {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const WelcomeLoginScreen()),
+              );
+            }
           }
         },
         builder: (context, state) {
@@ -64,9 +78,7 @@ class SplashScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24),
-
                     const SizedBox(height: 48),
-
                     if (state is SplashLoading || state is SplashInitial)
                       const SizedBox(
                         width: 28,

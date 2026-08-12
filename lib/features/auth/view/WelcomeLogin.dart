@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '/features/auth/data/models/Repository/signin_repository.dart';
 import '/features/auth/view_model/bloc/login_bloc.dart';
 import '/features/auth/view/login_screen.dart';
@@ -92,18 +93,24 @@ class WelcomeLoginScreen extends StatelessWidget {
 
               SizedBox(height: size.height * 0.02),
 
-              Center(
+             Center(
                 child: TextButton(
-                  onPressed: () {
-                    context.read<ProfileBloc>().add(SetGuestModeEvent());
-                    context.read<ProfileBloc>().add(
-                      LoadProfileEvent(isGuest: true),
-                    );
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const RootScreen(isGuest: true),
-                      ),
-                    );
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool('is_guest', true);
+
+                    if (context.mounted) {
+                      context.read<ProfileBloc>().add(SetGuestModeEvent());
+                      context.read<ProfileBloc>().add(
+                        LoadProfileEvent(isGuest: true),
+                      );
+
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (_) => const RootScreen(isGuest: true),
+                        ),
+                      );
+                    }
                   },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
