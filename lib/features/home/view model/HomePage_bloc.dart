@@ -95,7 +95,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       current.copyWith(
         selectedCategoryIndex: event.categoryIndex,
         selectedCategoryId: isAllCategory ? null : event.categoryId,
-        selectedCategoryName: categoryName, // ADDED
+        selectedCategoryName: categoryName,
         isLoadingMoreJustForYou: true,
       ),
     );
@@ -161,7 +161,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         current.copyWith(
           selectedCategoryIndex: event.categoryIndex,
           selectedCategoryId: isAllCategory ? null : event.categoryId,
-          selectedCategoryName: categoryName, // ADDED
+          selectedCategoryName: categoryName,
           trendingProducts: results[0] as List<ProductCardModel>,
           onSaleProducts: results[1] as List<ProductCardModel>,
           newestProducts: results[2] as List<ProductCardModel>,

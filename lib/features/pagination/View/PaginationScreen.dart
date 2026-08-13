@@ -13,6 +13,7 @@ import '../ViewModel/pagination_repository.dart';
 import '../ViewModel/pagination_state.dart';
 
 class PaginationScreen extends StatelessWidget {
+  final int? categoryNumber;
   final String? businessType;
   final bool isProduct;
   final bool isStore;
@@ -20,9 +21,11 @@ class PaginationScreen extends StatelessWidget {
   final bool? hasSubCategories;
   final int? subCategoryId;
   final String paginationTitle;
+  final int? initialCategoryId;
 
   const PaginationScreen({
     super.key,
+    this.categoryNumber,
     this.businessType,
     required this.isProduct,
     required this.isStore,
@@ -30,6 +33,7 @@ class PaginationScreen extends StatelessWidget {
     required this.paginationTitle,
     this.hasSubCategories,
     this.subCategoryId,
+    this.initialCategoryId,
   });
 
   @override
@@ -39,6 +43,7 @@ class PaginationScreen extends StatelessWidget {
           (context) =>
               PaginationBloc(paginationRepository: PaginationRepository())..add(
                 PaginationLoadRequested(
+                  categoryNumber: categoryNumber,
                   businessType: businessType,
                   isProduct: isProduct,
                   isStore: isStore,
@@ -46,6 +51,7 @@ class PaginationScreen extends StatelessWidget {
                   hasSubCategories: hasSubCategories,
                   subCategoryId: subCategoryId,
                   paginationTitle: paginationTitle,
+                  initialCategoryId: initialCategoryId,
                 ),
               ),
       child: _PaginationContent(hasSubCategories: hasSubCategories),

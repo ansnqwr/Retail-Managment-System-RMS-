@@ -40,6 +40,7 @@ class PaginationRepository {
   }
 
   Future<List<ProductCardModel>> fetchProducts({
+    int? categoryId, // optional – we prefer filters['category']
     required String? businessType,
     required dynamic searchQuery,
     required Map<String, dynamic> filters,
@@ -59,24 +60,43 @@ class PaginationRepository {
         }
       }
       if (subCategoryId != null) queryParams['subCategoryId'] = subCategoryId;
+      if (categoryId != null)
+        queryParams['category'] = categoryId; // fallback only
 
-      final categoryName = filters['category'] as String?;
+      final filtersModel = filters['filtersModel'] as FiltersModel?;
+      final categoryValue = filters['category'];
       final subCategoryName = filters['subCategory'] as String?;
       final governorateName = filters['governorate'] as String?;
       final cityName = filters['city'] as String?;
       final brandName = filters['brand'] as String?;
       final colorName = filters['color'] as String?;
       final inStock = filters['inStockOnly'] as bool?;
-      final filtersModel = filters['filtersModel'] as FiltersModel?;
 
-      if (filtersModel != null) {
-        if (categoryName != null) {
-          final id = filtersModel.categoryIdByName(categoryName);
-          if (id != null) queryParams['category'] = id;
+      // ---------- Category ----------
+      // numeric (from home slider) → send as id
+      // string name (from filter sheet) → look up id
+      if (categoryValue != null) {
+        if (categoryValue is int ||
+            (categoryValue is String && int.tryParse(categoryValue) != null)) {
+          queryParams['category'] =
+              categoryValue is int
+                  ? categoryValue
+                  : int.parse(categoryValue as String);
+        } else if (categoryValue is String) {
+          if (filtersModel != null) {
+            final id = filtersModel.categoryIdByName(categoryValue);
+            if (id != null) queryParams['category'] = id;
+          } else {
+            queryParams['category'] = categoryValue; // last-resort fallback
+          }
         }
-        if (subCategoryName != null && categoryName != null) {
+      }
+
+      // ---------- Other filters ----------
+      if (filtersModel != null) {
+        if (subCategoryName != null && categoryValue is String) {
           final id = filtersModel.subcategoryIdByName(
-            categoryName,
+            categoryValue,
             subCategoryName,
           );
           if (id != null) queryParams['subCategory'] = id;
@@ -90,24 +110,20 @@ class PaginationRepository {
           if (id != null) queryParams['city'] = id;
         }
         if (brandName != null) {
-          final id = filtersModel.brandIdByName(brandName);
-          if (id != null) {
-            queryParams['brand'] = brandName;
-          }
+          queryParams['brand'] = brandName;
         }
       } else {
-        if (categoryName != null) queryParams['category'] = categoryName;
-        if (subCategoryName != null) {
+        if (subCategoryName != null)
           queryParams['subCategory'] = subCategoryName;
-        }
-        if (governorateName != null) {
+        if (governorateName != null)
           queryParams['governorate'] = governorateName;
-        }
         if (cityName != null) queryParams['city'] = cityName;
         if (brandName != null) queryParams['brand'] = brandName;
       }
 
       if (colorName != null) queryParams['color'] = colorName;
+
+      // Restore old behaviour
       queryParams['inStock'] = (inStock ?? true) ? 1 : 0;
 
       final priceRange = filters['priceRange'];
@@ -130,6 +146,7 @@ class PaginationRepository {
   }
 
   Future<List<StoreCardModel>> fetchStores({
+    int? categoryId, // optional – we prefer filters['category']
     required String? businessType,
     required dynamic searchQuery,
     required Map<String, dynamic> filters,
@@ -149,22 +166,39 @@ class PaginationRepository {
         }
       }
       if (subCategoryId != null) queryParams['subCategoryId'] = subCategoryId;
+      if (categoryId != null)
+        queryParams['category'] = categoryId; // fallback only
 
-      final categoryName = filters['category'] as String?;
+      final filtersModel = filters['filtersModel'] as FiltersModel?;
+      final categoryValue = filters['category'];
       final subCategoryName = filters['subCategory'] as String?;
       final governorateName = filters['governorate'] as String?;
       final cityName = filters['city'] as String?;
       final brandName = filters['brand'] as String?;
-      final filtersModel = filters['filtersModel'] as FiltersModel?;
 
-      if (filtersModel != null) {
-        if (categoryName != null) {
-          final id = filtersModel.categoryIdByName(categoryName);
-          if (id != null) queryParams['category'] = id;
+      // ---------- Category ----------
+      if (categoryValue != null) {
+        if (categoryValue is int ||
+            (categoryValue is String && int.tryParse(categoryValue) != null)) {
+          queryParams['category'] =
+              categoryValue is int
+                  ? categoryValue
+                  : int.parse(categoryValue as String);
+        } else if (categoryValue is String) {
+          if (filtersModel != null) {
+            final id = filtersModel.categoryIdByName(categoryValue);
+            if (id != null) queryParams['category'] = id;
+          } else {
+            queryParams['category'] = categoryValue;
+          }
         }
-        if (subCategoryName != null && categoryName != null) {
+      }
+
+      // ---------- Other filters ----------
+      if (filtersModel != null) {
+        if (subCategoryName != null && categoryValue is String) {
           final id = filtersModel.subcategoryIdByName(
-            categoryName,
+            categoryValue,
             subCategoryName,
           );
           if (id != null) queryParams['subCategory'] = id;
@@ -178,17 +212,13 @@ class PaginationRepository {
           if (id != null) queryParams['city'] = id;
         }
         if (brandName != null) {
-          final id = filtersModel.brandIdByName(brandName);
-          if (id != null) queryParams['brand'] = brandName;
+          queryParams['brand'] = brandName;
         }
       } else {
-        if (categoryName != null) queryParams['category'] = categoryName;
-        if (subCategoryName != null) {
+        if (subCategoryName != null)
           queryParams['subCategory'] = subCategoryName;
-        }
-        if (governorateName != null) {
+        if (governorateName != null)
           queryParams['governorate'] = governorateName;
-        }
         if (cityName != null) queryParams['city'] = cityName;
         if (brandName != null) queryParams['brand'] = brandName;
       }
@@ -200,7 +230,6 @@ class PaginationRepository {
         queryParameters: queryParams,
       );
       final List<dynamic> data = response.data;
-
       return data.map((json) => StoreCardModel.fromJson(json)).toList();
     } on DioException catch (e) {
       throw PaginationRepositoryException(handleDioError(e));

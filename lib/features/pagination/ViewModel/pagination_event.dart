@@ -7,6 +7,7 @@ abstract class PaginationEvent extends Equatable {
 }
 
 class PaginationLoadRequested extends PaginationEvent {
+  final int? categoryNumber;
   final String? businessType;
   final bool isProduct;
   final bool isStore;
@@ -14,8 +15,10 @@ class PaginationLoadRequested extends PaginationEvent {
   final bool? hasSubCategories;
   final int? subCategoryId;
   final String paginationTitle;
+  final int? initialCategoryId;
 
   const PaginationLoadRequested({
+    required this.categoryNumber,
     required this.businessType,
     required this.isProduct,
     required this.isStore,
@@ -23,10 +26,12 @@ class PaginationLoadRequested extends PaginationEvent {
     this.hasSubCategories,
     this.subCategoryId,
     required this.paginationTitle,
+    this.initialCategoryId,
   });
 
   @override
   List<Object?> get props => [
+    categoryNumber,
     businessType,
     isProduct,
     isStore,
@@ -34,6 +39,7 @@ class PaginationLoadRequested extends PaginationEvent {
     hasSubCategories,
     subCategoryId,
     paginationTitle,
+    initialCategoryId,
   ];
 }
 

@@ -144,6 +144,14 @@ class FiltersModel {
           : subcategories[categoryName]
               ?.firstWhere((e) => e.title == subcategoryName)
               .id;
+
+  String? categoryNameById(int id) {
+    try {
+      return categories.firstWhere((e) => e.id == id).title;
+    } catch (_) {
+      return null;
+    }
+  }
 }
 
 class ColorOption {

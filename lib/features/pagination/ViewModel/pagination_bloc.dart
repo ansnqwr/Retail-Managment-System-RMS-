@@ -24,6 +24,16 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
   static const int _limit = 10;
   static const int maxSearchChips = 5;
 
+  static const _businessTypeTitles = {
+    'Trending',
+    'On Sale',
+    'Newest',
+    'Brands',
+    'Stores Nearby',
+    'Just For You',
+    'Most Bought',
+  };
+
   PaginationBloc({required PaginationRepository paginationRepository})
     : _paginationRepository = paginationRepository,
       super(const PaginationInitial()) {
@@ -52,8 +62,16 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
     _hasSubCategories = event.hasSubCategories;
     _subCategoryId = event.subCategoryId;
     _paginationTitle = event.paginationTitle;
-    _searchChips = _parsePaginationTitleToChips(event.paginationTitle);
-    _currentFilters = {'inStockOnly': true};
+
+    _searchChips =
+        _isSubCategory ? _parseBreadcrumbToChips(event.paginationTitle) : [];
+
+    if (event.initialCategoryId != null && event.initialCategoryId != 0) {
+      _currentFilters = {'category': event.initialCategoryId.toString()};
+    } else {
+      _currentFilters = {};
+    }
+
     _currentPage = 1;
     filtersModel = null;
     await _loadData(emit, isRefresh: true);
@@ -87,7 +105,6 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
     final trimmedQuery = event.query.trim();
     if (trimmedQuery.isEmpty) return;
 
-    // Check for duplicates
     if (_searchChips.any(
       (chip) => chip.toLowerCase() == trimmedQuery.toLowerCase(),
     )) {
@@ -96,13 +113,12 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
 
     if (_searchChips.length >= maxSearchChips) {
       emit(
-        PaginationError(
+        const PaginationError(
           'You can only use $maxSearchChips search chips at a time. Remove one to add another.',
         ),
       );
       if (state is PaginationLoaded) {
-        final lastState = state as PaginationLoaded;
-        emit(lastState.copyWith());
+        emit((state as PaginationLoaded).copyWith());
       }
       return;
     }
@@ -136,7 +152,7 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
     PaginationFiltersApplied event,
     Emitter<PaginationState> emit,
   ) async {
-    _currentFilters = event.filters;
+    _currentFilters = {..._currentFilters, ...event.filters};
     _currentPage = 1;
     await _loadData(emit, isRefresh: true);
   }
@@ -145,8 +161,8 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
     PaginationFilterChipRemoved event,
     Emitter<PaginationState> emit,
   ) async {
-    _currentFilters = Map<String, dynamic>.from(_currentFilters);
-    _currentFilters.remove(event.filterKey);
+    _currentFilters = Map<String, dynamic>.from(_currentFilters)
+      ..remove(event.filterKey);
     _currentPage = 1;
     await _loadData(emit, isRefresh: true);
   }
@@ -168,7 +184,7 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
     _paginationTitle = event.subCategoryTitle;
     _isSubCategory = true;
     _isProduct = true;
-    _searchChips = _parsePaginationTitleToChips(event.subCategoryTitle);
+    _searchChips = _parseBreadcrumbToChips(event.subCategoryTitle);
     _currentPage = 1;
     await _loadData(emit, isRefresh: true);
   }
@@ -183,11 +199,11 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
     Emitter<PaginationState> emit,
   ) {}
 
-  List<String> _parsePaginationTitleToChips(String title) {
+  List<String> _parseBreadcrumbToChips(String title) {
     return title
         .split('/')
         .map((s) => s.trim())
-        .where((s) => s.isNotEmpty)
+        .where((s) => s.isNotEmpty && !_businessTypeTitles.contains(s))
         .toList();
   }
 
@@ -209,8 +225,7 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
     if (isRefresh) {
       emit(const PaginationLoading());
     } else if (isLoadMore && state is PaginationLoaded) {
-      final currentState = state as PaginationLoaded;
-      emit(currentState.copyWith(isLoadingMore: true));
+      emit((state as PaginationLoaded).copyWith(isLoadingMore: true));
     }
 
     try {
@@ -224,8 +239,22 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
       if (filtersModel == null && !isLoadMore) {
         try {
           filtersModel = await _paginationRepository.fetchFilters();
-        } catch (e) {
+        } catch (_) {
           filtersModel = null;
+        }
+      }
+
+      if (filtersModel != null && _currentFilters['category'] != null) {
+        final raw = _currentFilters['category'];
+        final id =
+            raw is int ? raw : (raw is String ? int.tryParse(raw) : null);
+
+        if (id != null) {
+          final name = filtersModel!.categoryNameById(id);
+          if (name != null) {
+            _currentFilters = Map<String, dynamic>.from(_currentFilters)
+              ..['category'] = name;
+          }
         }
       }
 
@@ -252,12 +281,10 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
 
         newBatchHasMoreData = newProducts.length >= _limit;
 
-        if (isLoadMore && state is PaginationLoaded) {
-          final currentState = state as PaginationLoaded;
-          products = [...currentState.products, ...newProducts];
-        } else {
-          products = newProducts;
-        }
+        products =
+            isLoadMore && state is PaginationLoaded
+                ? [...(state as PaginationLoaded).products, ...newProducts]
+                : newProducts;
         stores = [];
       } else if (_isStore) {
         final newStores = await _paginationRepository.fetchStores(
@@ -271,12 +298,10 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
 
         newBatchHasMoreData = newStores.length >= _limit;
 
-        if (isLoadMore && state is PaginationLoaded) {
-          final currentState = state as PaginationLoaded;
-          stores = [...currentState.stores, ...newStores];
-        } else {
-          stores = newStores;
-        }
+        stores =
+            isLoadMore && state is PaginationLoaded
+                ? [...(state as PaginationLoaded).stores, ...newStores]
+                : newStores;
         products = [];
       } else {
         final newProducts = await _paginationRepository.fetchProducts(
@@ -290,12 +315,10 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
 
         newBatchHasMoreData = newProducts.length >= _limit;
 
-        if (isLoadMore && state is PaginationLoaded) {
-          final currentState = state as PaginationLoaded;
-          products = [...currentState.products, ...newProducts];
-        } else {
-          products = newProducts;
-        }
+        products =
+            isLoadMore && state is PaginationLoaded
+                ? [...(state as PaginationLoaded).products, ...newProducts]
+                : newProducts;
         stores = [];
       }
 

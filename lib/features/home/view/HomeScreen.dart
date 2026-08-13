@@ -1,3 +1,6 @@
+import 'package:delni_rms/features/settings/view%20model/settingsBloc.dart';
+import 'package:delni_rms/features/settings/view%20model/settingsEvent.dart';
+import 'package:delni_rms/features/settings/view/settingsScreen.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_bloc.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_event.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
@@ -17,6 +20,7 @@ import '../../../core/widgets/BadgeIconWidget.dart';
 import '../../../core/widgets/CategorySliderItem.dart';
 import '../../../features/home/Model/AdModel.dart';
 import '../../products/view/ProductDetailsScreen.dart';
+import '../../settings/view model/settingsRepository.dart';
 import '../../stores/view/store_details_screen.dart';
 import '../Model/ProductCardModel.dart';
 import '../Model/StoreCardItem.dart';
@@ -266,6 +270,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   'Trending',
                   state.trendingProducts,
                   primaryColor,
+                  state.selectedCategoryId,
                 ),
                 const SizedBox(height: 30),
                 _buildProductSection(
@@ -274,6 +279,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   'On Sale',
                   state.onSaleProducts,
                   primaryColor,
+                  state.selectedCategoryId,
                 ),
                 const SizedBox(height: 30),
                 // _buildProductSection(
@@ -290,6 +296,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   'Newest',
                   state.newestProducts,
                   primaryColor,
+                  state.selectedCategoryId,
                 ),
                 _buildStoresSection(
                   context,
@@ -298,6 +305,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   state.brandStores,
                   primaryColor,
                   client,
+                  state.selectedCategoryId,
                 ),
                 _buildStoresSection(
                   context,
@@ -306,6 +314,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   state.nearbyStores,
                   primaryColor,
                   client,
+                  state.selectedCategoryId,
                 ),
                 const SizedBox(height: 20),
               ],
@@ -460,6 +469,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
     String businessType,
     List<ProductCardModel> products,
     Color primaryColor,
+    int? selectedCategoryId,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -481,6 +491,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                         isStore: false,
                         isSubCategory: false,
                         paginationTitle: businessType,
+                        initialCategoryId: selectedCategoryId,
                       ),
                 ),
               );
@@ -562,6 +573,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
     List<StoreCardModel> stores,
     Color primaryColor,
     http.Client client,
+    int? selectedCategoryId,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -580,6 +592,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                         isStore: true,
                         isSubCategory: false,
                         paginationTitle: businessType,
+                        initialCategoryId: selectedCategoryId,
                       ),
                 ),
               );
@@ -683,9 +696,18 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
     return InkWell(
       onTap: () {
         context.read<HomeBloc>().add(const HomeSettingsTapped());
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => const Settings()));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder:
+                (routeContext) => BlocProvider(
+                  create:
+                      (blocContext) =>
+                          SettingsBloc(repository: SettingsRepositoryImpl())
+                            ..add(LoadSettings()),
+                  child: const SettingsScreen(),
+                ),
+          ),
+        );
       },
       child: IconCircleWidget(icon: Icons.settings, color: color),
     );
