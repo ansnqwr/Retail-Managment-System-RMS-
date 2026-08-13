@@ -51,7 +51,13 @@ class ProfileError extends ProfileState {
 class ProfileActionSuccess extends ProfileState {
   final String message;
   final bool requiresRelogin;
-  ProfileActionSuccess(this.message, {this.requiresRelogin = false});
+  final UserModel? updatedUser;
+
+  ProfileActionSuccess(
+    this.message, {
+    this.requiresRelogin = false,
+    this.updatedUser,
+  });
 }
 
 // --- BLOC ---
@@ -64,17 +70,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UpdateProfileEvent>(_onUpdateProfile);
     on<ChangePasswordEvent>(_onChangePassword);
     on<ChangeEmailEvent>(_onChangeEmail);
-    on<SetGuestModeEvent>((event, emit) {
-      emit(ProfileGuestMode());
-    });
+    on<SetGuestModeEvent>((event, emit) => emit(ProfileGuestMode()));
   }
 
-  // في profile_bloc.dart
   Future<void> _onLoadProfile(
     LoadProfileEvent event,
     Emitter<ProfileState> emit,
   ) async {
-    // إذا كان المستخدم ضيفاً، ننهي العملية فوراً
     if (event.isGuest) {
       emit(ProfileGuestMode());
       return;
@@ -85,9 +87,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       _currentUser = await repository.fetchUserProfile();
       emit(ProfileLoaded(_currentUser!));
     } catch (e) {
-      // فقط إذا كان هناك مستخدم حالي، لا تظهر Error، بل أظهر البيانات القديمة
-      // أو قم بإعادة التوجيه لصفحة تسجيل الدخول
-      emit(ProfileError("فشل تحميل البيانات: ${e.toString()}"));
+      emit(ProfileError("Failed to load profile: ${e.toString()}"));
     }
   }
 
@@ -98,7 +98,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(ProfileLoading());
     try {
       _currentUser = await repository.updateProfile(event.updatedUser);
-      emit(ProfileActionSuccess('Profile updated successfully'));
+      emit(
+        ProfileActionSuccess(
+          'Profile updated successfully',
+          updatedUser: _currentUser,
+        ),
+      );
       emit(ProfileLoaded(_currentUser!));
     } catch (e) {
       emit(ProfileError(e.toString()));

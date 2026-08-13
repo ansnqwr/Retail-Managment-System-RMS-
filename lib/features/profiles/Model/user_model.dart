@@ -42,7 +42,7 @@ class UserModel {
       phone: json['phone'] ?? '',
       governorate: json['governorate'] ?? '',
       city: json['city'] ?? '',
-      access_token: json['access_token'] ?? null,
+      access_token: json['access_token'],
     );
   }
 

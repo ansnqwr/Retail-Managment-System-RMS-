@@ -1,22 +1,53 @@
-import 'package:delni_rms/features/auth/data/models/Repository/signup_repository.dart';
-import 'package:delni_rms/features/auth/view/SignupScreen.dart';
-import 'package:delni_rms/features/auth/view/register_first_step.dart';
-import 'package:delni_rms/features/auth/view_model/bloc/signup_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '/features/auth/data/models/Repository/signin_repository.dart'
-    show SigninRepository;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '/features/auth/data/models/Repository/signin_repository.dart';
+import '/features/auth/data/models/Repository/signup_repository.dart';
 import '/features/auth/view/login_screen.dart';
+import '/features/auth/view/register_first_step.dart';
 import '/features/auth/view_model/bloc/login_bloc.dart';
-import '../ViewModel/profile_bloc.dart'
-    show LoadProfileEvent, ProfileBloc, ProfileError, ProfileGuestMode, ProfileInitial, ProfileLoaded, ProfileLoading, ProfileState;
+import '/features/auth/view_model/bloc/signup_bloc.dart';
+import '../ViewModel/profile_bloc.dart';
 import 'change_email_view.dart';
 import 'change_password_view.dart';
 import 'edit_profile_view.dart';
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends StatefulWidget {
   final bool isGuest;
   const ProfileView({super.key, this.isGuest = false});
+
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  @override
+  void initState() {
+    super.initState();
+    final bloc = context.read<ProfileBloc>();
+    if (bloc.state is ProfileInitial) {
+      bloc.add(LoadProfileEvent(isGuest: widget.isGuest));
+    }
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    if (context.mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder:
+              (_) => BlocProvider(
+                create: (_) => LoginBloc(SigninRepository()),
+                child: const LoginScreen(),
+              ),
+        ),
+        (route) => false,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,28 +56,36 @@ class ProfileView extends StatelessWidget {
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state is ProfileError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+
+          if (state is ProfileActionSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.green,
+              ),
+            );
+
+            if (state.requiresRelogin) {
+              _logout(context);
+            }
           }
         },
         builder: (context, state) {
-          print("Current Profile State: $state");
-
-          // if (state is ProfileInitial) {
-          //   return const Center(
-          //     child:
-          //       Text("please Enter your credentials to view profile."),
-              
-          //   );
-          // }
-
-          if (state is ProfileGuestMode) return _buildGuestView(context);
-
-          if (state is ProfileLoading) {
+          if (state is ProfileLoading || state is ProfileInitial) {
             return const Center(
               child: CircularProgressIndicator(color: Color(0xFF6B2D5C)),
             );
+          }
+
+          if (state is ProfileGuestMode) {
+            return _buildGuestView(context);
           }
 
           if (state is ProfileLoaded) {
@@ -60,15 +99,16 @@ class ProfileView extends StatelessWidget {
                     child: Column(
                       children: [
                         _buildInfoField('Email', user.email),
-                        _buildInfoField('Number', user.phone),
+                        _buildInfoField('Phone Number', user.phone),
                         _buildInfoField('Governorate', user.governorate),
                         _buildInfoField('City', user.city),
-
                         const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            const Text('Do you Want change '),
+                            const Text('Do you want to change '),
                             GestureDetector(
                               onTap:
                                   () => Navigator.push(
@@ -96,15 +136,33 @@ class ProfileView extends StatelessWidget {
                                     ),
                                   ),
                               child: const Text(
-                                'password',
+                                'Password',
                                 style: TextStyle(
                                   color: Colors.red,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            const Text(' ?'),
+                            const Text('?'),
                           ],
+                        ),
+                        const SizedBox(height: 30),
+
+                        TextButton.icon(
+                          onPressed: () => _logout(context),
+                          icon: const Icon(
+                            Icons.logout,
+                            color: Colors.red,
+                            size: 24,
+                          ),
+                          label: const Text(
+                            'Log out',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 20),
                       ],
@@ -115,7 +173,6 @@ class ProfileView extends StatelessWidget {
             );
           }
 
-          // return const Center(child: Text('Something went wrong.'));
           return _buildGuestView(context);
         },
       ),
@@ -145,7 +202,7 @@ class ProfileView extends StatelessWidget {
                 MaterialPageRoute(
                   builder:
                       (_) => BlocProvider(
-                        create: (context) => LoginBloc(SigninRepository()),
+                        create: (_) => LoginBloc(SigninRepository()),
                         child: const LoginScreen(),
                       ),
                 ),
@@ -153,18 +210,23 @@ class ProfileView extends StatelessWidget {
             },
             child: const Text('Login', style: TextStyle(color: Colors.white)),
           ),
-          TextButton(onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => BlocProvider(
-                  create: (BuildContext context) { 
-                    return SignupBloc(SignupRepository());
-                  },
-                  child:  RegisterFirstStep(),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder:
+                      (_) => BlocProvider(
+                        create: (_) => SignupBloc(SignupRepository()),
+                        child: RegisterFirstStep(),
+                      ),
                 ),
-              ),
-            );
-          }, child: Text('Sign Up', style: TextStyle(color: Color(0xFF6B2D5C)))),
+              );
+            },
+            child: const Text(
+              'Sign Up',
+              style: TextStyle(color: Color(0xFF6B2D5C)),
+            ),
+          ),
         ],
       ),
     );
@@ -190,7 +252,6 @@ class ProfileView extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
               ),
-
               Align(
                 alignment: Alignment.center,
                 child: Column(
@@ -205,7 +266,7 @@ class ProfileView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-             Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
@@ -242,7 +303,7 @@ class ProfileView extends StatelessWidget {
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -274,17 +335,10 @@ class ProfileView extends StatelessWidget {
               border: Border.all(color: Colors.grey.shade400),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    value,
-                    style: const TextStyle(fontSize: 16),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 16),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
