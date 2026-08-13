@@ -124,7 +124,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        'forgot old password?',
+                        'Forgot old password?',
                         style: TextStyle(color: _primaryColor, fontSize: 13),
                       ),
                     ),

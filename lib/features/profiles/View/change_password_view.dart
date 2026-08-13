@@ -115,7 +115,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        'forget old password?',
+                        'Forget old password?',
                         style: TextStyle(color: _primaryColor, fontSize: 13),
                       ),
                     ),

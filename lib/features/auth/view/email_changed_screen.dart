@@ -46,7 +46,7 @@ class EmailChangedScreen extends StatelessWidget {
                 width: 300,
                 height: 31,
                 child: Text(
-                  "Email Changed!",
+                  "Email has been changed successfully!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Urbanist',

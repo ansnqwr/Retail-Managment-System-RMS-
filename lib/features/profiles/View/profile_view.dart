@@ -31,30 +31,30 @@ class _ProfileViewState extends State<ProfileView> {
     }
   }
 
-  Future<void> _logout(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+  // Future<void> _logout(BuildContext context) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.clear();
 
-    if (context.mounted) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder:
-              (_) => BlocProvider(
-                create: (_) => LoginBloc(SigninRepository()),
-                child: const LoginScreen(),
-              ),
-        ),
-        (route) => false,
-      );
-    }
-  }
+  //   if (context.mounted) {
+  //     Navigator.of(context).pushAndRemoveUntil(
+  //       MaterialPageRoute(
+  //         builder:
+  //             (_) => BlocProvider(
+  //               create: (_) => LoginBloc(SigninRepository()),
+  //               child: const LoginScreen(),
+  //             ),
+  //       ),
+  //       (route) => false,
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: BlocConsumer<ProfileBloc, ProfileState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is ProfileError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -73,7 +73,22 @@ class _ProfileViewState extends State<ProfileView> {
             );
 
             if (state.requiresRelogin) {
-              _logout(context);
+              try {
+                await SigninRepository().logout();
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder:
+                        (_) => BlocProvider(
+                          create: (_) => LoginBloc(SigninRepository()),
+                          child: const LoginScreen(),
+                        ),
+                  ),
+                  (route) => false,
+                );
+              } catch (e) {
+                // Even if an exception is thrown, tokens are already cleared
+                print(e);
+              }
             }
           }
         },
@@ -149,7 +164,26 @@ class _ProfileViewState extends State<ProfileView> {
                         const SizedBox(height: 30),
 
                         TextButton.icon(
-                          onPressed: () => _logout(context),
+                          onPressed: () async {
+                            try {
+                              await SigninRepository().logout();
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => BlocProvider(
+                                        create:
+                                            (_) =>
+                                                LoginBloc(SigninRepository()),
+                                        child: const LoginScreen(),
+                                      ),
+                                ),
+                                (route) => false,
+                              );
+                            } catch (e) {
+                              // Even if an exception is thrown, tokens are already cleared
+                              print(e);
+                            }
+                          },
                           icon: const Icon(
                             Icons.logout,
                             color: Colors.red,
@@ -223,7 +257,7 @@ class _ProfileViewState extends State<ProfileView> {
               );
             },
             child: const Text(
-              'Sign Up',
+              'Sign up',
               style: TextStyle(color: Color(0xFF6B2D5C)),
             ),
           ),

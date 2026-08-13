@@ -93,7 +93,7 @@ class WelcomeLoginScreen extends StatelessWidget {
 
               SizedBox(height: size.height * 0.02),
 
-             Center(
+              Center(
                 child: TextButton(
                   onPressed: () async {
                     final prefs = await SharedPreferences.getInstance();
@@ -119,7 +119,7 @@ class WelcomeLoginScreen extends StatelessWidget {
                     ),
                   ),
                   child: const Text(
-                    "Continue as A Guest",
+                    "Continue as Guest",
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       color: darkPurple,

@@ -68,7 +68,7 @@ class _OtpScreenState extends State<OtpScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("الرجاء إدخال الرمز كاملاً")),
+        const SnackBar(content: Text("Please enter the entire code")),
       );
     }
   }

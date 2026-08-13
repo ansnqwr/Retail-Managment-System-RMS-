@@ -23,7 +23,7 @@ class SplashScreen extends StatelessWidget {
           if (state is SplashNavigateToOnboarding) {
             if (!context.mounted) return;
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) =>  OnboardingScreen()),
+              MaterialPageRoute(builder: (_) => OnboardingScreen()),
             );
           } else if (state is SplashNavigateToHome) {
             if (!context.mounted) return;
@@ -95,7 +95,7 @@ class SplashScreen extends StatelessWidget {
                 Positioned(
                   bottom: 40,
                   child: Text(
-                    'تطبيق بيع بالتجزئة ذكي',
+                    'Retail Management System',
                     style: TextStyle(
                       fontFamily: 'Cairo',
                       fontSize: 14,

@@ -19,7 +19,7 @@ class CartScreen extends StatelessWidget {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
-          'My Bag',
+          'My Cart',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
@@ -40,7 +40,7 @@ class CartScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Your bag is empty',
+                    'Your Cart is empty',
                     style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
                   ),
                 ],

@@ -14,7 +14,7 @@ class OfflineFallbackWidget extends StatelessWidget {
             Icon(Icons.storefront, size: 80, color: Color(0xFF6B2D5C)),
             SizedBox(height: 16),
             Text(
-              'أهلا بك في دلني',
+              'Welcome to Delni',
               style: TextStyle(
                 fontFamily: 'Cairo',
                 fontSize: 18,
@@ -23,7 +23,7 @@ class OfflineFallbackWidget extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              'يبدو أنك لا تملك اتصالاً بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى',
+              'You are currently offline. Please check your internet connection.',
               textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Cairo', color: Colors.grey),
             ),

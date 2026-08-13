@@ -77,8 +77,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   backgroundColor: Colors.red,
                 ),
               );
-            }
-            else if (state is CitiesLoadingState) {
+            } else if (state is CitiesLoadingState) {
               setState(() {
                 _isLoadingCities = true;
                 _cities = [];

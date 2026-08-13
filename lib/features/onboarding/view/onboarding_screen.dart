@@ -200,7 +200,7 @@ class OnboardingScreen extends StatelessWidget {
           //
           const SizedBox(height: 15),
           Text(
-            "Your Language Preferance",
+            "Your Language Preference",
             style: TextStyle(
               fontSize: 16,
               color: primaryPurple,

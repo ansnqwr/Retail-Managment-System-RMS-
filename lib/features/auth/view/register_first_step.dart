@@ -49,7 +49,7 @@ class RegisterFirstStep extends StatelessWidget {
               ),
 
               const Text(
-                "Get Started Free",
+                "Get Started For Free",
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 32,

@@ -745,7 +745,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
           color: Colors.grey.shade300,
         ),
         child: Text(
-          "Sign Up",
+          "Sign up",
           style: TextStyle(
             fontFamily: 'Cairo',
             fontSize: 16,

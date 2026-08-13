@@ -46,7 +46,7 @@ class PasswordChangedScreen extends StatelessWidget {
                 width: 300,
                 height: 31,
                 child: Text(
-                  "Password Changed!",
+                  "Password has been changed successfully!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Urbanist',

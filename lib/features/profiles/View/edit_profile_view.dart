@@ -28,7 +28,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   LocationItem? selectedCity;
 
   bool isLoadingLocations = true;
-  bool isLoadingCities = false; 
+  bool isLoadingCities = false;
 
   @override
   void initState() {
@@ -137,12 +137,13 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   void _showSnackBar(String message) {
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
-@override
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -157,16 +158,16 @@ class _EditProfileViewState extends State<EditProfileView> {
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state is ProfileActionSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
             if (state.requiresRelogin == false) {
               Navigator.pop(context);
             }
           } else if (state is ProfileError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         builder: (context, state) {
@@ -205,7 +206,7 @@ class _EditProfileViewState extends State<EditProfileView> {
               label: 'Governorate',
               items: governorates,
               selectedItem: selectedGovernorate,
-              isLoading: false, 
+              isLoading: false,
               onChanged: (LocationItem? newValue) {
                 if (newValue != null && newValue != selectedGovernorate) {
                   setState(() {
@@ -217,7 +218,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 }
               },
             ),
-            
+
             _buildLocationDropdown(
               label: 'City',
               items: cities,
@@ -248,7 +249,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       _showSnackBar("please select both governorate and city.");
                       return;
                     }
- final updatedUser = UserModel(
+                    final updatedUser = UserModel(
                       id: _initialUser.id,
                       firstName: _fNameCtrl.text.trim(),
                       lastName: _lNameCtrl.text.trim(),
@@ -310,8 +311,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            validator: (val) =>
-                val == null || val.trim().isEmpty ? 'Field cannot be empty' : null,
+            validator:
+                (val) =>
+                    val == null || val.trim().isEmpty
+                        ? 'Field cannot be empty'
+                        : null,
           ),
         ],
       ),
@@ -340,27 +344,30 @@ class _EditProfileViewState extends State<EditProfileView> {
           const SizedBox(height: 8),
           DropdownButtonFormField<LocationItem>(
             value: items.contains(selectedItem) ? selectedItem : null,
-            icon: isLoading
-                ? const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Color(0xFF6B2D5C),
-                    ),
-                  )
-                : const Icon(Icons.arrow_drop_down),
-            items: items.map((item) {
-              return DropdownMenuItem<LocationItem>(
-                value: item,
-                child: Text(item.name),
-              );
-            }).toList(),
+            icon:
+                isLoading
+                    ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Color(0xFF6B2D5C),
+                      ),
+                    )
+                    : const Icon(Icons.arrow_drop_down),
+            items:
+                items.map((item) {
+                  return DropdownMenuItem<LocationItem>(
+                    value: item,
+                    child: Text(item.name),
+                  );
+                }).toList(),
             onChanged: items.isEmpty || isLoading ? null : onChanged,
             decoration: InputDecoration(
-              hintText: items.isEmpty && !isLoading
-                  ? 'اختر الحقل السابق أولاً'
-                  : 'Select $label',
+              hintText:
+                  items.isEmpty && !isLoading
+                      ? 'choose a governorate first'
+                      : 'Select $label',
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 14,

@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'auth_local_data.dart';
 
-final String baseUrl2 = 'http://192.168.1.6:8000';
+final String baseUrl2 = 'http://192.168.0.223:8000';
 final String baseUrl = '$baseUrl2/api';
 
 class SigninRepository {
@@ -165,6 +165,47 @@ class SigninRepository {
     } on http.ClientException {
       throw Exception('خطأ في الاتصال بالشبكة، يرجى التحقق من الإنترنت.');
     } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  // Add this method inside SigninRepository class
+
+  Future<void> logout() async {
+    final String logoutUrl = '$baseUrl/logout'; // → /api/logout
+    final String? token = TokenManager().accessToken;
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(logoutUrl),
+            headers: {
+              'Content-Type': 'application/json',
+              if (token != null) 'Authorization': 'Bearer $token',
+            },
+          )
+          .timeout(const Duration(seconds: 15));
+
+      // We clear tokens regardless of status code
+      // (even if the server already invalidated the token)
+      await TokenManager().clearTokens();
+
+      if (response.statusCode != 200 &&
+          response.statusCode != 201 &&
+          response.statusCode != 204) {
+        // Optional: log the server message, but still treat logout as successful locally
+        try {
+          final errorData = jsonDecode(response.body);
+          print('Logout server message: ${errorData['message']}');
+        } catch (_) {}
+      }
+    } on http.ClientException {
+      // Network error → still clear local tokens
+      await TokenManager().clearTokens();
+      throw Exception('خطأ في الاتصال بالشبكة أثناء تسجيل الخروج');
+    } catch (e) {
+      // Any other error → still clear local tokens
+      await TokenManager().clearTokens();
       throw Exception(e.toString());
     }
   }
