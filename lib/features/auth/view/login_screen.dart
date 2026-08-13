@@ -6,6 +6,8 @@ import '/features/auth/view/forgot_password_screen.dart';
 import '/features/auth/view/otp_screen.dart';
 import '../../../../core/widgets/login_background_painter.dart';
 import '../view_model/bloc/login_bloc.dart';
+import 'SignupScreen.dart';
+import 'register_first_step.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -270,21 +272,45 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 30),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Don't have an account? ",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => BlocProvider.value(
+                                              value: context.read<LoginBloc>(),
+                                              child: RegisterFirstStep(),
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    "Sign up",
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: Colors.blue,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 30),
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                // Expanded(
-                                //   child: GestureDetector(
-                                //     onTap: () {},
-                                //     child: const Text(
-                                //       "Already have an account? Login here.",
-                                //       style: TextStyle(
-                                //         fontSize: 12,
-                                //         fontWeight: FontWeight.bold,
-                                //         color: Colors.black,
-                                //       ),
-                                //     ),
-                                //   ),
-                                // ),
                                 ElevatedButton(
                                   onPressed: () {
                                     if (_formKey.currentState!.validate()) {

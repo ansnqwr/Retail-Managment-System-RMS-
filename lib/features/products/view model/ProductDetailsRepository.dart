@@ -2,8 +2,8 @@
 import 'dart:convert';
 import 'package:delni_rms/features/auth/data/models/Repository/signin_repository.dart';
 import 'package:http/http.dart' as http;
-import 'package:delni_rms/features/home/Model/ProductDetailModel.dart';
-import 'package:delni_rms/features/home/Model/ProductReviewModel.dart';
+import 'package:delni_rms/features/products/model/ProductDetailModel.dart';
+import 'package:delni_rms/features/products/model/ProductReviewModel.dart';
 
 class ProductDetailsRepository {
   final http.Client _client;
@@ -34,7 +34,7 @@ class ProductDetailsRepository {
       final data = json.decode(response.body);
       return ProductReviewsResponse.fromJson(data);
     } else {
-      return  ProductReviewsResponse(
+      return ProductReviewsResponse(
         averageRating: 0,
         verifiedBuyers: 0,
         totalReviews: 0,
@@ -54,8 +54,7 @@ class ProductDetailsRepository {
         final list = data['products'] as List? ?? [];
         return list.map((e) => SimilarProductModel.fromJson(e)).toList();
       }
-    } catch (_) {
-    }
+    } catch (_) {}
     return [];
   }
 
@@ -71,8 +70,7 @@ class ProductDetailsRepository {
         final list = data['products'] as List? ?? [];
         return list.map((e) => SimilarProductModel.fromJson(e)).toList();
       }
-    } catch (_) {
-    }
+    } catch (_) {}
     return [];
   }
 }

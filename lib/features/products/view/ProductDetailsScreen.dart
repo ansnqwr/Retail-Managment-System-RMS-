@@ -1,19 +1,19 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:delni_rms/features/home/Model/CartItemModel.dart';
-import 'package:delni_rms/features/home/Model/ProductDetailModel.dart';
-import 'package:delni_rms/features/home/Model/ProductReviewModel.dart';
-import 'package:delni_rms/features/home/view%20model/CartBloc.dart';
-import 'package:delni_rms/features/home/view%20model/CartEvent.dart';
-import 'package:delni_rms/features/home/view%20model/CartState.dart';
-import 'package:delni_rms/features/home/view%20model/favorites_event.dart';
-import 'package:delni_rms/features/home/view%20model/ProductDetailsBloc.dart';
-import 'package:delni_rms/features/home/view%20model/ProductDetailsEvent.dart';
-import 'package:delni_rms/features/home/view%20model/ProductDetailsRepository.dart';
-import 'package:delni_rms/features/home/view%20model/ProductDetailsState.dart';
-import 'package:delni_rms/features/home/view%20model/favorites_bloc.dart';
-import 'package:delni_rms/features/home/view%20model/favorites_state.dart';
-import 'package:delni_rms/features/home/view/Cart.dart';
-import 'package:delni_rms/features/home/view/Favorites.dart';
+import 'package:delni_rms/features/cart/model/CartItemModel.dart';
+import 'package:delni_rms/features/products/model/ProductDetailModel.dart';
+import 'package:delni_rms/features/products/model/ProductReviewModel.dart';
+import 'package:delni_rms/features/cart/view%20model/CartBloc.dart';
+import 'package:delni_rms/features/cart/view%20model/CartEvent.dart';
+import 'package:delni_rms/features/cart/view%20model/CartState.dart';
+import 'package:delni_rms/features/favorites/view%20model/favorites_event.dart';
+import 'package:delni_rms/features/products/view%20model/ProductDetailsBloc.dart';
+import 'package:delni_rms/features/products/view%20model/ProductDetailsEvent.dart';
+import 'package:delni_rms/features/products/view%20model/ProductDetailsRepository.dart';
+import 'package:delni_rms/features/products/view%20model/ProductDetailsState.dart';
+import 'package:delni_rms/features/favorites/view%20model/favorites_bloc.dart';
+import 'package:delni_rms/features/favorites/view%20model/favorites_state.dart';
+import 'package:delni_rms/features/cart/view/Cart.dart';
+import 'package:delni_rms/features/favorites/view/Favorites.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,7 +67,6 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -274,17 +273,17 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
             onPressed: () => Navigator.pop(context),
           ),
           const Spacer(),
-       
-          IconButton(
-            icon: const Icon(Icons.favorite_border, color: Colors.black),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const Favorites()),
-              );
-            },
-          ),
-          const CartIconBadge(),
+
+          // IconButton(
+          //   icon: const Icon(Icons.favorite_border, color: Colors.black),
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (_) => const Favorites()),
+          //     );
+          //   },
+          // ),
+          // const CartIconBadge(),
         ],
       ),
     );
@@ -368,7 +367,7 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
                 ),
                 onPressed:
                     () => context.read<FavoritesBloc>().add(
-                      FavoriteToggled(product.productId, isFavorite) ,
+                      FavoriteToggled(product.productId, isFavorite),
                     ),
                 icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
                 label: const Text('Wishlist'),
@@ -447,7 +446,6 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
     );
   }
 }
-
 
 enum RelatedProductsSort { none, priceLowToHigh, priceHighToLow, rating }
 
@@ -554,8 +552,8 @@ class _RelatedProductsSectionState extends State<RelatedProductsSection> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          ProductDetailsScreen(productId: product.id),
+                      builder:
+                          (_) => ProductDetailsScreen(productId: product.id),
                     ),
                   );
                 },
@@ -568,7 +566,6 @@ class _RelatedProductsSectionState extends State<RelatedProductsSection> {
   }
 }
 
-
 class ProductReviewCard extends StatefulWidget {
   final ProductReviewModel review;
   const ProductReviewCard({super.key, required this.review});
@@ -578,15 +575,15 @@ class ProductReviewCard extends StatefulWidget {
 }
 
 class _ProductReviewCardState extends State<ProductReviewCard> {
-
   bool _expanded = false;
   late final TapGestureRecognizer _readMoreRecognizer;
 
   @override
   void initState() {
     super.initState();
-    _readMoreRecognizer = TapGestureRecognizer()
-      ..onTap = () => setState(() => _expanded = !_expanded);
+    _readMoreRecognizer =
+        TapGestureRecognizer()
+          ..onTap = () => setState(() => _expanded = !_expanded);
   }
 
   @override
@@ -599,9 +596,10 @@ class _ProductReviewCardState extends State<ProductReviewCard> {
   Widget build(BuildContext context) {
     final review = widget.review;
     final commentTooLong = review.comment.length > 140;
-    final displayedComment = !_expanded && commentTooLong
-        ? '${review.comment.substring(0, 140)}...'
-        : review.comment;
+    final displayedComment =
+        !_expanded && commentTooLong
+            ? '${review.comment.substring(0, 140)}...'
+            : review.comment;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
@@ -613,21 +611,33 @@ class _ProductReviewCardState extends State<ProductReviewCard> {
               padding: const EdgeInsets.only(bottom: 4),
               child: Text(
                 review.fitTag!,
-                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
               ),
             ),
           Row(
             children: [
               const Icon(Icons.star, color: Colors.amber, size: 15),
               const SizedBox(width: 4),
-              Text(review.rating.toStringAsFixed(1),
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+              Text(
+                review.rating.toStringAsFixed(1),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
               const SizedBox(width: 8),
-              Text(review.userName,
-                  style: TextStyle(color: Colors.grey.shade700, fontSize: 13)),
+              Text(
+                review.userName,
+                style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
+              ),
               const SizedBox(width: 8),
-              Text(review.createdAt,
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 12)),
+              Text(
+                review.createdAt,
+                style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
+              ),
             ],
           ),
           const SizedBox(height: 6),
@@ -635,7 +645,10 @@ class _ProductReviewCardState extends State<ProductReviewCard> {
             RichText(
               text: TextSpan(
                 style: TextStyle(
-                    color: Colors.grey.shade700, fontSize: 13, height: 1.4),
+                  color: Colors.grey.shade700,
+                  fontSize: 13,
+                  height: 1.4,
+                ),
                 children: [
                   TextSpan(text: displayedComment),
                   if (commentTooLong)
@@ -666,12 +679,17 @@ class _ProductReviewCardState extends State<ProductReviewCard> {
                       width: 60,
                       height: 60,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        width: 60,
-                        height: 60,
-                        color: Colors.grey.shade200,
-                        child: const Icon(Icons.image, color: Colors.grey, size: 20),
-                      ),
+                      errorBuilder:
+                          (_, __, ___) => Container(
+                            width: 60,
+                            height: 60,
+                            color: Colors.grey.shade200,
+                            child: const Icon(
+                              Icons.image,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
+                          ),
                     ),
                   );
                 },
@@ -683,7 +701,6 @@ class _ProductReviewCardState extends State<ProductReviewCard> {
     );
   }
 }
-
 
 class ProductRatingSummary extends StatelessWidget {
   final double averageRating;
@@ -740,7 +757,6 @@ class VerifiedBuyersLabel extends StatelessWidget {
   }
 }
 
-
 class SpecificationTable extends StatelessWidget {
   final Map<String, String> specifications;
 
@@ -749,8 +765,10 @@ class SpecificationTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (specifications.isEmpty) {
-      return Text('No specifications available.',
-          style: TextStyle(color: Colors.grey.shade500));
+      return Text(
+        'No specifications available.',
+        style: TextStyle(color: Colors.grey.shade500),
+      );
     }
     final entries = specifications.entries.toList();
 
@@ -758,18 +776,20 @@ class SpecificationTable extends StatelessWidget {
       runSpacing: 14,
       children: List.generate((entries.length / 2).ceil(), (rowIndex) {
         final first = entries[rowIndex * 2];
-        final second = (rowIndex * 2 + 1) < entries.length
-            ? entries[rowIndex * 2 + 1]
-            : null;
+        final second =
+            (rowIndex * 2 + 1) < entries.length
+                ? entries[rowIndex * 2 + 1]
+                : null;
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(child: _specCell(first.key, first.value)),
             const SizedBox(width: 16),
             Expanded(
-              child: second != null
-                  ? _specCell(second.key, second.value)
-                  : const SizedBox.shrink(),
+              child:
+                  second != null
+                      ? _specCell(second.key, second.value)
+                      : const SizedBox.shrink(),
             ),
           ],
         );
@@ -781,17 +801,19 @@ class SpecificationTable extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
+        Text(
+          label,
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+        ),
         const SizedBox(height: 2),
-        Text(value,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
       ],
     );
   }
 }
-
-
 
 class ExpandableSection extends StatefulWidget {
   final String title;
@@ -839,7 +861,9 @@ class _ExpandableSectionState extends State<ExpandableSection> {
                     ),
                   ),
                   Icon(
-                    _expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    _expanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
                     color: const Color(0xFF6B2D5C),
                   ),
                 ],
@@ -849,7 +873,9 @@ class _ExpandableSectionState extends State<ExpandableSection> {
           AnimatedCrossFade(
             duration: const Duration(milliseconds: 200),
             crossFadeState:
-                _expanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                _expanded
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
             firstChild: Padding(
               padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
               child: widget.child,
@@ -861,8 +887,6 @@ class _ExpandableSectionState extends State<ExpandableSection> {
     );
   }
 }
-
-
 
 class QuantitySelector extends StatelessWidget {
   final int quantity;
@@ -880,8 +904,10 @@ class QuantitySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Text('Quantity',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+        const Text(
+          'Quantity',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
         const Spacer(),
         Container(
           decoration: BoxDecoration(
@@ -896,15 +922,18 @@ class QuantitySelector extends StatelessWidget {
               ),
               SizedBox(
                 width: 32,
-                child: Text('$quantity',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                child: Text(
+                  '$quantity',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
               ),
               _stepButton(
                 icon: Icons.add,
-                onTap: quantity < maxQuantity
-                    ? () => onChanged(quantity + 1)
-                    : null,
+                onTap:
+                    quantity < maxQuantity
+                        ? () => onChanged(quantity + 1)
+                        : null,
               ),
             ],
           ),
@@ -918,12 +947,15 @@ class QuantitySelector extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Icon(icon, size: 16, color: onTap == null ? Colors.grey.shade300 : Colors.black87),
+        child: Icon(
+          icon,
+          size: 16,
+          color: onTap == null ? Colors.grey.shade300 : Colors.black87,
+        ),
       ),
     );
   }
 }
-
 
 class SizeSelector extends StatelessWidget {
   final List<ProductSizeModel> sizes;
@@ -949,8 +981,10 @@ class SizeSelector extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Select Size',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            const Text(
+              'Select Size',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
             InkWell(
               onTap: onSizeChartTap,
               child: const Text(
@@ -966,50 +1000,58 @@ class SizeSelector extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Row(
-          children: sizes.map((size) {
-            final isSelected = size.label == selectedSize;
-            return Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: InkWell(
-                onTap: size.isAvailable ? () => onSizeSelected(size.label) : null,
-                borderRadius: BorderRadius.circular(6),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: isSelected ? const Color(0xFF6B2D5C) : Colors.white,
+          children:
+              sizes.map((size) {
+                final isSelected = size.label == selectedSize;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: InkWell(
+                    onTap:
+                        size.isAvailable
+                            ? () => onSizeSelected(size.label)
+                            : null,
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                      color: isSelected
-                          ? const Color(0xFF6B2D5C)
-                          : Colors.grey.shade300,
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color:
+                            isSelected ? const Color(0xFF6B2D5C) : Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color:
+                              isSelected
+                                  ? const Color(0xFF6B2D5C)
+                                  : Colors.grey.shade300,
+                        ),
+                      ),
+                      child: Text(
+                        size.label,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color:
+                              !size.isAvailable
+                                  ? Colors.grey.shade300
+                                  : isSelected
+                                  ? Colors.white
+                                  : Colors.black87,
+                          decoration:
+                              !size.isAvailable
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                        ),
+                      ),
                     ),
                   ),
-                  child: Text(
-                    size.label,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: !size.isAvailable
-                          ? Colors.grey.shade300
-                          : isSelected
-                              ? Colors.white
-                              : Colors.black87,
-                      decoration:
-                          !size.isAvailable ? TextDecoration.lineThrough : null,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
+                );
+              }).toList(),
         ),
       ],
     );
   }
 }
-
 
 class ColorSelector extends StatelessWidget {
   final List<ProductColorModel> colors;
@@ -1036,48 +1078,54 @@ class ColorSelector extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Text('Color',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            const Text(
+              'Color',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
             const SizedBox(width: 8),
-            Text(selected.name,
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
+            Text(
+              selected.name,
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+            ),
           ],
         ),
         const SizedBox(height: 10),
         Row(
-          children: colors.map((color) {
-            final isSelected = color.id == selectedColorId;
-            final swatchColor = _parseHex(color.hex);
-            return Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: InkWell(
-                onTap: () => onColorSelected(color.id),
-                customBorder: const CircleBorder(),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isSelected
-                          ? const Color(0xFF6B2D5C)
-                          : Colors.transparent,
-                      width: 2,
+          children:
+              colors.map((color) {
+                final isSelected = color.id == selectedColorId;
+                final swatchColor = _parseHex(color.hex);
+                return Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: InkWell(
+                    onTap: () => onColorSelected(color.id),
+                    customBorder: const CircleBorder(),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color:
+                              isSelected
+                                  ? const Color(0xFF6B2D5C)
+                                  : Colors.transparent,
+                          width: 2,
+                        ),
+                      ),
+                      child: Container(
+                        width: 26,
+                        height: 26,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: swatchColor,
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                      ),
                     ),
                   ),
-                  child: Container(
-                    width: 26,
-                    height: 26,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: swatchColor,
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
+                );
+              }).toList(),
         ),
       ],
     );
@@ -1089,7 +1137,6 @@ class ColorSelector extends StatelessWidget {
     return Color(int.tryParse(value, radix: 16) ?? 0xFF000000);
   }
 }
-
 
 class ProductImageGallery extends StatefulWidget {
   final List<String> imageUrls;
@@ -1115,22 +1162,29 @@ class _ProductImageGalleryState extends State<ProductImageGallery> {
             final url = images[index];
             return url.isEmpty
                 ? Container(
-                    color: Colors.grey.shade200,
-                    alignment: Alignment.center,
-                    child: const Icon(Icons.image_not_supported,
-                        color: Colors.grey, size: 48),
-                  )
+                  color: Colors.grey.shade200,
+                  alignment: Alignment.center,
+                  child: const Icon(
+                    Icons.image_not_supported,
+                    color: Colors.grey,
+                    size: 48,
+                  ),
+                )
                 : Image.network(
-                    url,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: Colors.grey.shade200,
-                      alignment: Alignment.center,
-                      child: const Icon(Icons.image_not_supported,
-                          color: Colors.grey, size: 48),
-                    ),
-                  );
+                  url,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  errorBuilder:
+                      (context, error, stackTrace) => Container(
+                        color: Colors.grey.shade200,
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.image_not_supported,
+                          color: Colors.grey,
+                          size: 48,
+                        ),
+                      ),
+                );
           },
           options: CarouselOptions(
             height: 420,
@@ -1154,9 +1208,10 @@ class _ProductImageGalleryState extends State<ProductImageGallery> {
                   width: isActive ? 18 : 6,
                   height: 6,
                   decoration: BoxDecoration(
-                    color: isActive
-                        ? const Color(0xFF6B2D5C)
-                        : Colors.white.withOpacity(0.7),
+                    color:
+                        isActive
+                            ? const Color(0xFF6B2D5C)
+                            : Colors.white.withOpacity(0.7),
                     borderRadius: BorderRadius.circular(3),
                   ),
                 );
@@ -1168,8 +1223,6 @@ class _ProductImageGalleryState extends State<ProductImageGallery> {
   }
 }
 
-
-
 class CartIconBadge extends StatelessWidget {
   final Color color;
   const CartIconBadge({super.key, this.color = const Color(0xFF6B2D5C)});
@@ -1177,8 +1230,9 @@ class CartIconBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CartBloc, CartState>(
-      buildWhen: (previous, current) =>
-          previous.totalItemsCount != current.totalItemsCount,
+      buildWhen:
+          (previous, current) =>
+              previous.totalItemsCount != current.totalItemsCount,
       builder: (context, state) {
         return InkWell(
           onTap: () {
@@ -1204,8 +1258,10 @@ class CartIconBadge extends StatelessWidget {
                   top: -2,
                   child: Container(
                     padding: const EdgeInsets.all(3),
-                    constraints:
-                        const BoxConstraints(minWidth: 16, minHeight: 16),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
                     decoration: const BoxDecoration(
                       color: Colors.red,
                       shape: BoxShape.circle,
@@ -1229,8 +1285,6 @@ class CartIconBadge extends StatelessWidget {
   }
 }
 
-
-
 class FavoriteButton extends StatelessWidget {
   final int productId;
   final double size;
@@ -1248,16 +1302,17 @@ class FavoriteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FavoritesBloc, FavoritesState>(
-      buildWhen: (previous, current) =>
-          previous.isFavorite(productId) != current.isFavorite(productId),
+      buildWhen:
+          (previous, current) =>
+              previous.isFavorite(productId) != current.isFavorite(productId),
       builder: (context, state) {
         final isFavorite = state.isFavorite(productId);
         return InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () {
             context.read<FavoritesBloc>().add(
-                  FavoriteToggled(productId, isFavorite), // الآن يعرف الكلاس
-                );
+              FavoriteToggled(productId, isFavorite), // الآن يعرف الكلاس
+            );
           },
           child: Padding(
             padding: const EdgeInsets.all(6.0),
@@ -1272,8 +1327,6 @@ class FavoriteButton extends StatelessWidget {
     );
   }
 }
-
-
 
 class RelatedProductCard extends StatelessWidget {
   final SimilarProductModel product;
@@ -1344,14 +1397,3 @@ class RelatedProductCard extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-

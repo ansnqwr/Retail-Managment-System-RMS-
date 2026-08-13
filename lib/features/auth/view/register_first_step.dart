@@ -1,4 +1,5 @@
 import 'package:delni_rms/features/auth/data/models/Repository/signup_repository.dart';
+import 'package:delni_rms/features/auth/view/login_screen.dart';
 import 'package:delni_rms/features/auth/view_model/bloc/signup_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,6 +64,44 @@ class RegisterFirstStep extends StatelessWidget {
               _buildField("Last Name", _lastCtrl, Icons.person_outline),
 
               const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Already have an account? ",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder:
+                              (_) => BlocProvider.value(
+                                value: context.read<SignupBloc>(),
+                                child: LoginScreen(),
+                              ),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      "Sign in",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        decorationColor: Colors.blue,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 20),
 
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -91,24 +130,17 @@ class RegisterFirstStep extends StatelessWidget {
                     //   ),
                     // );
 
-
-Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder:
                             (context) => BlocProvider(
                               create:
-                                  (context) => SignupBloc(
-                                    SignupRepository(),
-                                  ), 
+                                  (context) => SignupBloc(SignupRepository()),
                               child: SignupScreen(userData: data),
                             ),
                       ),
                     );
-
-
-
-
                   } else {
                     debugPrint("***********Form validation failed**********");
                   }
@@ -153,7 +185,6 @@ Navigator.push(
             filled: true,
             fillColor: const Color(0xFFDED3DC).withOpacity(0.4),
             prefixIcon: Icon(icon, color: const Color(0xFF6B2D5C)),
-            hintText: "@yourname",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,

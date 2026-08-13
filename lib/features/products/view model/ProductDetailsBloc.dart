@@ -1,8 +1,7 @@
-import 'package:delni_rms/features/home/view%20model/ProductDetailsEvent.dart';
-import 'package:delni_rms/features/home/view%20model/ProductDetailsRepository.dart';
-import 'package:delni_rms/features/home/view%20model/ProductDetailsState.dart';
+import 'package:delni_rms/features/products/view%20model/ProductDetailsEvent.dart';
+import 'package:delni_rms/features/products/view%20model/ProductDetailsRepository.dart';
+import 'package:delni_rms/features/products/view%20model/ProductDetailsState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 class ProductDetailsBloc
     extends Bloc<ProductDetailsEvent, ProductDetailsState> {

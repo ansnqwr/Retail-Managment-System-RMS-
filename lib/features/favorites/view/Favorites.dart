@@ -1,9 +1,9 @@
 // lib/features/home/presentation/Favorites.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:delni_rms/features/home/view model/favorites_bloc.dart';
-import 'package:delni_rms/features/home/view model/favorites_state.dart';
-import 'package:delni_rms/features/home/view model/favorites_event.dart'; // استيراد واحد فقط
+import 'package:delni_rms/features/favorites/view%20model/favorites_bloc.dart';
+import 'package:delni_rms/features/favorites/view%20model/favorites_state.dart';
+import 'package:delni_rms/features/favorites/view%20model/favorites_event.dart'; // استيراد واحد فقط
 
 class Favorites extends StatelessWidget {
   const Favorites({super.key});

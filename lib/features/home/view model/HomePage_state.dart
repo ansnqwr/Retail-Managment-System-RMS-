@@ -36,6 +36,8 @@ class HomeLoaded extends HomeState {
   final String? homeSearchQuery;
   final bool isSearchingProducts;
   final bool isGuest;
+  final int? selectedCategoryId;
+  final String? selectedCategoryName;
 
   const HomeLoaded({
     required this.ads,
@@ -55,6 +57,8 @@ class HomeLoaded extends HomeState {
     this.homeSearchQuery,
     this.isSearchingProducts = true,
     required this.isGuest,
+    this.selectedCategoryId,
+    this.selectedCategoryName,
   });
 
   HomeLoaded copyWith({
@@ -75,6 +79,8 @@ class HomeLoaded extends HomeState {
     String? homeSearchQuery,
     bool? isSearchingProducts,
     bool? isGuest,
+    int? selectedCategoryId,
+    String? selectedCategoryName,
   }) {
     return HomeLoaded(
       ads: ads ?? this.ads,
@@ -98,6 +104,8 @@ class HomeLoaded extends HomeState {
       homeSearchQuery: homeSearchQuery ?? this.homeSearchQuery,
       isSearchingProducts: isSearchingProducts ?? this.isSearchingProducts,
       isGuest: isGuest ?? this.isGuest,
+      selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
+      selectedCategoryName: selectedCategoryName ?? this.selectedCategoryName,
     );
   }
 
@@ -120,6 +128,8 @@ class HomeLoaded extends HomeState {
     homeSearchQuery,
     isSearchingProducts,
     isGuest,
+    selectedCategoryId,
+    selectedCategoryName,
   ];
 }
 

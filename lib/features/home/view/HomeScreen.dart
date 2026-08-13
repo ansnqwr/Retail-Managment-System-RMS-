@@ -1,8 +1,6 @@
-import 'package:delni_rms/features/home/view%20model/store_details_bloc.dart';
-import 'package:delni_rms/features/home/view%20model/store_details_event.dart';
-import 'package:delni_rms/features/home/view%20model/store_details_repository.dart';
-import 'package:delni_rms/features/home/view/ProductDetailsScreen.dart';
-import 'package:delni_rms/features/home/view/store_details_screen.dart';
+import 'package:delni_rms/features/stores/view%20model/store_details_bloc.dart';
+import 'package:delni_rms/features/stores/view%20model/store_details_event.dart';
+import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -18,6 +16,8 @@ import '../../../core/widgets/IconCircleWidget.dart';
 import '../../../core/widgets/BadgeIconWidget.dart';
 import '../../../core/widgets/CategorySliderItem.dart';
 import '../../../features/home/Model/AdModel.dart';
+import '../../products/view/ProductDetailsScreen.dart';
+import '../../stores/view/store_details_screen.dart';
 import '../Model/ProductCardModel.dart';
 import '../Model/StoreCardItem.dart';
 import '../../../features/pagination/View/PaginationScreen.dart';
@@ -75,8 +75,8 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
     final currentScroll = _scrollController.offset;
     return currentScroll >= (maxScroll * 0.9);
   }
-  
-final client = http.Client();
+
+  final client = http.Client();
 
   @override
   void dispose() {
@@ -454,7 +454,7 @@ final client = http.Client();
     );
   }
 
-Widget _buildProductSection(
+  Widget _buildProductSection(
     BuildContext context,
     int sectionId,
     String businessType,
@@ -555,7 +555,7 @@ Widget _buildProductSection(
     );
   }
 
-Widget _buildStoresSection(
+  Widget _buildStoresSection(
     BuildContext context,
     int sectionId,
     String businessType,

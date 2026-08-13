@@ -9,7 +9,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final HomeRepository _homeRepository;
 
   bool _isGuest = false;
-  int? _selectedCategoryId; // Track selected category across reloads
+  int? _selectedCategoryId;
 
   HomeBloc({required HomeRepository homeRepository})
     : _homeRepository = homeRepository,
@@ -34,7 +34,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     _isGuest = event.isGuest;
-    _selectedCategoryId = null; // Reset on full reload
+    _selectedCategoryId = null;
 
     emit(const HomeLoading());
 
@@ -60,6 +60,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           homeSearchQuery: null,
           isSearchingProducts: true,
           isGuest: event.isGuest,
+          selectedCategoryId: null,
+          selectedCategoryName: null,
         ),
       );
     } on HomeRepositoryException catch (e) {
@@ -77,27 +79,33 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     final current = state as HomeLoaded;
 
-    // "All" category is id 0 or 1 depending on your backend
-    // From your response: {"id": 0, "title": "all"} or {"id": 1, "title": "electronics"}
     final isAllCategory = event.categoryId == 0;
     _selectedCategoryId = isAllCategory ? null : event.categoryId;
 
-    // Optimistically update UI with loading state for justForYou
+    final selectedCategory =
+        isAllCategory
+            ? null
+            : current.categories.firstWhere(
+              (c) => c.id == event.categoryId,
+              orElse: () => current.categories[event.categoryIndex],
+            );
+    final categoryName = isAllCategory ? null : selectedCategory?.title;
+
     emit(
       current.copyWith(
         selectedCategoryIndex: event.categoryIndex,
+        selectedCategoryId: isAllCategory ? null : event.categoryId,
+        selectedCategoryName: categoryName, // ADDED
         isLoadingMoreJustForYou: true,
       ),
     );
 
     try {
-      // Fetch ALL sections with the category filter
       final filters =
           isAllCategory
               ? <String, dynamic>{}
-              : <String, dynamic>{'category': event.categoryId.toString()};
+              : <String, dynamic>{'category': event.categoryId};
 
-      // Fetch all sections in parallel
       final results = await Future.wait([
         _homeRepository.fetchProducts(
           businessType: 'Trending',
@@ -152,6 +160,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(
         current.copyWith(
           selectedCategoryIndex: event.categoryIndex,
+          selectedCategoryId: isAllCategory ? null : event.categoryId,
+          selectedCategoryName: categoryName, // ADDED
           trendingProducts: results[0] as List<ProductCardModel>,
           onSaleProducts: results[1] as List<ProductCardModel>,
           newestProducts: results[2] as List<ProductCardModel>,
@@ -165,10 +175,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         ),
       );
     } on HomeRepositoryException catch (e) {
-      // Revert to previous state but keep selected category
       emit(
         current.copyWith(
           selectedCategoryIndex: event.categoryIndex,
+          selectedCategoryId: isAllCategory ? null : event.categoryId,
+          selectedCategoryName: categoryName,
           isLoadingMoreJustForYou: false,
         ),
       );
@@ -176,6 +187,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(
         current.copyWith(
           selectedCategoryIndex: event.categoryIndex,
+          selectedCategoryId: isAllCategory ? null : event.categoryId,
+          selectedCategoryName: categoryName,
           isLoadingMoreJustForYou: false,
         ),
       );
@@ -183,6 +196,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(
         current.copyWith(
           selectedCategoryIndex: event.categoryIndex,
+          selectedCategoryId: isAllCategory ? null : event.categoryId,
+          selectedCategoryName: categoryName,
           isLoadingMoreJustForYou: false,
         ),
       );
@@ -214,7 +229,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       Map<String, dynamic> filters = {};
       if (_selectedCategoryId != null) {
-        filters['category'] = _selectedCategoryId.toString();
+        filters['category'] = _selectedCategoryId;
       }
 
       final newProducts = await _homeRepository.fetchProducts(
@@ -269,7 +284,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       Map<String, dynamic> filters = {};
       if (_selectedCategoryId != null) {
-        filters['category'] = _selectedCategoryId.toString();
+        filters['category'] = _selectedCategoryId;
       }
 
       if (event.isSearchingProducts) {
@@ -299,6 +314,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           page: 1,
           limit: 10,
         );
+        // TODO: Add justForYouStores to HomeLoaded if you want to display stores on home
         emit(
           current.copyWith(
             homeSearchQuery: trimmedQuery,
@@ -347,7 +363,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       Map<String, dynamic> filters = {};
       if (_selectedCategoryId != null) {
-        filters['category'] = _selectedCategoryId.toString();
+        filters['category'] = _selectedCategoryId;
       }
 
       final products = await _homeRepository.fetchProducts(
@@ -362,7 +378,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(
         current.copyWith(
           homeSearchQuery: null,
-          isSearchingProducts: true,
+          isSearchingProducts: current.isSearchingProducts,
           justForYouProducts: products,
           justForYouCurrentPage: 1,
           justForYouHasMoreData: products.length >= 10,

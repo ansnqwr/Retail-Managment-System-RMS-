@@ -1,6 +1,5 @@
-import 'package:delni_rms/features/home/Model/CartItemModel.dart';
+import 'package:delni_rms/features/cart/model/CartItemModel.dart';
 import 'package:equatable/equatable.dart';
-
 
 abstract class CartEvent extends Equatable {
   const CartEvent();

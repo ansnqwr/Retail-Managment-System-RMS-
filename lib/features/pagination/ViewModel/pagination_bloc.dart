@@ -312,7 +312,8 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
           paginationTitle: _paginationTitle,
           activeFilters: _currentFilters,
           filtersModel: filtersModel,
-         // searchQuery: searchQuery is String ? searchQuery : _searchChips.join(' '),
+          searchQuery:
+              searchQuery is String ? searchQuery : _searchChips.join(' '),
           searchChips: List<String>.from(_searchChips),
           hasMoreData: newBatchHasMoreData,
           currentPage: _currentPage,

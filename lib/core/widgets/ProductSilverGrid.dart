@@ -1,5 +1,8 @@
-import 'package:delni_rms/features/home/view/ProductDetailsScreen.dart';
+import 'package:delni_rms/features/home/view%20model/HomePage_bloc.dart';
+import 'package:delni_rms/features/home/view%20model/HomePage_event.dart';
+import 'package:delni_rms/features/products/view/ProductDetailsScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/home/Model/ProductCardModel.dart';
 import 'ProductCard.dart';
@@ -32,7 +35,7 @@ class _ProductSilverGridState extends State<ProductSilverGrid> {
             hasDiscount: product.hasDiscount,
             width: double.infinity,
             onTap: () {
-              // context.read<HomeBloc>().add(HomeProductTapped(product.id));
+              context.read<HomeBloc>().add(HomeProductTapped(product.id));
               Navigator.push(
                 context,
                 MaterialPageRoute(

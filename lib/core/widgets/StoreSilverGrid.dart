@@ -1,7 +1,9 @@
-import 'package:delni_rms/features/home/view%20model/store_details_bloc.dart';
-import 'package:delni_rms/features/home/view%20model/store_details_event.dart';
-import 'package:delni_rms/features/home/view%20model/store_details_repository.dart';
-import 'package:delni_rms/features/home/view/store_details_screen.dart';
+import 'package:delni_rms/features/home/view%20model/HomePage_bloc.dart';
+import 'package:delni_rms/features/home/view%20model/HomePage_event.dart';
+import 'package:delni_rms/features/stores/view%20model/store_details_bloc.dart';
+import 'package:delni_rms/features/stores/view%20model/store_details_event.dart';
+import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
+import 'package:delni_rms/features/stores/view/store_details_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/src/client.dart';
 
@@ -37,8 +39,7 @@ class _StoreSilverGridState extends State<StoreSilverGrid> {
             isNew: store.isNew,
             width: double.infinity,
             onTap: () {
-
-// context.read<HomeBloc>().add(HomeStoreTapped(store.id));
+              // context.read<HomeBloc>().add(HomeStoreTapped(store.id));
 
               Navigator.push(
                 context,
@@ -46,15 +47,13 @@ class _StoreSilverGridState extends State<StoreSilverGrid> {
                   builder:
                       (_) => BlocProvider(
                         create:
-                            (_) =>
-                                StoreDetailsBloc(StoreDetailsRepository(client!))
-                                  ..add(LoadStoreDetails(store.id)),
+                            (_) => StoreDetailsBloc(
+                              StoreDetailsRepository(client!),
+                            )..add(LoadStoreDetails(store.id)),
                         child: StoreDetailsScreen(storeId: store.id),
                       ),
                 ),
               );
-
-
             },
             governorate: store.governorate,
             city: store.city,

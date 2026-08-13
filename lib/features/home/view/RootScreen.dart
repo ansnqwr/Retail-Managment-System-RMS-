@@ -5,8 +5,8 @@ import '../../profiles/ViewModel/profile_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../profiles/View/profile_view.dart';
-import '/features/home/view/Cart.dart';
-import '/features/home/view/Favorites.dart';
+import '../../cart/view/Cart.dart';
+import '../../favorites/view/Favorites.dart';
 import '/features/home/view/HomeScreen.dart';
 import '../../categories/View/Categories.dart';
 

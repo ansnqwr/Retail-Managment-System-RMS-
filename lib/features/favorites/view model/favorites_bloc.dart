@@ -1,4 +1,4 @@
-import 'package:delni_rms/features/home/view%20model/FavoritesRepository.dart';
+import 'package:delni_rms/features/favorites/view%20model/FavoritesRepository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'favorites_event.dart';

@@ -1,10 +1,9 @@
-import 'package:delni_rms/features/home/Model/CartItemModel.dart';
-import 'package:delni_rms/features/home/view%20model/CartBloc.dart';
-import 'package:delni_rms/features/home/view%20model/CartEvent.dart';
-import 'package:delni_rms/features/home/view%20model/CartState.dart';
+import 'package:delni_rms/features/cart/model/CartItemModel.dart';
+import 'package:delni_rms/features/cart/view%20model/CartBloc.dart';
+import 'package:delni_rms/features/cart/view%20model/CartEvent.dart';
+import 'package:delni_rms/features/cart/view%20model/CartState.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});

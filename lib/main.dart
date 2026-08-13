@@ -1,13 +1,12 @@
-import 'package:delni_rms/features/home/view%20model/CartBloc.dart';
-import 'package:delni_rms/features/home/view%20model/CartRepository.dart';
-import 'package:delni_rms/features/home/view%20model/FavoritesRepository.dart';
-import 'package:delni_rms/features/home/view%20model/favorites_bloc.dart';
-import 'package:delni_rms/features/home/view%20model/store_details_repository.dart';
+import 'package:delni_rms/features/cart/view%20model/CartBloc.dart';
+import 'package:delni_rms/features/cart/view%20model/CartRepository.dart';
+import 'package:delni_rms/features/favorites/view%20model/FavoritesRepository.dart';
+import 'package:delni_rms/features/favorites/view%20model/favorites_bloc.dart';
+import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart'; // تمت إضافة المكتبة هنا
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '/features/auth/data/models/Repository/signin_repository.dart';
 import '/features/auth/data/models/Repository/signup_repository.dart';
 import '/features/auth/view_model/bloc/login_bloc.dart';

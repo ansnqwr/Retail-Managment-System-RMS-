@@ -1,29 +1,32 @@
-// ignore: file_names
-import 'package:delni_rms/features/home/Model/BranchModel.dart';
+import 'package:delni_rms/features/stores/model/BranchModel.dart';
 
 class RatingSummary {
   final double averageRating;
   final int totalCount;
   final Map<int, int> starsBreakdown;
 
-  RatingSummary({
+  const RatingSummary({
     required this.averageRating,
     required this.totalCount,
     required this.starsBreakdown,
   });
 
   factory RatingSummary.fromJson(Map<String, dynamic> json) {
-    final breakdown = json['starsBreakdown'] as Map<String, dynamic>?;
-    Map<int, int> starsMap = {};
-    if (breakdown != null) {
-      breakdown.forEach((key, value) {
-        starsMap[int.parse(key)] = value as int;
-      });
-    }
+    final breakdown = json['starsBreakdown'] as Map<String, dynamic>? ?? {};
+
+    final Map<int, int> starsMap = {};
+
+    breakdown.forEach((key, value) {
+      final star = int.tryParse(key);
+
+      if (star != null) {
+        starsMap[star] = (value as num?)?.toInt() ?? 0;
+      }
+    });
 
     return RatingSummary(
-      averageRating: (json['averageRating'] as num).toDouble(),
-      totalCount: json['totalCount'] as int,
+      averageRating: (json['averageRating'] as num?)?.toDouble() ?? 0.0,
+      totalCount: (json['totalCount'] as num?)?.toInt() ?? 0,
       starsBreakdown: starsMap,
     );
   }
@@ -32,7 +35,9 @@ class RatingSummary {
     return {
       'averageRating': averageRating,
       'totalCount': totalCount,
-      'starsBreakdown': starsBreakdown,
+      'starsBreakdown': starsBreakdown.map(
+        (key, value) => MapEntry(key.toString(), value),
+      ),
     };
   }
 }
@@ -44,7 +49,7 @@ class Review {
   final String comment;
   final String createdAt;
 
-  Review({
+  const Review({
     required this.id,
     required this.userName,
     required this.rating,
@@ -54,9 +59,9 @@ class Review {
 
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
-      id: json['id'] as int,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       userName: json['userName'] as String? ?? 'Anonymous',
-      rating: json['rating'] as int,
+      rating: (json['rating'] as num?)?.toInt() ?? 0,
       comment: json['comment'] as String? ?? '',
       createdAt: json['createdAt'] as String? ?? '',
     );
@@ -73,55 +78,65 @@ class Review {
   }
 }
 
-
 class StoreProfileModel {
   final String mainGovernorate;
   final String mainCity;
   final List<StoreBranchModel> branches;
-  final RatingSummary? ratingSummary; 
-  final List<Review>? reviews; 
-  StoreProfileModel({
+  final RatingSummary? ratingSummary;
+  final List<Review>? reviews;
+
+  const StoreProfileModel({
     required this.mainGovernorate,
     required this.mainCity,
     required this.branches,
     this.ratingSummary,
-    this.reviews, // 
+    this.reviews,
   });
 
   factory StoreProfileModel.fromJson(Map<String, dynamic> json) {
-
-    
     final mainBranch = json['mainBranch'] as Map<String, dynamic>?;
 
     final branchesList = json['branches'] as List? ?? [];
-    final branches = branchesList.map((e) => StoreBranchModel.fromJson(e)).toList();
 
-   RatingSummary? ratingSummary;
-    if (json['ratingSummary'] != null) {
-      ratingSummary = RatingSummary.fromJson(json['ratingSummary']);
+    final branches =
+        branchesList
+            .whereType<Map<String, dynamic>>()
+            .map(StoreBranchModel.fromJson)
+            .toList();
+
+    RatingSummary? ratingSummary;
+
+    if (json['ratingSummary'] is Map<String, dynamic>) {
+      ratingSummary = RatingSummary.fromJson(
+        json['ratingSummary'] as Map<String, dynamic>,
+      );
     }
 
-  List<Review>? reviews;
-    if (json['reviews'] != null) {
-      final reviewsList = json['reviews'] as List;
-      reviews = reviewsList.map((e) => Review.fromJson(e)).toList();
+    List<Review>? reviews;
+
+    if (json['reviews'] is List) {
+      reviews =
+          (json['reviews'] as List)
+              .whereType<Map<String, dynamic>>()
+              .map(Review.fromJson)
+              .toList();
     }
 
     return StoreProfileModel(
       mainGovernorate: mainBranch?['governorate'] as String? ?? '',
       mainCity: mainBranch?['city'] as String? ?? '',
       branches: branches,
-      ratingSummary: ratingSummary, 
-      reviews: reviews, 
+      ratingSummary: ratingSummary,
+      reviews: reviews,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'mainBranch': {'governorate': mainGovernorate, 'city': mainCity},
-      'branches': branches.map((e) => e.toJson()).toList(),
-      'ratingSummary': ratingSummary?.toJson(), 
-      'reviews': reviews?.map((e) => e.toJson()).toList(), 
+      'branches': branches.map((branch) => branch.toJson()).toList(),
+      'ratingSummary': ratingSummary?.toJson(),
+      'reviews': reviews?.map((review) => review.toJson()).toList(),
     };
   }
 }

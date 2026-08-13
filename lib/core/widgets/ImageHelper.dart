@@ -6,5 +6,5 @@ String getImageUrl(String? imagePath) {
   }
   final cleanPath =
       imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
-  return '$baseUrl2/storage/$cleanPath';
+  return cleanPath;
 }

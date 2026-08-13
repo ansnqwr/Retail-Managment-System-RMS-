@@ -1,7 +1,6 @@
-import 'package:delni_rms/features/home/Model/ProductDetailModel.dart';
-import 'package:delni_rms/features/home/Model/ProductReviewModel.dart';
+import 'package:delni_rms/features/products/model/ProductDetailModel.dart';
+import 'package:delni_rms/features/products/model/ProductReviewModel.dart';
 import 'package:equatable/equatable.dart';
-
 
 abstract class ProductDetailsState extends Equatable {
   const ProductDetailsState();
