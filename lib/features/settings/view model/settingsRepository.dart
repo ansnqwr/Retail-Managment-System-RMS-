@@ -13,9 +13,8 @@ abstract class SettingsRepository {
 }
 
 class SettingsRepositoryImpl implements SettingsRepository {
-  static const _keyLanguage = 'settings_language';
-  static const _keyCurrency =
-      'settings_currency'; // stores abbreviation: USD, SYP, ...
+  static const _keyLanguage = 'easy_localization';
+  static const _keyCurrency = 'settings_currency';
 
   static const _defaultLanguage = 'en';
   static const _defaultCurrency = 'USD';
@@ -34,7 +33,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     Language(code: 'ja', name: 'Japanese'),
     Language(code: 'fa', name: 'فارسى'),
     Language(code: 'ko', name: 'Korean'),
-    Language(code: 'ga', name: 'Irish'),
+    // Language(code: 'ga', name: 'Irish'),
     Language(code: 'nl', name: 'Dutch'),
     Language(code: 'sv', name: 'Swedish'),
     Language(code: 'el', name: 'Greek'),
@@ -119,7 +118,6 @@ class SettingsRepositoryImpl implements SettingsRepository {
     await prefs.setString(_keyLanguage, languageCode);
   }
 
-  /// Stores the currency abbreviation in uppercase (USD, SYP, EUR, ...)
   @override
   Future<void> updateCurrency(String currencyCode) async {
     final prefs = await SharedPreferences.getInstance();

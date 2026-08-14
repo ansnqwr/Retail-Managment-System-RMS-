@@ -1,6 +1,7 @@
-import 'package:delni_rms/features/favorites/view%20model/FavoritesRepository.dart';
+// lib/features/favorites/presentation/bloc/favorites_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../model/favoritesModel.dart';
+import 'FavoritesRepository.dart';
 import 'favorites_event.dart';
 import 'favorites_state.dart';
 
@@ -10,18 +11,34 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
   FavoritesBloc(this.favoritesRepository) : super(const FavoritesState()) {
     on<FavoritesStarted>(_onStarted);
     on<FavoriteToggled>(_onToggled);
+    on<FavoritesProductTapped>(_onTapped);
+    on<FavoritesRefreshed>(_onStarted);
   }
 
   Future<void> _onStarted(
-    FavoritesStarted event,
+    FavoritesEvent event,
     Emitter<FavoritesState> emit,
   ) async {
     emit(state.copyWith(isLoading: true, error: null));
     try {
-      final ids = await favoritesRepository.getFavoriteIds();
-      emit(state.copyWith(favoriteProductIds: ids, isLoading: false));
+      final products = await favoritesRepository.getWishlist();
+      final ids = products.map((p) => p.id).toSet();
+      emit(
+        state.copyWith(
+          products: products,
+          favoriteProductIds: ids,
+          isLoading: false,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(isLoading: false, error: e.toString()));
+      final localIds = await favoritesRepository.getFavoriteIds();
+      emit(
+        state.copyWith(
+          favoriteProductIds: localIds,
+          isLoading: false,
+          error: e.toString(),
+        ),
+      );
     }
   }
 
@@ -29,33 +46,60 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
     FavoriteToggled event,
     Emitter<FavoritesState> emit,
   ) async {
+    // 1. Optimistic update
     final optimisticIds = Set<int>.from(state.favoriteProductIds);
-    event.currentIsFavorite
-        ? optimisticIds.remove(event.productId)
-        : optimisticIds.add(event.productId);
-    emit(state.copyWith(favoriteProductIds: optimisticIds));
+    final optimisticProducts = List<Product>.from(state.products);
 
+    if (event.currentIsFavorite) {
+      optimisticIds.remove(event.productId);
+      optimisticProducts.removeWhere((p) => p.id == event.productId);
+    } else {
+      optimisticIds.add(event.productId);
+    }
+
+    emit(
+      state.copyWith(
+        favoriteProductIds: optimisticIds,
+        products: optimisticProducts,
+      ),
+    );
+
+    // 2. Call API
     try {
-      final newState = await favoritesRepository.toggleFavorite(
+      final newIsFavorite = await favoritesRepository.toggleFavorite(
         event.productId,
         event.currentIsFavorite,
       );
+
       final confirmedIds = Set<int>.from(state.favoriteProductIds);
-      newState
-          ? confirmedIds.add(event.productId)
-          : confirmedIds.remove(event.productId);
+      if (newIsFavorite) {
+        confirmedIds.add(event.productId);
+      } else {
+        confirmedIds.remove(event.productId);
+      }
+
       emit(state.copyWith(favoriteProductIds: confirmedIds));
     } catch (e) {
-      // revert optimistic update on failure
+      // Revert
+      final revertedIds = Set<int>.from(state.favoriteProductIds);
+      if (event.currentIsFavorite) {
+        revertedIds.add(event.productId);
+      } else {
+        revertedIds.remove(event.productId);
+      }
+
       emit(
-        state.copyWith(
-          favoriteProductIds: Set<int>.from(state.favoriteProductIds)
-            ..removeWhere(
-              (id) => id == event.productId && !event.currentIsFavorite,
-            ),
-          error: e.toString(),
-        ),
+        state.copyWith(favoriteProductIds: revertedIds, error: e.toString()),
       );
     }
+  }
+
+  Future<void> _onTapped(
+    FavoritesProductTapped event,
+    Emitter<FavoritesState> emit,
+  ) async {
+    // Optional side-effects only
+    // e.g. analytics, logging, etc.
+    // No state change needed for navigation
   }
 }

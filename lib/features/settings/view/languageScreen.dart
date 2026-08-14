@@ -6,8 +6,29 @@ import '../view model/settingsBloc.dart';
 import '../view model/settingsEvent.dart';
 import '../view model/settingsState.dart';
 
-class LanguageScreen extends StatelessWidget {
+class LanguageScreen extends StatefulWidget {
   const LanguageScreen({super.key});
+
+  @override
+  State<LanguageScreen> createState() => _LanguageScreenState();
+}
+
+class _LanguageScreenState extends State<LanguageScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final bloc = context.read<SettingsBloc>();
+      if (bloc.state is! LanguageSelectionState) {
+        bloc.add(NavigateToLanguage());
+      }
+    });
+  }
+
+  Locale _localeFromCode(String code) {
+    return Locale(code);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,27 +44,13 @@ class LanguageScreen extends StatelessWidget {
             size: 20,
             color: Colors.grey.shade800,
           ),
-          onPressed: () {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            }
-          },
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: BlocConsumer<SettingsBloc, SettingsState>(
-        listener: (context, state) {
-          if (state is LanguageChanged) {
-            // Apply the new locale app-wide
-            context.setLocale(_localeFromCode(state.languageCode));
-          }
-        },
+      body: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, state) {
           if (state is LanguageSelectionState) {
             return _buildLanguageList(context, state.languages);
-          }
-          if (state is LanguageChanged) {
-            // Briefly emitted; keep showing list if we have previous data
-            return const Center(child: CircularProgressIndicator());
           }
           if (state is SettingsActionLoading && state.action == 'language') {
             return const Center(child: CircularProgressIndicator());
@@ -58,27 +65,10 @@ class LanguageScreen extends StatelessWidget {
               ),
             );
           }
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.read<SettingsBloc>().add(NavigateToLanguage());
-          });
           return const Center(child: CircularProgressIndicator());
         },
       ),
     );
-  }
-
-  Locale _localeFromCode(String code) {
-    // Map language codes to Locale (add script/country if needed later)
-    switch (code) {
-      case 'zh':
-        return const Locale('zh', 'CN'); // Mandarin
-      case 'fa':
-        return const Locale('fa', 'IR');
-      case 'ar':
-        return const Locale('ar');
-      default:
-        return Locale(code);
-    }
   }
 
   Widget _buildLanguageList(BuildContext context, List<Language> languages) {
@@ -99,7 +89,17 @@ class LanguageScreen extends StatelessWidget {
           style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
         const SizedBox(height: 20),
-        ...languages.map((lang) => _LanguageTile(language: lang)),
+        ...languages.map(
+          (lang) => _LanguageTile(
+            language: lang,
+            onTap: () {
+              if (!lang.isSelected) {
+                context.setLocale(_localeFromCode(lang.code));
+                context.read<SettingsBloc>().add(SelectLanguage(lang.code));
+              }
+            },
+          ),
+        ),
       ],
     );
   }
@@ -107,16 +107,14 @@ class LanguageScreen extends StatelessWidget {
 
 class _LanguageTile extends StatelessWidget {
   final Language language;
-  const _LanguageTile({required this.language});
+  final VoidCallback onTap;
+
+  const _LanguageTile({required this.language, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        if (!language.isSelected) {
-          context.read<SettingsBloc>().add(SelectLanguage(language.code));
-        }
-      },
+      onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

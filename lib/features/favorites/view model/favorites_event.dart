@@ -1,3 +1,4 @@
+// lib/features/favorites/presentation/bloc/favorites_event.dart
 import 'package:equatable/equatable.dart';
 
 abstract class FavoritesEvent extends Equatable {
@@ -18,4 +19,18 @@ class FavoriteToggled extends FavoritesEvent {
 
   @override
   List<Object?> get props => [productId, currentIsFavorite];
+}
+
+/// Optional – useful if you want to force a full refresh later
+
+class FavoritesProductTapped extends FavoritesEvent {
+  final int productId;
+
+  const FavoritesProductTapped(this.productId);
+  @override
+  List<Object?> get props => [productId];
+}
+
+class FavoritesRefreshed extends FavoritesEvent {
+  const FavoritesRefreshed();
 }

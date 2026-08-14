@@ -10,6 +10,16 @@ class CurrencyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Safe place to trigger the load (only once)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+
+      final bloc = context.read<SettingsBloc>();
+      if (bloc.state is! CurrencySelectionState) {
+        bloc.add(NavigateToCurrency());
+      }
+    });
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -22,11 +32,7 @@ class CurrencyScreen extends StatelessWidget {
             size: 20,
             color: Colors.grey.shade800,
           ),
-          onPressed: () {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            }
-          },
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: BlocConsumer<SettingsBloc, SettingsState>(
@@ -35,9 +41,11 @@ class CurrencyScreen extends StatelessWidget {
           if (state is CurrencySelectionState) {
             return _buildCurrencyList(context, state.currencies);
           }
+
           if (state is SettingsActionLoading && state.action == 'currency') {
             return const Center(child: CircularProgressIndicator());
           }
+
           if (state is SettingsError) {
             return Center(
               child: TextButton(
@@ -48,9 +56,8 @@ class CurrencyScreen extends StatelessWidget {
               ),
             );
           }
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.read<SettingsBloc>().add(NavigateToCurrency());
-          });
+
+          // Initial / loading
           return const Center(child: CircularProgressIndicator());
         },
       ),

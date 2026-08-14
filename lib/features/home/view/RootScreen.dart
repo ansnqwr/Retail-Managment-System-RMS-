@@ -1,3 +1,10 @@
+import 'package:http/http.dart' as http;
+
+import '../../cart/view model/CartBloc.dart';
+import '../../cart/view model/CartRepository.dart';
+import '../../favorites/view model/FavoritesRepository.dart';
+import '../../favorites/view model/favorites_bloc.dart';
+import '../../favorites/view model/favorites_event.dart';
 import '/core/widgets/NavigationDestinationWidget.dart';
 
 import '../../profiles/Model/profile_repository.dart';
@@ -20,13 +27,28 @@ class RootScreen extends StatefulWidget {
 
 class _RootScreenState extends State<RootScreen> {
   int selectedIndex = 0;
+  late final List<Widget> _pages;
+
   @override
-  Widget build(BuildContext context) {
-    List<Widget> pages = [
+  void initState() {
+    super.initState();
+    _pages = [
       HomeScreen(isGuest: widget.isGuest),
-      Favorites(),
+
+      BlocProvider(
+        create:
+            (_) =>
+                FavoritesBloc(FavoritesRepository(http.Client()))
+                  ..add(const FavoritesStarted()),
+        child: const Favorites(),
+      ),
+
       Categories(),
-      CartScreen(),
+      BlocProvider(
+        create: (_) => CartBloc(CartRepository(http.Client())),
+        child: CartScreen(),
+      ),
+
       BlocProvider(
         create: (context) {
           final bloc = ProfileBloc(ProfileRepository());
@@ -37,24 +59,11 @@ class _RootScreenState extends State<RootScreen> {
         },
         child: ProfileView(),
       ),
-      InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => BlocProvider(
-                    create:
-                        (context) =>
-                            ProfileBloc(ProfileRepository())
-                              ..add(LoadProfileEvent()),
-                    child: const ProfileView(),
-                  ),
-            ),
-          );
-        },
-      ),
     ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: SafeArea(
         child: NavigationBar(
@@ -66,7 +75,6 @@ class _RootScreenState extends State<RootScreen> {
               icon: Icons.home_outlined,
               selectedIcon: Icons.home,
             ),
-
             NavigationDestinationWidget(
               index: 1,
               selectedIndex: selectedIndex,
@@ -107,7 +115,7 @@ class _RootScreenState extends State<RootScreen> {
           indicatorColor: Colors.transparent,
         ),
       ),
-      body: IndexedStack(index: selectedIndex, children: pages),
+      body: IndexedStack(index: selectedIndex, children: _pages),
     );
   }
 }

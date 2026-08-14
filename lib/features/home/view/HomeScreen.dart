@@ -699,9 +699,9 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder:
-                (routeContext) => BlocProvider(
+                (_) => BlocProvider(
                   create:
-                      (blocContext) =>
+                      (_) =>
                           SettingsBloc(repository: SettingsRepositoryImpl())
                             ..add(LoadSettings()),
                   child: const SettingsScreen(),

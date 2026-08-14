@@ -1,14 +1,49 @@
+// ─── HOW TO NAVIGATE FROM HomeScreen ────────────────────────────────────────
+// Replace the current settings navigation in HomeScreen with this:
+//
+// Navigator.of(context).push(MaterialPageRoute(
+//   builder: (_) => BlocProvider(
+//     create: (_) => SettingsBloc(repository: SettingsRepositoryImpl())
+//       ..add(LoadSettings()),
+//     child: const SettingsScreen(),
+//   ),
+// ));
+//
+// This provides SettingsBloc for the entire settings sub-flow (Settings →
+// Language / Currency screens) in one place. BlocProvider.value in child
+// screens then safely reuses this single instance.
+// ─────────────────────────────────────────────────────────────────────────────
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/settingsModel.dart';
 import '../view model/settingsBloc.dart';
 import '../view model/settingsEvent.dart';
+import '../view model/settingsRepository.dart';
 import '../view model/settingsState.dart';
 import 'languageScreen.dart';
 import 'currencyScreen.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
+  // convert to StatefulWidget
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final bloc = context.read<SettingsBloc>();
+      if (bloc.state is! SettingsLoaded) {
+        bloc.add(LoadSettings());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +67,6 @@ class SettingsScreen extends StatelessWidget {
                 ),
               );
             }
-            // Initial / unknown – trigger load
             return const SizedBox.shrink();
           },
         ),
@@ -92,10 +126,15 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-class _SettingTile extends StatelessWidget {
+class _SettingTile extends StatefulWidget {
   final SettingOption option;
   const _SettingTile({required this.option});
 
+  @override
+  State<_SettingTile> createState() => _SettingTileState();
+}
+
+class _SettingTileState extends State<_SettingTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -109,22 +148,22 @@ class _SettingTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              option.title,
+              widget.option.title,
               style: TextStyle(
                 fontSize: 15,
                 color:
-                    option.isDestructive
+                    widget.option.isDestructive
                         ? const Color(0xFFE57373)
                         : const Color(0xFF2D1B2E),
                 fontWeight: FontWeight.w400,
               ),
             ),
-            if (!option.isDestructive)
+            if (!widget.option.isDestructive)
               Row(
                 children: [
-                  if (option.value != null)
+                  if (widget.option.value != null)
                     Text(
-                      option.value!,
+                      widget.option.value!,
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.grey.shade600,
@@ -145,58 +184,59 @@ class _SettingTile extends StatelessWidget {
   }
 
   void _onTap(BuildContext context) {
-    switch (option.id) {
+    // Capture the bloc reference BEFORE navigating. After Navigator.push the
+    // original context may be deactivated, so we must not call
+    // context.read<SettingsBloc>() inside .then().
+    final bloc = context.read<SettingsBloc>();
+
+    switch (widget.option.id) {
       case 'shipping':
-        context.read<SettingsBloc>().add(NavigateToShippingAddress());
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (_) => const ShippingAddressScreen()),
-        // );
+        bloc.add(NavigateToShippingAddress());
         break;
+
       case 'payment':
-        context.read<SettingsBloc>().add(NavigateToPaymentMethods());
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (_) => const PaymentMethodsScreen()),
-        // );
+        bloc.add(NavigateToPaymentMethods());
         break;
+
       case 'currency':
-        context.read<SettingsBloc>().add(NavigateToCurrency());
         Navigator.push(
           context,
           MaterialPageRoute(
             builder:
                 (_) => BlocProvider.value(
-                  value: context.read<SettingsBloc>(),
-                  child: const CurrencyScreen(), // or CurrencyScreen
+                  value: bloc, // reuse the same bloc instance
+                  child: const CurrencyScreen(),
                 ),
           ),
         ).then((_) {
-          context.read<SettingsBloc>().add(LoadSettings());
+          // Use the captured bloc reference, NOT context.read — context may
+          // be deactivated by the time .then() fires.
+          if (mounted) bloc.add(LoadSettings());
         });
         break;
+
       case 'language':
-        context.read<SettingsBloc>().add(NavigateToLanguage());
         Navigator.push(
           context,
           MaterialPageRoute(
             builder:
                 (_) => BlocProvider.value(
-                  value: context.read<SettingsBloc>(),
-                  child: const LanguageScreen(), // or CurrencyScreen
+                  value: bloc, // reuse the same bloc instance
+                  child: const LanguageScreen(),
                 ),
           ),
         ).then((_) {
-          context.read<SettingsBloc>().add(LoadSettings());
+          if (mounted) bloc.add(LoadSettings());
         });
         break;
+
       case 'delete':
-        _showDeleteDialog(context);
+        _showDeleteDialog(context, bloc);
         break;
     }
   }
 
-  void _showDeleteDialog(BuildContext context) {
+  void _showDeleteDialog(BuildContext context, SettingsBloc bloc) {
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.35),
@@ -208,7 +248,6 @@ class _SettingTile extends StatelessWidget {
             clipBehavior: Clip.none,
             alignment: Alignment.topCenter,
             children: [
-              // Card
               Container(
                 margin: const EdgeInsets.only(top: 28),
                 padding: const EdgeInsets.fromLTRB(24, 40, 24, 24),
@@ -270,9 +309,8 @@ class _SettingTile extends StatelessWidget {
                             height: 48,
                             child: ElevatedButton(
                               onPressed: () {
-                                context.read<SettingsBloc>().add(
-                                  DeleteAccount(),
-                                );
+                                // Use captured bloc, not context.read
+                                bloc.add(DeleteAccount());
                                 Navigator.pop(ctx);
                               },
                               style: ElevatedButton.styleFrom(
@@ -298,7 +336,6 @@ class _SettingTile extends StatelessWidget {
                   ],
                 ),
               ),
-              // Warning icon circle
               Positioned(
                 top: 0,
                 child: Container(
