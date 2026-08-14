@@ -19,13 +19,16 @@ class ProductCardModel {
 
   factory ProductCardModel.fromJson(Map<String, dynamic> json) {
     return ProductCardModel(
-      id: json['id'] as int,
-      imageUrl: json['imageUrl'] as String? ?? '',
-      title: json['title'] as String,
-      price: (json['price'] as num).toDouble(),
-      isNew: json['isNew'] as bool,
-      hasDiscount: json['hasDiscount'] as bool,
-      discountPercentage: json['discountPercentage'] as int,
+      id: (json['id'] is num) ? (json['id'] as num).toInt() : 0,
+      imageUrl: json['imageUrl']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      price: (json['price'] is num) ? (json['price'] as num).toDouble() : 0.0,
+      isNew: json['isNew'] == true,
+      hasDiscount: json['hasDiscount'] == true,
+      discountPercentage:
+          (json['discountPercentage'] is num)
+              ? (json['discountPercentage'] as num).toInt()
+              : 0,
     );
   }
 }

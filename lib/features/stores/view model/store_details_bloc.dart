@@ -3,6 +3,8 @@ import 'package:delni_rms/features/stores/model/StoreProfileModel.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/widgets/ImageHelper.dart';
+import '../../auth/data/models/Repository/signin_repository.dart';
 import 'store_details_event.dart';
 import 'store_details_state.dart';
 
@@ -42,6 +44,15 @@ class StoreDetailsBloc extends Bloc<StoreDetailsEvent, StoreDetailsState> {
       final productsData = results[1];
       final profileData = results[2];
 
+      final rawImageUrl = overviewData['imageUrl'] as String? ?? '';
+      overviewData['imageUrl'] = getImageUrl(rawImageUrl);
+
+      final overview = overviewData['overview'] as Map<String, dynamic>?;
+      if (overview != null) {
+        final rawBanner = overview['bannerUrl'] as String? ?? '';
+        overview['bannerUrl'] = getImageUrl(rawBanner);
+      }
+
       final products =
           (productsData['products'] as List? ?? [])
               .whereType<Map<String, dynamic>>()
@@ -66,9 +77,14 @@ class StoreDetailsBloc extends Bloc<StoreDetailsEvent, StoreDetailsState> {
           currentSort: 'popularity',
         ),
       );
-    } catch (e) {
+    } catch (e, stack) {
+      print('BLOC ERROR: $e');
+      print('BLOC STACK: $stack');
       emit(StoreDetailsError(e.toString()));
     }
+    // catch (e) {
+    //   emit(StoreDetailsError(e.toString()));
+    // }
   }
 
   Future<void> _sortProducts(

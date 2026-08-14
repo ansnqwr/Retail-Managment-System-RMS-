@@ -19,6 +19,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
+import '../../cart/view model/CartRepository.dart';
+import '../../favorites/view model/FavoritesRepository.dart';
+
 const _primaryColor = Color(0xFF6B2D5C);
 const _lowStockThreshold = 5;
 
@@ -28,11 +31,19 @@ class ProductDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create:
-          (context) =>
-              ProductDetailsBloc(ProductDetailsRepository(http.Client()))
-                ..add(LoadProductDetails(productId)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create:
+              (_) =>
+                  ProductDetailsBloc(ProductDetailsRepository(http.Client()))
+                    ..add(LoadProductDetails(productId)),
+        ),
+        BlocProvider(
+          create: (_) => FavoritesBloc(FavoritesRepository(http.Client())),
+        ),
+        BlocProvider(create: (_) => CartBloc(CartRepository(http.Client()))),
+      ],
       child: const _ProductDetailsView(),
     );
   }
@@ -424,11 +435,11 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
                         ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Added to bag')),
+                        const SnackBar(content: Text('Added to Cart')),
                       );
                     },
-            icon: const Icon(Icons.shopping_bag_outlined),
-            label: Text(product.isInStock ? 'Add to Bag' : 'Out of Stock'),
+            icon: const Icon(Icons.shopping_cart_outlined),
+            label: Text(product.isInStock ? 'Add to Cart' : 'Out of Stock'),
           ),
         ),
       ],

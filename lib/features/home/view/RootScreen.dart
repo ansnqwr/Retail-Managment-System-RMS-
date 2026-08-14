@@ -27,43 +27,50 @@ class RootScreen extends StatefulWidget {
 
 class _RootScreenState extends State<RootScreen> {
   int selectedIndex = 0;
-  late final List<Widget> _pages;
+  final Map<int, Widget> _pageCache = {};
 
-  @override
-  void initState() {
-    super.initState();
-    _pages = [
-      HomeScreen(isGuest: widget.isGuest),
+  Widget _getPage(int index) {
+    return _pageCache.putIfAbsent(index, () => _buildPage(index));
+  }
 
-      BlocProvider(
-        create:
-            (_) =>
-                FavoritesBloc(FavoritesRepository(http.Client()))
-                  ..add(const FavoritesStarted()),
-        child: const Favorites(),
-      ),
-
-      Categories(),
-      BlocProvider(
-        create: (_) => CartBloc(CartRepository(http.Client())),
-        child: CartScreen(),
-      ),
-
-      BlocProvider(
-        create: (context) {
-          final bloc = ProfileBloc(ProfileRepository());
-          if (!widget.isGuest) {
-            bloc.add(LoadProfileEvent());
-          }
-          return bloc;
-        },
-        child: ProfileView(),
-      ),
-    ];
+  Widget _buildPage(int index) {
+    switch (index) {
+      case 0:
+        return HomeScreen(isGuest: widget.isGuest);
+      case 1:
+        return BlocProvider(
+          create:
+              (_) =>
+                  FavoritesBloc(FavoritesRepository(http.Client()))
+                    ..add(const FavoritesStarted()),
+          child: const Favorites(),
+        );
+      case 2:
+        return Categories();
+      case 3:
+        return BlocProvider(
+          create: (_) => CartBloc(CartRepository(http.Client())),
+          child: const CartScreen(),
+        );
+      case 4:
+        return BlocProvider(
+          create: (context) {
+            final bloc = ProfileBloc(ProfileRepository());
+            if (!widget.isGuest) bloc.add(LoadProfileEvent());
+            return bloc;
+          },
+          child: ProfileView(),
+        );
+      default:
+        return const SizedBox.shrink();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Build all 5 pages using the cache so IndexedStack has them all
+    final pages = List.generate(5, (i) => _getPage(i));
+
     return Scaffold(
       bottomNavigationBar: SafeArea(
         child: NavigationBar(
@@ -106,16 +113,13 @@ class _RootScreenState extends State<RootScreen> {
           ],
           animationDuration: const Duration(milliseconds: 300),
           selectedIndex: selectedIndex,
-          onDestinationSelected: (value) {
-            setState(() {
-              selectedIndex = value;
-            });
-          },
+          onDestinationSelected:
+              (value) => setState(() => selectedIndex = value),
           backgroundColor: Colors.white,
           indicatorColor: Colors.transparent,
         ),
       ),
-      body: IndexedStack(index: selectedIndex, children: _pages),
+      body: IndexedStack(index: selectedIndex, children: pages),
     );
   }
 }

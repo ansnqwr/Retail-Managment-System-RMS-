@@ -5,7 +5,7 @@ import 'package:delni_rms/features/stores/view%20model/store_details_event.dart'
 import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
 import 'package:delni_rms/features/stores/view/store_details_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/src/client.dart';
+import 'package:http/http.dart' as http;
 
 import '/core/widgets/StoreCard.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class StoreSilverGrid extends StatefulWidget {
 }
 
 class _StoreSilverGridState extends State<StoreSilverGrid> {
-  Client? get client => null;
+  // Client? get client => null;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,9 @@ class _StoreSilverGridState extends State<StoreSilverGrid> {
                       (_) => BlocProvider(
                         create:
                             (_) => StoreDetailsBloc(
-                              StoreDetailsRepository(client!),
+                              StoreDetailsRepository(
+                                http.Client(),
+                              ), // ← create directly
                             )..add(LoadStoreDetails(store.id)),
                         child: StoreDetailsScreen(storeId: store.id),
                       ),

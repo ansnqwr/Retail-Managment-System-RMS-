@@ -8,6 +8,7 @@ import '/features/auth/data/models/Repository/signin_repository.dart';
 import '/features/auth/data/models/Repository/signup_repository.dart';
 import '/features/auth/view_model/bloc/login_bloc.dart';
 import '/features/auth/view_model/bloc/signup_bloc.dart';
+import 'features/auth/data/models/Repository/auth_local_data.dart';
 import 'features/profiles/Model/profile_repository.dart';
 import 'features/profiles/ViewModel/profile_bloc.dart';
 import '/features/splash/view%20model/splash_bloc.dart';
@@ -20,11 +21,10 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
 
   final prefs = await SharedPreferences.getInstance();
-  await prefs.remove('settings_language');
-  final savedLang = prefs.getString('easy_localization');
-  if (savedLang == 'ga') {
-    await prefs.remove('easy_localization');
-  }
+  // await prefs.remove('settings_language');
+
+  await TokenManager().loadTokens();
+
   final isGuest = prefs.getBool('is_guest') ?? false;
   final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
 
@@ -97,7 +97,7 @@ class DelniApp extends StatelessWidget {
               title: 'دلني - Delni',
               debugShowCheckedModeBanner: false,
               localizationsDelegates: [
-                ...context.localizationDelegates, // EasyLocalization delegates
+                ...context.localizationDelegates,
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
@@ -120,9 +120,6 @@ class DelniApp extends StatelessWidget {
                   centerTitle: true,
                 ),
               ),
-              // FIX: SplashScreen is the direct home — no extra MultiBlocProvider
-              // wrapper needed here since CartBloc/FavoritesBloc are now in
-              // RootScreen.initState instead.
               home: SplashScreen(isGuest: isGuest, isLoggedIn: isLoggedIn),
             );
           },

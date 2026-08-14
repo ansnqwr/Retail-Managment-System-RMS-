@@ -26,6 +26,13 @@ class StoreDetailsScreen extends StatefulWidget {
 
 class _StoreDetailsScreenState extends State<StoreDetailsScreen>
     with SingleTickerProviderStateMixin {
+  String _firstNonEmpty(List<String?> values) {
+    for (final v in values) {
+      if (v != null && v.isNotEmpty) return v;
+    }
+    return '';
+  }
+
   static const Color primaryColor = Color(0xFF6B2D5C);
 
   late final TabController _tabController;
@@ -64,28 +71,43 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
+    print('BUILD CALLED');
     return Scaffold(
       backgroundColor: Colors.white,
-      body: BlocBuilder<StoreDetailsBloc, StoreDetailsState>(
-        builder: (context, state) {
-          if (state is StoreDetailsLoading) {
-            return const Center(child: CircularProgressIndicator());
+      body: Builder(
+        builder: (context) {
+          print('CHECKING BLOC');
+          try {
+            final bloc = context.read<StoreDetailsBloc>();
+            print('BLOC FOUND: $bloc');
+          } catch (e) {
+            print('BLOC NOT FOUND: $e');
           }
-
-          if (state is StoreDetailsError) {
-            return _buildErrorState(state.message);
-          }
-
-          if (state is StoreDetailsLoaded) {
-            return _buildLoadedPage(state);
-          }
-
-          return const SizedBox.shrink();
+          return BlocBuilder<StoreDetailsBloc, StoreDetailsState>(
+            builder: (context, state) {
+              print('STATE TYPE: ${state.runtimeType}');
+              try {
+                if (state is StoreDetailsLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is StoreDetailsError) {
+                  return _buildErrorState(state.message);
+                }
+                if (state is StoreDetailsLoaded) {
+                  return _buildLoadedPage(state);
+                }
+                return const SizedBox.shrink();
+              } catch (e, stack) {
+                print('UI ERROR: $e');
+                print('UI STACK: $stack');
+                return _buildErrorState(e.toString());
+              }
+            },
+          );
         },
       ),
     );
   }
-
   // ---------------------------------------------------------------------------
   // Main page
   // ---------------------------------------------------------------------------
@@ -105,10 +127,16 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
      */
     final branch = state.selectedBranch ?? widget.selectedBranch;
 
-    final governorate =
-        branch?.governorate ?? state.profileData.mainGovernorate;
-
-    final city = branch?.city ?? state.profileData.mainCity;
+    final governorate = _firstNonEmpty([
+      branch?.governorate,
+      state.profileData.mainGovernorate,
+      state.overviewData['governorate'] as String?,
+    ]);
+    final city = _firstNonEmpty([
+      branch?.city,
+      state.profileData.mainCity,
+      state.overviewData['city'] as String?,
+    ]);
 
     return NestedScrollView(
       controller: _scrollController,
@@ -356,7 +384,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
            *
            * It must NOT depend on isBrand.
            */
-          _buildStoreInfoCard(state, selectedBranch),
+          _buildStoreInfoCard(state, selectedBranch, state.overviewData),
 
           if (sections.isNotEmpty) ...[
             const SizedBox(height: 8),
@@ -508,17 +536,22 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
   // ---------------------------------------------------------------------------
   // Store information
   // ---------------------------------------------------------------------------
-
   Widget _buildStoreInfoCard(
     StoreDetailsLoaded state,
     StoreBranchModel? selectedBranch,
+    Map<String, dynamic> overviewData, // ← add
   ) {
+    final governorate = _firstNonEmpty([
+      selectedBranch?.governorate,
+      state.profileData.mainGovernorate,
+      overviewData['governorate'] as String?,
+    ]);
+    final city = _firstNonEmpty([
+      selectedBranch?.city,
+      state.profileData.mainCity,
+      overviewData['city'] as String?,
+    ]);
     final rating = state.profileData.ratingSummary;
-
-    final governorate =
-        selectedBranch?.governorate ?? state.profileData.mainGovernorate;
-
-    final city = selectedBranch?.city ?? state.profileData.mainCity;
 
     return Container(
       width: double.infinity,
@@ -825,16 +858,19 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
   ) {
     final profile = state.profileData;
 
+    final overviewData = state.overviewData;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildLocationCard(profile, selectedBranch),
+          _buildLocationCard(profile, selectedBranch, overviewData),
 
           const SizedBox(height: 20),
 
-          _buildBranchesSection(context, profile),
+          if (state.overviewData['isBrand'] == true)
+            _buildBranchesSection(context, profile),
 
           const SizedBox(height: 20),
 
@@ -851,10 +887,18 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
   Widget _buildLocationCard(
     StoreProfileModel profile,
     StoreBranchModel? selectedBranch,
+    Map<String, dynamic> overviewData,
   ) {
-    final governorate = selectedBranch?.governorate ?? profile.mainGovernorate;
-
-    final city = selectedBranch?.city ?? profile.mainCity;
+    final governorate = _firstNonEmpty([
+      selectedBranch?.governorate,
+      profile.mainGovernorate,
+      overviewData['governorate'] as String?,
+    ]);
+    final city = _firstNonEmpty([
+      selectedBranch?.city,
+      profile.mainCity,
+      overviewData['city'] as String?,
+    ]);
 
     if (governorate.isEmpty && city.isEmpty) {
       return const SizedBox.shrink();

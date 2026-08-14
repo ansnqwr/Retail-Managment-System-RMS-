@@ -9,6 +9,8 @@ class StoreDetailsRepository {
 
   Future<Map<String, dynamic>> getStoreOverview(int storeId) async {
     final response = await _client.get(Uri.parse('$baseUrl/stores/$storeId'));
+    print('OVERVIEW STATUS: ${response.statusCode}');
+    print('OVERVIEW BODY: ${response.body}');
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
@@ -16,7 +18,7 @@ class StoreDetailsRepository {
     }
   }
 
-Future<Map<String, dynamic>> getStoreProducts(
+  Future<Map<String, dynamic>> getStoreProducts(
     int storeId,
     int page,
     String sortBy,
@@ -25,31 +27,27 @@ Future<Map<String, dynamic>> getStoreProducts(
       final url = Uri.parse('$baseUrl/stores/$storeId/products').replace(
         queryParameters: {
           'page': page.toString(),
-          'limit': '10',
+          'perPage': '10',
           'sort_by': sortBy,
         },
       );
-
       final response = await _client.get(url);
-
+      print('PRODUCTS STATUS: ${response.statusCode}');
+      print('PRODUCTS BODY: ${response.body}');
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
         throw Exception('فشل في جلب المنتجات: ${response.statusCode}');
       }
     } catch (e) {
+      print('PRODUCTS ERROR: $e');
       throw Exception('خطأ في الاتصال: $e');
     }
-    
-    }
+  }
 
-
-
-Future<Map<String, dynamic>> getStoreProfile(int storeId) async {
+  Future<Map<String, dynamic>> getStoreProfile(int storeId) async {
     try {
       final url = Uri.parse('$baseUrl/stores/$storeId/profile');
-
-
       final response = await _client.get(
         url,
         headers: {
@@ -58,24 +56,18 @@ Future<Map<String, dynamic>> getStoreProfile(int storeId) async {
         },
       );
 
-    
+      print('PROFILE STATUS: ${response.statusCode}');
+      print('PROFILE BODY: ${response.body}'); // ← add this
+
       if (response.statusCode == 200) {
-        if (response.body.isEmpty) {
-          throw Exception('Response body is empty');
-        }
-
-        final Map<String, dynamic> data = json.decode(response.body);
-
-   
-        return data;
+        if (response.body.isEmpty) throw Exception('Response body is empty');
+        return json.decode(response.body);
       } else {
         throw Exception('فشل في جلب ملف المتجر: ${response.statusCode}');
       }
     } catch (e) {
+      print('PROFILE ERROR: $e'); // ← and this
       throw Exception('خطأ في الاتصال: $e');
     }
   }
-
-
-
 }
