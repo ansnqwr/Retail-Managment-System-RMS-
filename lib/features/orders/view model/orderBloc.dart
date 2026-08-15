@@ -1,3 +1,4 @@
+import 'package:delni_rms/features/orders/model/orderModel.dart';
 import 'package:delni_rms/features/orders/view%20model/orderEvent.dart';
 import 'package:delni_rms/features/orders/view%20model/orderState.dart';
 import 'package:delni_rms/features/orders/view%20model/ordersRepository.dart';
@@ -14,6 +15,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     on<LoadOrderDetails>(_onLoadOrderDetails);
     on<TrackOrder>(_onTrackOrder);
     on<ReviewOrder>(_onReviewOrder);
+    on<ConfirmOrderViaQr>(_onConfirmOrderViaQr);
   }
 
   Future<void> _onLoadOrders(
@@ -84,6 +86,27 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
       emit(OrdersLoaded(orders));
     } catch (e) {
       emit(const OrdersError('Review action failed'));
+    }
+  }
+
+  Future<void> _onConfirmOrderViaQr(
+    ConfirmOrderViaQr event,
+    Emitter<OrdersState> emit,
+  ) async {
+    if (event.scannedCode.trim() != event.orderNumber.trim()) {
+      emit(const OrdersError('QR code does not match this order'));
+      return;
+    }
+
+    emit(OrderActionInProgress(event.orderId));
+    try {
+      final updatedOrder = await _repository.changeOrderStatus(
+        event.orderId,
+        OrderStatus.Confirmed,
+      );
+      emit(OrderDetailsLoaded(updatedOrder));
+    } catch (e) {
+      emit(const OrdersError('Failed to confirm order'));
     }
   }
 }

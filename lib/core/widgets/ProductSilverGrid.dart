@@ -36,7 +36,6 @@ class _ProductSilverGridState extends State<ProductSilverGrid> {
             hasDiscount: product.hasDiscount,
             width: double.infinity,
             onTap: () {
-              context.read<HomeBloc>().add(HomeProductTapped(product.id));
               Navigator.push(
                 context,
                 MaterialPageRoute(

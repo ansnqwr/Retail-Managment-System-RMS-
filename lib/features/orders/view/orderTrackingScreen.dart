@@ -1,7 +1,11 @@
+// lib/features/orders/view/orderTrackingScreen.dart
+
 import 'package:delni_rms/features/orders/model/orderModel.dart';
 import 'package:delni_rms/features/orders/view%20model/orderBloc.dart';
 import 'package:delni_rms/features/orders/view%20model/orderEvent.dart';
 import 'package:delni_rms/features/orders/view%20model/orderState.dart';
+import 'package:delni_rms/features/orders/view%20model/ordersRepository.dart';
+import 'package:delni_rms/features/orders/view/scannerScreen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,7 +57,6 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
               return _OrderTrackingView(order: state.order);
             }
             if (state is OrdersLoaded) {
-              // After review/track the bloc may reload the full list
               final order = state.orders.firstWhere(
                 (o) => o.id == widget.orderId,
                 orElse: () => throw Exception('Order not found'),
@@ -122,12 +125,28 @@ class _OrderTrackingView extends StatelessWidget {
               ),
             ],
           ),
-          Row(
-            children: [
-              _IconButton(icon: Icons.menu, onTap: () {}),
-              const SizedBox(width: 12),
-              _IconButton(icon: Icons.settings_outlined, onTap: () {}),
-            ],
+          _IconButton(
+            icon: Icons.qr_code_scanner,
+            onTap: () async {
+              final confirmed = await Navigator.of(context).push<bool>(
+                MaterialPageRoute(
+                  builder:
+                      (_) => BlocProvider(
+                        create:
+                            (context) => OrdersBloc(
+                              repository: context.read<OrdersRepository>(),
+                            ),
+                        child: QrScannerScreen(
+                          orderId: order.id,
+                          orderNumber: order.orderNumber,
+                        ),
+                      ),
+                ),
+              );
+              if (confirmed == true && context.mounted) {
+                context.read<OrdersBloc>().add(LoadOrderDetails(order.id));
+              }
+            },
           ),
         ],
       ),
@@ -137,7 +156,6 @@ class _OrderTrackingView extends StatelessWidget {
   List<_TrackingStep> _generateTimeline(Order order) {
     final now = DateTime.now();
 
-    // ── Use real tracking events from backend when available ──
     if (order.trackingEvents.isNotEmpty) {
       int currentIndex = order.trackingEvents.indexWhere((e) => e.isCurrent);
       if (currentIndex == -1) currentIndex = order.trackingEvents.length - 1;
@@ -156,7 +174,6 @@ class _OrderTrackingView extends StatelessWidget {
       }).toList();
     }
 
-    // ── Fallback generated timeline ──
     final steps = <_TrackingStep>[];
 
     int statusStage(OrderStatus s) {
@@ -181,7 +198,7 @@ class _OrderTrackingView extends StatelessWidget {
     }
 
     final current = statusStage(order.status);
-    if (current == -1) return steps; // Cancelled
+    if (current == -1) return steps;
 
     _TrackingStep add(String title, String desc, int stepStage, int dayOffset) {
       final isCompleted = current > stepStage;

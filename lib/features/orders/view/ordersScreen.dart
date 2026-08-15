@@ -67,41 +67,16 @@ class OrdersScreen extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'To Receive',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w300,
-                  color: Color(0xFF2D1B2E),
-                ),
-              ),
-              Text(
-                'My order',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w300,
-                  color: Color(0xFF2D1B2E),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              _IconButton(icon: Icons.menu, onTap: () {}),
-              const SizedBox(width: 12),
-              _IconButton(
-                icon: Icons.settings_outlined,
-                onTap: () {
-                  // TODO: Navigate to settings
-                },
-              ),
-            ],
+          Text(
+            'My order',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w300,
+              color: Color(0xFF2D1B2E),
+            ),
           ),
         ],
       ),
@@ -189,7 +164,6 @@ class _OrderCard extends StatelessWidget {
                       label: order.status.showTrackButton ? 'Track' : 'Review',
                       onTap: () {
                         if (order.status.showTrackButton) {
-                          // NEW: own bloc instance — does not touch the list screen's state
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder:
@@ -285,28 +259,6 @@ class _ActionButton extends StatelessWidget {
             fontSize: 13,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _IconButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  const _IconButton({required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: const BoxDecoration(
-          color: Color(0xFFE8E0E8),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(icon, size: 18, color: const Color(0xFF5B2E5A)),
       ),
     );
   }

@@ -21,3 +21,11 @@ class ReviewOrder extends OrdersEvent {
 
   ReviewOrder(this.orderId, {this.review, this.rating});
 }
+
+class ConfirmOrderViaQr extends OrdersEvent {
+  final String orderId;
+  final String orderNumber;
+  final String scannedCode;
+
+  ConfirmOrderViaQr(this.orderId, this.orderNumber, this.scannedCode);
+}
