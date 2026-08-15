@@ -20,7 +20,7 @@ class VerificationSuccessScreen extends StatelessWidget {
             children: [
               const Spacer(),
 
-              const Text(
+              Text(
                 "Verification Successful",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -51,7 +51,7 @@ class VerificationSuccessScreen extends StatelessWidget {
               ),
               const SizedBox(height: 40),
 
-              const Text(
+              Text(
                 "Your account is now verified. You can now explore our latest products and enjoy a seamless shopping experience",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -81,7 +81,7 @@ class VerificationSuccessScreen extends StatelessWidget {
                   ),
                   elevation: 2,
                 ),
-                child: const Text(
+                child: Text(
                   "Next",
                   style: TextStyle(
                     color: peachColor,

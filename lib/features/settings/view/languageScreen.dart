@@ -61,7 +61,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                 onPressed:
                     () =>
                         context.read<SettingsBloc>().add(NavigateToLanguage()),
-                child: const Text('Retry'),
+                child: Text('Retry'),
               ),
             );
           }
@@ -75,7 +75,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       children: [
-        const Text(
+        Text(
           'Settings',
           style: TextStyle(
             fontSize: 32,
@@ -84,10 +84,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
           ),
         ),
         const SizedBox(height: 4),
-        const Text(
-          'Language',
-          style: TextStyle(fontSize: 16, color: Colors.grey),
-        ),
+        Text('Language', style: TextStyle(fontSize: 16, color: Colors.grey)),
         const SizedBox(height: 20),
         ...languages.map(
           (lang) => _LanguageTile(

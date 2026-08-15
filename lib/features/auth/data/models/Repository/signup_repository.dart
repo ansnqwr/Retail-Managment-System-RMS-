@@ -33,13 +33,15 @@ class SignupRepository {
       } else {
         final errorData = jsonDecode(response.body);
         throw Exception(
-          errorData['message'] ?? 'فشل التسجيل: تأكد من البيانات',
+          errorData['message'] ?? 'Failed to sign up. Please try again later.',
         );
       }
     } on http.ClientException {
-      throw Exception('خطأ في الاتصال بالشبكة، يرجى التحقق من الإنترنت.');
+      throw Exception(
+        'Network error: Unable to reach the server. Please check your internet connection.',
+      );
     } on FormatException {
-      throw Exception('خطأ في تنسيق البيانات المستلمة من السيرفر.');
+      throw Exception('Network error: Unable to process the server response.');
     } catch (e) {
       throw Exception(e.toString().replaceAll('Exception:', '').trim());
     }
@@ -71,7 +73,7 @@ class SignupRepository {
             .toList();
       } else {
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'فشل في جلب المحافظات');
+        throw Exception(errorData['message'] ?? 'Failed to get governorates');
       }
     } catch (e) {
       print('خطأ في getGovernorates: $e');
@@ -107,7 +109,7 @@ class SignupRepository {
             .toList();
       } else {
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'فشل في جلب البلدات');
+        throw Exception(errorData['message'] ?? 'Failed to get cities');
       }
     } catch (e) {
       print('خطأ في getCities: $e');

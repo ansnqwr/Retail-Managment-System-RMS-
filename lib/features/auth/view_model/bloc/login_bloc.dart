@@ -2,10 +2,36 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../data/models/Repository/signin_repository.dart';
 
-// --- Events ---
+// Events
 abstract class LoginEvent {}
 
 class TriggerGoogleSignInEvent extends LoginEvent {}
+
+class SubmitGoogleSignInDataEvent extends LoginEvent {
+  final String email;
+  final String googleId;
+  final String firstName;
+  final String lastName;
+  final String phone;
+  final String governorate;
+  final String city;
+
+  SubmitGoogleSignInDataEvent({
+    required this.email,
+    required this.googleId,
+    required this.firstName,
+    required this.lastName,
+    required this.phone,
+    required this.governorate,
+    required this.city,
+  });
+}
+
+class ResendGoogleOtpEvent extends LoginEvent {
+  final String email;
+  final String googleId;
+  ResendGoogleOtpEvent({required this.email, required this.googleId});
+}
 
 class SubmitPasswordLoginEvent extends LoginEvent {
   final String email;
@@ -35,7 +61,7 @@ class VerifyOtpEvent extends LoginEvent {
   });
 }
 
-// --- States ---
+// States
 abstract class LoginState {}
 
 class LoginInitial extends LoginState {}
@@ -49,9 +75,16 @@ class LoginFailure extends LoginState {
   LoginFailure(this.error);
 }
 
+class GoogleAccountPicked extends LoginState {
+  final String email;
+  final String googleId;
+  GoogleAccountPicked({required this.email, required this.googleId});
+}
+
 class GoogleOtpSentSuccess extends LoginState {
   final String email;
-  GoogleOtpSentSuccess(this.email);
+  final String googleId;
+  GoogleOtpSentSuccess({required this.email, required this.googleId});
 }
 
 class ForgotPasswordEmailSentSuccess extends LoginState {}
@@ -64,7 +97,7 @@ class OtpVerifiedSuccess extends LoginState {
 
 class ResetPasswordSuccess extends LoginState {}
 
-// --- BLoC Logic ---
+// BLoC
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final SigninRepository repository;
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
@@ -85,11 +118,44 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
         if (googleUser == null) {
-          emit(LoginFailure("تم إلغاء تسجيل الدخول"));
+          emit(LoginFailure("log in has been canceled"));
           return;
         }
-        await repository.requestGoogleOtp(googleUser.email, googleUser.id);
-        emit(GoogleOtpSentSuccess(googleUser.email));
+        emit(
+          GoogleAccountPicked(email: googleUser.email, googleId: googleUser.id),
+        );
+      } catch (e) {
+        emit(LoginFailure(e.toString()));
+      }
+    });
+
+    on<SubmitGoogleSignInDataEvent>((event, emit) async {
+      emit(LoginLoading());
+      try {
+        await repository.registerGoogleUser(
+          email: event.email,
+          googleId: event.googleId,
+          firstName: event.firstName,
+          lastName: event.lastName,
+          phone: event.phone,
+          governorate: event.governorate,
+          city: event.city,
+        );
+        emit(
+          GoogleOtpSentSuccess(email: event.email, googleId: event.googleId),
+        );
+      } catch (e) {
+        emit(LoginFailure(e.toString()));
+      }
+    });
+
+    on<ResendGoogleOtpEvent>((event, emit) async {
+      emit(LoginLoading());
+      try {
+        await repository.requestGoogleOtp(event.email, event.googleId);
+        emit(
+          GoogleOtpSentSuccess(email: event.email, googleId: event.googleId),
+        );
       } catch (e) {
         emit(LoginFailure(e.toString()));
       }
@@ -98,11 +164,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<VerifyOtpEvent>((event, emit) async {
       emit(LoginLoading());
       try {
-        await repository.verifyOtp(event.email, event.otpCode);
-        // التمييز في الحالة الصادرة
         if (event.isForgotPassword) {
+          await repository.verifyForgotPassword(event.email, event.otpCode);
           emit(OtpVerifiedSuccess(email: event.email, otp: event.otpCode));
         } else {
+          await repository.verifyOtp(event.email, event.otpCode);
           emit(LoginSuccess());
         }
       } catch (e) {

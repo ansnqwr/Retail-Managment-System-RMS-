@@ -1,6 +1,7 @@
 import 'package:delni_rms/features/auth/data/models/Repository/signup_repository.dart';
 import 'package:delni_rms/features/auth/view/login_screen.dart';
 import 'package:delni_rms/features/auth/view_model/bloc/signup_bloc.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/view/SignupScreen.dart';
@@ -36,7 +37,7 @@ class RegisterFirstStep extends StatelessWidget {
                 ),
               ),
 
-              const Center(
+              Center(
                 child: Text(
                   "Welcome Back!",
                   style: TextStyle(
@@ -48,7 +49,7 @@ class RegisterFirstStep extends StatelessWidget {
                 ),
               ),
 
-              const Text(
+              Text(
                 "Get Started For Free",
                 style: TextStyle(
                   fontFamily: 'Poppins',
@@ -87,7 +88,7 @@ class RegisterFirstStep extends StatelessWidget {
                         ),
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       "Sign in",
                       style: TextStyle(
                         decoration: TextDecoration.underline,
@@ -145,7 +146,7 @@ class RegisterFirstStep extends StatelessWidget {
                     debugPrint("***********Form validation failed**********");
                   }
                 },
-                child: const Text(
+                child: Text(
                   "Next",
                   style: TextStyle(
                     color: Color(0xFFF2A488),

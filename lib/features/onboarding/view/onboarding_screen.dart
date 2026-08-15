@@ -210,7 +210,7 @@ class OnboardingScreen extends StatelessWidget {
           const Divider(),
           // أزرار اختيار اللغة
           ListTile(
-            title: const Text('English'),
+            title: Text('English'),
             leading: Radio<String>(
               value: 'English',
               groupValue: state.language,
@@ -222,7 +222,7 @@ class OnboardingScreen extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Text('Arabic'),
+            title: Text('Arabic'),
             leading: Radio<String>(
               value: 'Arabic',
               groupValue: state.language,

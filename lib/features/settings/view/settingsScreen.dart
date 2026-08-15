@@ -1,25 +1,8 @@
-// ─── HOW TO NAVIGATE FROM HomeScreen ────────────────────────────────────────
-// Replace the current settings navigation in HomeScreen with this:
-//
-// Navigator.of(context).push(MaterialPageRoute(
-//   builder: (_) => BlocProvider(
-//     create: (_) => SettingsBloc(repository: SettingsRepositoryImpl())
-//       ..add(LoadSettings()),
-//     child: const SettingsScreen(),
-//   ),
-// ));
-//
-// This provides SettingsBloc for the entire settings sub-flow (Settings →
-// Language / Currency screens) in one place. BlocProvider.value in child
-// screens then safely reuses this single instance.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/settingsModel.dart';
 import '../view model/settingsBloc.dart';
 import '../view model/settingsEvent.dart';
-import '../view model/settingsRepository.dart';
 import '../view model/settingsState.dart';
 import 'languageScreen.dart';
 import 'currencyScreen.dart';
@@ -63,7 +46,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: TextButton(
                   onPressed:
                       () => context.read<SettingsBloc>().add(LoadSettings()),
-                  child: const Text('Retry'),
+                  child: Text('Retry'),
                 ),
               );
             }
@@ -85,7 +68,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       children: [
-        const Text(
+        Text(
           'Settings',
           style: TextStyle(
             fontSize: 32,
@@ -258,7 +241,7 @@ class _SettingTileState extends State<_SettingTile> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
+                    Text(
                       'You are going to delete\nyour account',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -293,7 +276,7 @@ class _SettingTileState extends State<_SettingTile> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Cancel',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -321,7 +304,7 @@ class _SettingTileState extends State<_SettingTile> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Delete',
                                 style: TextStyle(
                                   fontSize: 16,

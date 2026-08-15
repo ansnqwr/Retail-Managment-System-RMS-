@@ -5,6 +5,10 @@ import '../../cart/view model/CartRepository.dart';
 import '../../favorites/view model/FavoritesRepository.dart';
 import '../../favorites/view model/favorites_bloc.dart';
 import '../../favorites/view model/favorites_event.dart';
+import '../../orders/view model/orderBloc.dart';
+import '../../orders/view model/orderEvent.dart';
+import '../../orders/view model/ordersRepository.dart';
+import '../../orders/view/ordersScreen.dart';
 import '/core/widgets/NavigationDestinationWidget.dart';
 
 import '../../profiles/Model/profile_repository.dart';
@@ -47,10 +51,18 @@ class _RootScreenState extends State<RootScreen> {
         );
       case 2:
         return Categories();
+      // case 3:
+      //   return BlocProvider(
+      //     create: (_) => CartBloc(CartRepository(http.Client())),
+      //     child: const CartScreen(),
+      //   );
       case 3:
         return BlocProvider(
-          create: (_) => CartBloc(CartRepository(http.Client())),
-          child: const CartScreen(),
+          create:
+              (context) =>
+                  OrdersBloc(repository: context.read<OrdersRepository>())
+                    ..add(LoadOrders()),
+          child: const OrdersScreen(),
         );
       case 4:
         return BlocProvider(

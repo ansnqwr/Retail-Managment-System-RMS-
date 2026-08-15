@@ -161,7 +161,7 @@ class _PaginationContentState extends State<_PaginationContent> {
           children: [
             const Icon(Icons.error_outline, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Something went wrong',
               style: TextStyle(
                 fontSize: 18,
@@ -183,7 +183,7 @@ class _PaginationContentState extends State<_PaginationContent> {
                 );
               },
               icon: const Icon(Icons.refresh),
-              label: const Text('Try Again'),
+              label: Text('Try Again'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF6B2D5C),
                 foregroundColor: Colors.white,

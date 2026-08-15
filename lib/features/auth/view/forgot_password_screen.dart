@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '/features/auth/view/otp_screen.dart';
 import '../view_model/bloc/login_bloc.dart';
+import '/features/auth/view/otp_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -55,14 +55,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           }
 
           if (state is ForgotPasswordEmailSentSuccess) {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(); // close loading
 
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder:
                     (_) => BlocProvider.value(
                       value: context.read<LoginBloc>(),
-                      child: OtpScreen(email: _emailController.text.trim()),
+                      child: OtpScreen(
+                        email: _emailController.text.trim(),
+                        flow: OtpFlow.forgotPassword,
+                      ),
                     ),
               ),
             );
@@ -85,7 +88,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 30),
 
-                  const Text(
+                  Text(
                     "Forgot Your Password?",
                     style: TextStyle(
                       fontSize: 28,
@@ -96,7 +99,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  const Text(
+                  Text(
                     "Enter your email in this field to receive a link for resetting your password.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -108,7 +111,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 40),
 
-                  const Align(
+                  Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Email",
@@ -129,12 +132,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'رجاءً أدخل البريد الإلكتروني';
+                        return 'Please enter the Email.';
                       }
                       if (!RegExp(
                         r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                       ).hasMatch(value)) {
-                        return 'رجاءً أدخل بريد إلكتروني صالح';
+                        return 'Please enter a valid Email.';
                       }
                       return null;
                     },
@@ -194,7 +197,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       elevation: 3,
                       shadowColor: Colors.black45,
                     ),
-                    child: const Text(
+                    child: Text(
                       "Send to Email",
                       style: TextStyle(
                         color: Color(0xFFE2B78B),

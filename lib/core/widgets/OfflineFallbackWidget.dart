@@ -5,7 +5,7 @@ class OfflineFallbackWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Padding(
         padding: EdgeInsets.all(24.0),
         child: Column(

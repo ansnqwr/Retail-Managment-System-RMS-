@@ -72,7 +72,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
+                  Text(
                     'Create a new account with your email and password, then go to the login page',
                     style: TextStyle(
                       fontSize: 14,

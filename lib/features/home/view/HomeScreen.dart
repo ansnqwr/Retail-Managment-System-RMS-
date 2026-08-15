@@ -4,11 +4,11 @@ import 'package:delni_rms/features/settings/view/settingsScreen.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_bloc.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_event.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:http/http.dart' as http;
-
 import '../../../core/widgets/ImageHelper.dart';
 import '../../../core/widgets/PageTitle.dart';
 import '../../../core/widgets/ProductCard.dart';
@@ -26,7 +26,6 @@ import '../Model/ProductCardModel.dart';
 import '../Model/StoreCardItem.dart';
 import '../../../features/pagination/View/PaginationScreen.dart';
 import '../../../features/auth/view/WelcomeLogin.dart';
-import '../../../features/home/view/Settings.dart';
 import '../view model/HomePage_bloc.dart';
 import '../view model/HomePage_event.dart';
 import '../view model/HomePage_repository.dart';
@@ -161,7 +160,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                 context.read<HomeBloc>().add(const HomeRefreshRequested());
               },
               icon: const Icon(Icons.refresh),
-              label: const Text('Try Again'),
+              label: Text('Try Again'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF6B2D5C),
                 foregroundColor: Colors.white,
@@ -419,7 +418,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
             ),
             height: 140,
             alignment: Alignment.center,
-            child: const Text(
+            child: Text(
               'No ads available',
               style: TextStyle(color: Colors.grey),
             ),

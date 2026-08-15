@@ -1,3 +1,5 @@
+import 'package:delni_rms/features/orders/view%20model/ordersRepository.dart';
+import 'package:delni_rms/features/settings/view%20model/settingsRepository.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -73,6 +75,14 @@ class DelniApp extends StatelessWidget {
         ),
         RepositoryProvider<StoreDetailsRepository>(
           create: (_) => StoreDetailsRepository(http.Client()),
+        ),
+
+        RepositoryProvider<SettingsRepository>(
+          create: (_) => SettingsRepositoryImpl(),
+        ),
+
+        RepositoryProvider<OrdersRepository>(
+          create: (_) => OrdersRepositoryImpl(),
         ),
       ],
       child: MultiBlocProvider(

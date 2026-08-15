@@ -4,6 +4,7 @@ import 'package:delni_rms/features/stores/view%20model/store_details_event.dart'
 import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_state.dart';
 import 'package:delni_rms/features/products/view/ProductDetailsScreen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -116,15 +117,6 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
     final isBrand = state.overviewData['isBrand'] == true;
     final isVerified = state.overviewData['isVerified'] == true;
 
-    /*
-     * IMPORTANT:
-     *
-     * If a branch was selected:
-     *     use that branch's location.
-     *
-     * Otherwise:
-     *     use the store's main branch.
-     */
     final branch = state.selectedBranch ?? widget.selectedBranch;
 
     final governorate = _firstNonEmpty([
@@ -219,13 +211,6 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
 
                     const SizedBox(width: 6),
 
-                    /*
-                     * Brand / verified only controls
-                     * the badge.
-                     *
-                     * It does NOT control whether
-                     * location/info/reviews/etc. exist.
-                     */
                     if (isBrand)
                       const Icon(
                         Icons.verified,
@@ -307,7 +292,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
         labelColor: primaryColor,
         unselectedLabelColor: Colors.grey,
         indicatorColor: primaryColor,
-        tabs: const [
+        tabs: [
           Tab(text: 'Overview'),
           Tab(text: 'Products'),
           Tab(text: 'Store Profile'),
@@ -375,15 +360,6 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
 
           const SizedBox(height: 20),
 
-          /*
-           * Store information is available for:
-           *
-           * - brands
-           * - verified stores
-           * - regular stores
-           *
-           * It must NOT depend on isBrand.
-           */
           _buildStoreInfoCard(state, selectedBranch, state.overviewData),
 
           if (sections.isNotEmpty) ...[
@@ -444,7 +420,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Categories',
           style: TextStyle(
             fontSize: 18,
@@ -564,7 +540,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Store Information',
             style: TextStyle(
               fontSize: 18,
@@ -685,12 +661,12 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Sort By:', style: TextStyle(color: Colors.grey)),
+          Text('Sort By:', style: TextStyle(color: Colors.grey)),
 
           DropdownButton<String>(
             value: state.currentSort,
             underline: const SizedBox.shrink(),
-            items: const [
+            items: [
               DropdownMenuItem(value: 'popularity', child: Text('Popularity')),
               DropdownMenuItem(value: 'cheapest', child: Text('Lowest Price')),
               DropdownMenuItem(
@@ -915,7 +891,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Location',
             style: TextStyle(
               fontSize: 18,
@@ -965,7 +941,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'All Branches',
           style: TextStyle(
             fontSize: 18,
@@ -1006,26 +982,10 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
                     create:
                         (_) => StoreDetailsBloc(repository)..add(
                           LoadStoreDetails(
-                            /*
-                         * VERY IMPORTANT:
-                         *
-                         * branch.id is NOT the store ID.
-                         *
-                         * branch.storeId is the
-                         * actual parent store ID.
-                         */
                             branch.storeId,
                             selectedBranch: branch,
                           ),
                         ),
-
-                    /*
-                 * Also pass the branch to the
-                 * screen itself.
-                 *
-                 * This gives us a fallback even
-                 * before/while the BLoC state loads.
-                 */
                     child: StoreDetailsScreen(
                       storeId: branch.storeId,
                       selectedBranch: branch,
@@ -1150,7 +1110,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Customer Reviews',
           style: TextStyle(
             fontSize: 18,
@@ -1310,7 +1270,7 @@ class RatingBarChart extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Text(
+            Text(
               'Ratings & Reviews',
               style: TextStyle(
                 fontSize: 18,

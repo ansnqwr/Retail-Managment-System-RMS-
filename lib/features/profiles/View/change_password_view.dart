@@ -64,7 +64,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
+                  Text(
                     'Your new password must be unique from those previously used.',
                     style: TextStyle(
                       fontSize: 14,

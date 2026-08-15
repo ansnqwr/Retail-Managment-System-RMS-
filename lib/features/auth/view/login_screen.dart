@@ -1,9 +1,10 @@
-import '/features/home/view/RootScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '/features/home/view/RootScreen.dart';
 import '/features/auth/view/forgot_password_screen.dart';
 import '/features/auth/view/otp_screen.dart';
+import '/features/auth/view/googleDataCollectionScreen.dart';
 import '../../../../core/widgets/login_background_painter.dart';
 import '../view_model/bloc/login_bloc.dart';
 import 'SignupScreen.dart';
@@ -53,22 +54,40 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
 
-          if (state is GoogleOtpSentSuccess) {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            }
+          if (state is GoogleAccountPicked) {
+            if (Navigator.of(context).canPop()) Navigator.of(context).pop();
 
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder:
                     (_) => BlocProvider.value(
                       value: context.read<LoginBloc>(),
-                      child: OtpScreen(email: state.email),
+                      child: GoogleDataCollectionScreen(
+                        email: state.email,
+                        googleId: state.googleId,
+                      ),
                     ),
               ),
             );
           }
 
+          if (state is GoogleOtpSentSuccess) {
+            if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder:
+                    (_) => BlocProvider.value(
+                      value: context.read<LoginBloc>(),
+                      child: OtpScreen(
+                        email: state.email,
+                        flow: OtpFlow.googleLogin,
+                        googleId: state.googleId,
+                      ),
+                    ),
+              ),
+            );
+          }
           if (state is LoginFailure) {
             if (Navigator.of(context).canPop()) Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
@@ -123,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 180),
-                            const Text(
+                            Text(
                               "Login",
                               style: TextStyle(
                                 fontSize: 42,
@@ -132,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             const SizedBox(height: 30),
-                            const Text(
+                            Text(
                               "Email",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -146,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               validator:
                                   (value) =>
                                       (value == null || value.isEmpty)
-                                          ? 'رجاءً أدخل البريد الإلكتروني'
+                                          ? 'Please enter the Email.'
                                           : null,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
@@ -159,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             const SizedBox(height: 20),
-                            const Text(
+                            Text(
                               "Password",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -173,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               validator:
                                   (value) =>
                                       (value == null || value.isEmpty)
-                                          ? 'رجاءً أدخل كلمة المرور'
+                                          ? 'Please enter the password.'
                                           : null,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
@@ -199,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             () => _rememberMe = val!,
                                           ),
                                     ),
-                                    const Text(
+                                    Text(
                                       "remember me",
                                       style: TextStyle(
                                         color: darkPurple,
@@ -221,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     );
                                   },
-                                  child: const Text(
+                                  child: Text(
                                     "Forgot Your Password?",
                                     style: TextStyle(
                                       color: Colors.grey,
@@ -259,7 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             ),
                                   ),
                                   const SizedBox(width: 15),
-                                  const Text(
+                                  Text(
                                     "Sign up with google",
                                     style: TextStyle(
                                       color: darkPurple,
@@ -294,7 +313,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     );
                                   },
-                                  child: const Text(
+                                  child: Text(
                                     "Sign up",
                                     style: TextStyle(
                                       decoration: TextDecoration.underline,
@@ -329,7 +348,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                   ),
-                                  child: const Text(
+                                  child: Text(
                                     "Login",
                                     style: TextStyle(
                                       color: Colors.white,

@@ -1,13 +1,24 @@
 import 'dart:async';
-import '/features/home/view/RootScreen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '/features/home/view/RootScreen.dart';
 import '/features/auth/view/reset_password_screen.dart';
 import '../view_model/bloc/login_bloc.dart';
 
+enum OtpFlow { googleLogin, forgotPassword }
+
 class OtpScreen extends StatefulWidget {
   final String email;
-  const OtpScreen({super.key, required this.email});
+  final OtpFlow flow;
+  final String? googleId;
+
+  const OtpScreen({
+    super.key,
+    required this.email,
+    required this.flow,
+    this.googleId,
+  });
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -33,13 +44,9 @@ class _OtpScreenState extends State<OtpScreen> {
     _start = 30;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_start == 0) {
-        setState(() {
-          _timer?.cancel();
-        });
+        setState(() => _timer?.cancel());
       } else {
-        setState(() {
-          _start--;
-        });
+        setState(() => _start--);
       }
     });
   }
@@ -47,12 +54,8 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   void dispose() {
     _timer?.cancel();
-    for (var c in _controllers) {
-      c.dispose();
-    }
-    for (var f in _focusNodes) {
-      f.dispose();
-    }
+    for (var c in _controllers) c.dispose();
+    for (var f in _focusNodes) f.dispose();
     super.dispose();
   }
 
@@ -63,13 +66,13 @@ class _OtpScreenState extends State<OtpScreen> {
         VerifyOtpEvent(
           email: widget.email,
           otpCode: otp,
-          isForgotPassword: true,
+          isForgotPassword: widget.flow == OtpFlow.forgotPassword,
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter the entire code")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Please enter the entire code")));
     }
   }
 
@@ -96,8 +99,9 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
             );
           }
+
           if (state is LoginFailure) {
-            Navigator.of(context).pop();
+            if (Navigator.of(context).canPop()) Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.redAccent,
@@ -107,6 +111,7 @@ class _OtpScreenState extends State<OtpScreen> {
           }
 
           if (state is OtpVerifiedSuccess) {
+            if (Navigator.of(context).canPop()) Navigator.of(context).pop();
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -114,35 +119,15 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
             );
           } else if (state is LoginSuccess) {
-            Navigator.pushReplacement(
+            if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+            Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                 builder: (_) => const RootScreen(isGuest: false),
               ),
+              (route) => false,
             );
           }
-
-          // if (state is OtpVerifiedSuccess) {
-          //   Navigator.of(context).pop();
-          //   Navigator.of(context).pushReplacement(
-          //     MaterialPageRoute(
-          //       builder:
-          //           (_) => BlocProvider.value(
-          //             value: context.read<LoginBloc>(),
-          //             child: ResetPasswordScreen(email: widget.email),
-          //           ),
-          //     ),
-          //   );
-          // }
-
-          // if (state is LoginSuccess) {
-          //   Navigator.of(context).pop();
-          //   Navigator.of(context).pushReplacement(
-          //     MaterialPageRoute(
-          //       builder: (_) => const VerificationSuccessScreen(),
-          //     ),
-          //   );
-          // }
         },
         child: SafeArea(
           child: SingleChildScrollView(
@@ -152,7 +137,7 @@ class _OtpScreenState extends State<OtpScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 30),
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Almost there",
@@ -164,11 +149,13 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Please enter the 6-digit code sent to your\nemail for verification.",
-                    style: TextStyle(
+                    widget.flow == OtpFlow.forgotPassword
+                        ? "Enter the 6-digit code sent to your\nemail to reset your password."
+                        : "Enter the 6-digit code sent to your\nemail for verification.",
+                    style: const TextStyle(
                       fontSize: 15,
                       color: Colors.black54,
                       height: 1.4,
@@ -176,7 +163,6 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(6, (index) {
@@ -218,8 +204,6 @@ class _OtpScreenState extends State<OtpScreen> {
                   }),
                 ),
                 const SizedBox(height: 40),
-
-                // زر التحقق (VERIFY)
                 ElevatedButton(
                   onPressed: () => _submitOtp(context),
                   style: ElevatedButton.styleFrom(
@@ -229,7 +213,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "VERIFY",
                     style: TextStyle(
                       color: Color(0xFFE2B78B),
@@ -239,13 +223,11 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 60),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       "Didn’t receive any code? ",
                       style: TextStyle(
                         color: Colors.black54,
@@ -256,9 +238,22 @@ class _OtpScreenState extends State<OtpScreen> {
                       onTap:
                           _start == 0
                               ? () {
-                                context.read<LoginBloc>().add(
-                                  TriggerGoogleSignInEvent(),
-                                );
+                                if (widget.flow == OtpFlow.googleLogin &&
+                                    widget.googleId != null) {
+                                  context.read<LoginBloc>().add(
+                                    ResendGoogleOtpEvent(
+                                      email: widget.email,
+                                      googleId: widget.googleId!,
+                                    ),
+                                  );
+                                } else if (widget.flow ==
+                                    OtpFlow.forgotPassword) {
+                                  context.read<LoginBloc>().add(
+                                    ForgotPasswordRequestedEvent(
+                                      email: widget.email,
+                                    ),
+                                  );
+                                }
                                 _startTimer();
                               }
                               : null,

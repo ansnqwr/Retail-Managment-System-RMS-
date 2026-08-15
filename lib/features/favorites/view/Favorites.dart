@@ -1,4 +1,5 @@
 // lib/features/home/presentation/Favorites.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,7 +29,7 @@ class _FavoritesState extends State<Favorites> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text('My Favorites'),
+        title: Text('My Favorites'),
         backgroundColor: Colors.white,
         elevation: 0.5,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -60,7 +61,7 @@ class _FavoritesState extends State<Favorites> {
                         const FavoritesStarted(),
                       );
                     },
-                    child: const Text('Retry'),
+                    child: Text('Retry'),
                   ),
                 ],
               ),
@@ -68,7 +69,7 @@ class _FavoritesState extends State<Favorites> {
           }
 
           if (state.products.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 'No favorites added yet.',
                 style: TextStyle(fontSize: 16, color: Colors.grey),

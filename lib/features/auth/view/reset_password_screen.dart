@@ -86,7 +86,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     color: darkPurple.withOpacity(0.8),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
+                  Text(
                     "Forgot Your Password?",
                     style: TextStyle(
                       fontSize: 24,
@@ -115,10 +115,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     onToggle: () => setState(() => _obscureNew = !_obscureNew),
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return 'الرجاء إدخال كلمة المرور الجديدة';
+                        return 'Please enter the new password.';
                       }
                       if (val.length < 6) {
-                        return 'يجب أن لا تقل كلمة المرور عن 6 محارف';
+                        return 'Password must not be shorter that 6 characters.';
                       }
                       return null;
                     },
@@ -134,10 +134,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             setState(() => _obscureConfirm = !_obscureConfirm),
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return 'الرجاء تأكيد كلمة المرور';
+                        return 'Please Confirm the password.';
                       }
                       if (val != _newPasswordController.text) {
-                        return 'كلمات المرور غير متطابقة!';
+                        return 'Passwords are not matching!';
                       }
                       return null;
                     },
@@ -155,11 +155,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                               newPassword: _newPasswordController.text,
                             ),
                           );
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => const LoginScreen(),
-                            ),
-                          );
+                          // Navigator.of(context).pushReplacement(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => const LoginScreen(),
+                          //   ),
+                          // );
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -170,7 +170,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         ),
                         elevation: 3,
                       ),
-                      child: const Text(
+                      child: Text(
                         "Reset",
                         style: TextStyle(
                           color: Color(0xFFE2B78B),

@@ -30,7 +30,7 @@ class WelcomeLoginScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 "Welcome to Our\nStore!",
                 style: TextStyle(
                   fontFamily: 'Poppins',
@@ -80,7 +80,7 @@ class WelcomeLoginScreen extends StatelessWidget {
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
+                child: Text(
                   "log in",
                   style: TextStyle(
                     fontFamily: 'Poppins',
@@ -118,7 +118,7 @@ class WelcomeLoginScreen extends StatelessWidget {
                       vertical: 10,
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Continue as Guest",
                     style: TextStyle(
                       fontFamily: 'Poppins',
@@ -143,7 +143,7 @@ class WelcomeLoginScreen extends StatelessWidget {
                       vertical: 10,
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Sign up",
                     style: TextStyle(
                       fontFamily: 'Poppins',

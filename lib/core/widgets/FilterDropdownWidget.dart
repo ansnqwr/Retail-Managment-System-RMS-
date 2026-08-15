@@ -143,7 +143,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
 
                     FilterWidgetHelpers.buildSectionTitle('Availability'),
                     CheckboxListTile(
-                      title: const Text('In Stock Only'),
+                      title: Text('In Stock Only'),
                       value: _inStockOnly,
                       onChanged: (value) {
                         setState(() {

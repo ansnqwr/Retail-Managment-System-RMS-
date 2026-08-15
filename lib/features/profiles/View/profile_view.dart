@@ -123,7 +123,7 @@ class _ProfileViewState extends State<ProfileView> {
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            const Text('Do you want to change '),
+                            Text('Do you want to change '),
                             GestureDetector(
                               onTap:
                                   () => Navigator.push(
@@ -132,7 +132,7 @@ class _ProfileViewState extends State<ProfileView> {
                                       builder: (_) => const ChangeEmailView(),
                                     ),
                                   ),
-                              child: const Text(
+                              child: Text(
                                 'Email',
                                 style: TextStyle(
                                   color: Colors.red,
@@ -140,7 +140,7 @@ class _ProfileViewState extends State<ProfileView> {
                                 ),
                               ),
                             ),
-                            const Text(' or '),
+                            Text(' or '),
                             GestureDetector(
                               onTap:
                                   () => Navigator.push(
@@ -150,7 +150,7 @@ class _ProfileViewState extends State<ProfileView> {
                                           (_) => const ChangePasswordView(),
                                     ),
                                   ),
-                              child: const Text(
+                              child: Text(
                                 'Password',
                                 style: TextStyle(
                                   color: Colors.red,
@@ -158,7 +158,7 @@ class _ProfileViewState extends State<ProfileView> {
                                 ),
                               ),
                             ),
-                            const Text('?'),
+                            Text('?'),
                           ],
                         ),
                         const SizedBox(height: 30),
@@ -189,7 +189,7 @@ class _ProfileViewState extends State<ProfileView> {
                             color: Colors.red,
                             size: 24,
                           ),
-                          label: const Text(
+                          label: Text(
                             'Log out',
                             style: TextStyle(
                               color: Colors.red,
@@ -220,12 +220,12 @@ class _ProfileViewState extends State<ProfileView> {
         children: [
           const Icon(Icons.storefront, size: 80, color: Color(0xFF6B2D5C)),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Guest Mode Active',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text('Please login to view and edit your profile.'),
+          Text('Please login to view and edit your profile.'),
           const SizedBox(height: 24),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -242,7 +242,7 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               );
             },
-            child: const Text('Login', style: TextStyle(color: Colors.white)),
+            child: Text('Login', style: TextStyle(color: Colors.white)),
           ),
           TextButton(
             onPressed: () {
@@ -256,10 +256,7 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               );
             },
-            child: const Text(
-              'Sign up',
-              style: TextStyle(color: Color(0xFF6B2D5C)),
-            ),
+            child: Text('Sign up', style: TextStyle(color: Color(0xFF6B2D5C))),
           ),
         ],
       ),
@@ -291,7 +288,7 @@ class _ProfileViewState extends State<ProfileView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       'Welcome',
                       style: TextStyle(
                         fontSize: 28,

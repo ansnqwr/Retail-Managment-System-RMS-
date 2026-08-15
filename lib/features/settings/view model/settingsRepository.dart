@@ -39,7 +39,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     Language(code: 'el', name: 'Greek'),
   ];
 
-  static const List<Currency> allCurrencies = [
+  static List<Currency> allCurrencies = [
     Currency(code: 'USD', name: 'US Dollar', symbol: '\$'),
     Currency(code: 'EUR', name: 'Euro', symbol: '€'),
     Currency(code: 'GBP', name: 'British Pound', symbol: '£'),

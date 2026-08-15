@@ -42,7 +42,7 @@ class EmailChangedScreen extends StatelessWidget {
               const SizedBox(height: 35),
 
               // Title: Password Changed!
-              const SizedBox(
+              SizedBox(
                 width: 300,
                 height: 31,
                 child: Text(
@@ -60,7 +60,7 @@ class EmailChangedScreen extends StatelessWidget {
               const SizedBox(height: 8),
 
               // Subtitle Description Text
-              const SizedBox(
+              SizedBox(
                 width: 226,
                 height: 46,
                 child: Text(
@@ -99,7 +99,7 @@ class EmailChangedScreen extends StatelessWidget {
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
+                child: Text(
                   "Back to Login",
                   style: TextStyle(
                     fontFamily: 'Urbanist',

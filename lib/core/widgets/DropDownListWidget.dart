@@ -33,7 +33,7 @@ class DropDownListWidget extends StatelessWidget {
     bool isExpanded = true,
   }) {
     return DropdownButtonFormField<String>(
-      value: value,
+      value: value!,
       hint: Text(hint),
       isExpanded: isExpanded,
       items:

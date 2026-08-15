@@ -80,7 +80,7 @@ class _CategoriesContent extends StatelessWidget {
           children: [
             const Icon(Icons.error_outline, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Something went wrong',
               style: TextStyle(
                 fontSize: 18,
@@ -102,7 +102,7 @@ class _CategoriesContent extends StatelessWidget {
                 );
               },
               icon: const Icon(Icons.refresh),
-              label: const Text('Try Again'),
+              label: Text('Try Again'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF6B2D5C),
                 foregroundColor: Colors.white,
@@ -124,7 +124,7 @@ class _CategoriesContent extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 40),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 18),
                 child: Row(
                   children: [
@@ -169,13 +169,6 @@ class _CategoriesContent extends StatelessWidget {
                     ),
                   );
                 },
-
-
-
-
-
-
-                
               ),
               if (isExpanded && subCategories.isNotEmpty)
                 _buildSubCategoriesGrid(context, subCategories, category.title),

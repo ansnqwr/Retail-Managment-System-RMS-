@@ -52,7 +52,7 @@ class CurrencyScreen extends StatelessWidget {
                 onPressed:
                     () =>
                         context.read<SettingsBloc>().add(NavigateToCurrency()),
-                child: const Text('Retry'),
+                child: Text('Retry'),
               ),
             );
           }
@@ -68,7 +68,7 @@ class CurrencyScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       children: [
-        const Text(
+        Text(
           'Settings',
           style: TextStyle(
             fontSize: 32,
@@ -77,10 +77,7 @@ class CurrencyScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        const Text(
-          'Currency',
-          style: TextStyle(fontSize: 16, color: Colors.grey),
-        ),
+        Text('Currency', style: TextStyle(fontSize: 16, color: Colors.grey)),
         const SizedBox(height: 20),
         ...currencies.map((c) => _CurrencyTile(currency: c)),
       ],

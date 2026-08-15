@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:delni_rms/features/auth/data/models/Repository/signin_repository.dart';
+
 import 'package:http/http.dart' as http;
 
 class StoreDetailsRepository {
@@ -37,11 +38,11 @@ class StoreDetailsRepository {
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
-        throw Exception('فشل في جلب المنتجات: ${response.statusCode}');
+        throw Exception('Failed to get products: ${response.statusCode}');
       }
     } catch (e) {
       print('PRODUCTS ERROR: $e');
-      throw Exception('خطأ في الاتصال: $e');
+      throw Exception('Connection failed: $e');
     }
   }
 
@@ -63,11 +64,11 @@ class StoreDetailsRepository {
         if (response.body.isEmpty) throw Exception('Response body is empty');
         return json.decode(response.body);
       } else {
-        throw Exception('فشل في جلب ملف المتجر: ${response.statusCode}');
+        throw Exception('Failed to get store profile: ${response.statusCode}');
       }
     } catch (e) {
       print('PROFILE ERROR: $e'); // ← and this
-      throw Exception('خطأ في الاتصال: $e');
+      throw Exception('Connection failed: $e');
     }
   }
 }

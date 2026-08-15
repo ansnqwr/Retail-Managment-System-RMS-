@@ -130,7 +130,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 vertical: size.height * 0.02,
               ),
               children: [
-                const Text(
+                Text(
                   "Continue\nSign up",
                   style: TextStyle(
                     fontFamily: 'Poppins',
@@ -370,7 +370,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         "city": _selectedCityName ?? '',
                       };
 
-                      print('بيانات التسجيل: $finalRequest'); // للتصحيح
+                      print('Register Data: $finalRequest'); // للتصحيح
                       context.read<SignupBloc>().add(
                         SubmitSignupEvent(finalRequest),
                       );
@@ -386,7 +386,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       strokeWidth: 2.5,
                     ),
                   )
-                  : const Text(
+                  : Text(
                     "Sign up",
                     style: TextStyle(
                       color: Color(0xFFF2A488),
@@ -412,7 +412,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           ),
       child: RichText(
-        text: const TextSpan(
+        text: TextSpan(
           text: "Already have an account? Login ",
           style: TextStyle(color: Colors.grey),
           children: [

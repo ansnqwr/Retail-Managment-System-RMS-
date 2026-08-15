@@ -148,10 +148,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          'Edit Profile',
-          style: TextStyle(color: Color(0xFFF2A488)),
-        ),
+        title: Text('Edit Profile', style: TextStyle(color: Color(0xFFF2A488))),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Color(0xFFF2A488)),
       ),
@@ -190,7 +187,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(
+            Center(
               child: Text(
                 'Your Information',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -265,7 +262,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     );
                   }
                 },
-                child: const Text(
+                child: Text(
                   'Save Changes',
                   style: TextStyle(
                     fontSize: 18,
