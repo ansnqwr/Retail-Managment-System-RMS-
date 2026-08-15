@@ -1,4 +1,4 @@
-// lib/features/home/Model/ProductDetailModel.dart
+// lib/features/products/model/ProductDetailModel.dart
 import 'package:equatable/equatable.dart';
 
 class BrandModel extends Equatable {
@@ -13,46 +13,6 @@ class BrandModel extends Equatable {
 
   @override
   List<Object?> get props => [id, name];
-}
-
-class ProductColorModel extends Equatable {
-  final int id;
-  final String name;
-  final String hex;
-
-  const ProductColorModel({
-    required this.id,
-    required this.name,
-    required this.hex,
-  });
-
-  factory ProductColorModel.fromJson(Map<String, dynamic> json) {
-    return ProductColorModel(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      hex: json['hex'] ?? '#000000',
-    );
-  }
-
-  @override
-  List<Object?> get props => [id, name, hex];
-}
-
-class ProductSizeModel extends Equatable {
-  final String label;
-  final bool isAvailable;
-
-  const ProductSizeModel({required this.label, this.isAvailable = true});
-
-  factory ProductSizeModel.fromJson(Map<String, dynamic> json) {
-    return ProductSizeModel(
-      label: json['label'] ?? '',
-      isAvailable: json['is_available'] ?? true,
-    );
-  }
-
-  @override
-  List<Object?> get props => [label, isAvailable];
 }
 
 class ProductImageModel extends Equatable {
@@ -82,8 +42,7 @@ class ProductDetailModel extends Equatable {
   final String currency;
   final double discountPercentage;
   final List<ProductImageModel> images;
-  final List<ProductColorModel> colors;
-  final List<ProductSizeModel> sizes;
+  final Map<String, List<String>> skuFactors;
   final int stockCount;
   final bool isInStock;
   final bool isFavorite;
@@ -101,8 +60,7 @@ class ProductDetailModel extends Equatable {
     required this.currency,
     required this.discountPercentage,
     required this.images,
-    required this.colors,
-    required this.sizes,
+    required this.skuFactors,
     required this.stockCount,
     required this.isInStock,
     this.isFavorite = false,
@@ -111,7 +69,60 @@ class ProductDetailModel extends Equatable {
     this.specifications = const {},
   });
 
+  ProductDetailModel copyWith({
+    int? productId,
+    String? name,
+    BrandModel? brand,
+    String? description,
+    double? price,
+    double? oldPrice,
+    String? currency,
+    double? discountPercentage,
+    List<ProductImageModel>? images,
+    Map<String, List<String>>? skuFactors,
+    int? stockCount,
+    bool? isInStock,
+    bool? isFavorite,
+    String? howItWasMade,
+    String? manufacturingInformation,
+    Map<String, String>? specifications,
+  }) {
+    return ProductDetailModel(
+      productId: productId ?? this.productId,
+      name: name ?? this.name,
+      brand: brand ?? this.brand,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      oldPrice: oldPrice ?? this.oldPrice,
+      currency: currency ?? this.currency,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
+      images: images ?? this.images,
+      skuFactors: skuFactors ?? this.skuFactors,
+      stockCount: stockCount ?? this.stockCount,
+      isInStock: isInStock ?? this.isInStock,
+      isFavorite: isFavorite ?? this.isFavorite,
+      howItWasMade: howItWasMade ?? this.howItWasMade,
+      manufacturingInformation:
+          manufacturingInformation ?? this.manufacturingInformation,
+      specifications: specifications ?? this.specifications,
+    );
+  }
+
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
+    final skuRaw = json['Sku'] ?? json['sku'];
+    Map<String, List<String>> skuFactors = {};
+    if (skuRaw is Map) {
+      skuFactors = skuRaw.map((key, value) {
+        if (value is List) {
+          return MapEntry(
+            key.toString(),
+            value.map((e) => e.toString()).toList(),
+          );
+        }
+        return MapEntry(key.toString(), <String>[]);
+      });
+    }
+
     return ProductDetailModel(
       productId: json['product_id'] ?? 0,
       name: json['name'] ?? '',
@@ -125,14 +136,7 @@ class ProductDetailModel extends Equatable {
           (json['images'] as List? ?? [])
               .map((e) => ProductImageModel.fromJson(e))
               .toList(),
-      colors:
-          (json['colors'] as List? ?? [])
-              .map((e) => ProductColorModel.fromJson(e))
-              .toList(),
-      sizes:
-          (json['sizes'] as List? ?? [])
-              .map((e) => ProductSizeModel.fromJson(e))
-              .toList(),
+      skuFactors: skuFactors,
       stockCount: json['stock_count'] ?? 0,
       isInStock: json['is_in_stock'] ?? false,
       isFavorite: json['is_favorite'] ?? false,
@@ -153,8 +157,7 @@ class ProductDetailModel extends Equatable {
     currency,
     discountPercentage,
     images,
-    colors,
-    sizes,
+    skuFactors,
     stockCount,
     isInStock,
     isFavorite,
@@ -168,17 +171,21 @@ class SimilarProductModel extends Equatable {
   final int id;
   final String name;
   final double price;
+  final double oldPrice;
   final String currency;
   final String imageUrl;
   final double averageRating;
+  final int discountPercentage;
 
   const SimilarProductModel({
     required this.id,
     required this.name,
     required this.price,
+    this.oldPrice = 0,
     required this.currency,
     required this.imageUrl,
     this.averageRating = 0,
+    this.discountPercentage = 0,
   });
 
   factory SimilarProductModel.fromJson(Map<String, dynamic> json) {
@@ -186,9 +193,11 @@ class SimilarProductModel extends Equatable {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       price: (json['price'] ?? 0).toDouble(),
+      oldPrice: (json['old_price'] ?? 0).toDouble(),
       currency: json['currency'] ?? '',
       imageUrl: json['image_url'] ?? '',
       averageRating: (json['average_rating'] ?? 0).toDouble(),
+      discountPercentage: (json['discount_percentage'] ?? 0).toInt(),
     );
   }
 
@@ -197,8 +206,10 @@ class SimilarProductModel extends Equatable {
     id,
     name,
     price,
+    oldPrice,
     currency,
     imageUrl,
     averageRating,
+    discountPercentage,
   ];
 }

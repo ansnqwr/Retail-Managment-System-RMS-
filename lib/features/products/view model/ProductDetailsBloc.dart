@@ -1,3 +1,4 @@
+// lib/features/products/view model/ProductDetailsBloc.dart
 import 'package:delni_rms/features/products/view%20model/ProductDetailsEvent.dart';
 import 'package:delni_rms/features/products/view%20model/ProductDetailsRepository.dart';
 import 'package:delni_rms/features/products/view%20model/ProductDetailsState.dart';
@@ -14,8 +15,8 @@ class ProductDetailsBloc
     on<LoadProductDetails>(_onLoad);
     on<RefreshProductDetails>(_onRefresh);
     on<LoadMoreReviews>(_onLoadMoreReviews);
-    on<ColorSelected>(_onColorSelected);
-    on<SizeSelected>(_onSizeSelected);
+    on<SkuFactorSelected>(_onSkuFactorSelected);
+    on<LoadProductVariant>(_onLoadProductVariant);
     on<QuantityChanged>(_onQuantityChanged);
   }
 
@@ -64,8 +65,6 @@ class ProductDetailsBloc
           reviews: reviews,
           similarProducts: similar,
           recommendedProducts: recommended,
-          selectedColorId:
-              product.colors.isNotEmpty ? product.colors.first.id : null,
         ),
       );
     } catch (e) {
@@ -107,19 +106,59 @@ class ProductDetailsBloc
     }
   }
 
-  void _onColorSelected(
-    ColorSelected event,
+  void _onSkuFactorSelected(
+    SkuFactorSelected event,
     Emitter<ProductDetailsState> emit,
   ) {
     final state = this.state;
     if (state is! ProductDetailsLoaded) return;
-    emit(state.copyWith(selectedColorId: event.colorId));
+
+    final updatedSkus = Map<String, String>.from(state.selectedSkus);
+
+    // Toggle: tap same value again to deselect
+    if (updatedSkus[event.factorKey] == event.value) {
+      updatedSkus.remove(event.factorKey);
+    } else {
+      updatedSkus[event.factorKey] = event.value;
+    }
+
+    emit(state.copyWith(selectedSkus: updatedSkus));
+
+    // Auto-fetch variant only when EVERY factor has a selection
+    final requiredFactors = state.product.skuFactors.keys;
+    final allSelected =
+        requiredFactors.isNotEmpty &&
+        requiredFactors.every((k) => updatedSkus.containsKey(k));
+
+    if (allSelected) {
+      add(const LoadProductVariant());
+    }
   }
 
-  void _onSizeSelected(SizeSelected event, Emitter<ProductDetailsState> emit) {
+  Future<void> _onLoadProductVariant(
+    LoadProductVariant event,
+    Emitter<ProductDetailsState> emit,
+  ) async {
     final state = this.state;
     if (state is! ProductDetailsLoaded) return;
-    emit(state.copyWith(selectedSize: event.sizeLabel));
+    if (_currentProductId == null) return;
+
+    emit(state.copyWith(isLoadingVariant: true));
+
+    try {
+      final variant = await repository.getProductVariant(
+        _currentProductId!,
+        state.selectedSkus,
+      );
+
+      final mergedProduct = variant.copyWith(
+        skuFactors: state.product.skuFactors,
+      );
+
+      emit(state.copyWith(product: mergedProduct, isLoadingVariant: false));
+    } catch (e) {
+      emit(state.copyWith(isLoadingVariant: false));
+    }
   }
 
   void _onQuantityChanged(

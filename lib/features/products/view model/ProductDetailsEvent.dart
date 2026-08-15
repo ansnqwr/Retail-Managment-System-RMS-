@@ -1,3 +1,4 @@
+// lib/features/products/view model/ProductDetailsEvent.dart
 import 'package:equatable/equatable.dart';
 
 abstract class ProductDetailsEvent extends Equatable {
@@ -23,20 +24,19 @@ class LoadMoreReviews extends ProductDetailsEvent {
   const LoadMoreReviews();
 }
 
-class ColorSelected extends ProductDetailsEvent {
-  final int colorId;
-  const ColorSelected(this.colorId);
+/// Called whenever the user taps a SKU option (e.g. "256GB" under "Size").
+class SkuFactorSelected extends ProductDetailsEvent {
+  final String factorKey;
+  final String value;
+  const SkuFactorSelected(this.factorKey, this.value);
 
   @override
-  List<Object?> get props => [colorId];
+  List<Object?> get props => [factorKey, value];
 }
 
-class SizeSelected extends ProductDetailsEvent {
-  final String sizeLabel;
-  const SizeSelected(this.sizeLabel);
-
-  @override
-  List<Object?> get props => [sizeLabel];
+/// Internal event fired automatically when ALL SKU factors are selected.
+class LoadProductVariant extends ProductDetailsEvent {
+  const LoadProductVariant();
 }
 
 class QuantityChanged extends ProductDetailsEvent {
@@ -46,4 +46,3 @@ class QuantityChanged extends ProductDetailsEvent {
   @override
   List<Object?> get props => [quantity];
 }
-

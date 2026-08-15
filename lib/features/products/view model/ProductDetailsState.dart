@@ -1,3 +1,4 @@
+// lib/features/products/view model/ProductDetailsState.dart
 import 'package:delni_rms/features/products/model/ProductDetailModel.dart';
 import 'package:delni_rms/features/products/model/ProductReviewModel.dart';
 import 'package:equatable/equatable.dart';
@@ -27,25 +28,26 @@ class ProductDetailsLoaded extends ProductDetailsState {
   final List<SimilarProductModel> similarProducts;
   final List<SimilarProductModel> recommendedProducts;
 
-  final int? selectedColorId;
-  final String? selectedSize;
+  /// Currently selected SKU values: {"Size": "256GB", "colors": "Titanium Black"}
+  final Map<String, String> selectedSkus;
   final int quantity;
 
   final bool isLoadingMoreReviews;
   final bool isAddingToBag;
   final bool isTogglingFavorite;
+  final bool isLoadingVariant;
 
   const ProductDetailsLoaded({
     required this.product,
     required this.reviews,
     required this.similarProducts,
     required this.recommendedProducts,
-    this.selectedColorId,
-    this.selectedSize,
+    this.selectedSkus = const {},
     this.quantity = 1,
     this.isLoadingMoreReviews = false,
     this.isAddingToBag = false,
     this.isTogglingFavorite = false,
+    this.isLoadingVariant = false,
   });
 
   ProductDetailsLoaded copyWith({
@@ -53,24 +55,24 @@ class ProductDetailsLoaded extends ProductDetailsState {
     ProductReviewsResponse? reviews,
     List<SimilarProductModel>? similarProducts,
     List<SimilarProductModel>? recommendedProducts,
-    int? selectedColorId,
-    String? selectedSize,
+    Map<String, String>? selectedSkus,
     int? quantity,
     bool? isLoadingMoreReviews,
     bool? isAddingToBag,
     bool? isTogglingFavorite,
+    bool? isLoadingVariant,
   }) {
     return ProductDetailsLoaded(
       product: product ?? this.product,
       reviews: reviews ?? this.reviews,
       similarProducts: similarProducts ?? this.similarProducts,
       recommendedProducts: recommendedProducts ?? this.recommendedProducts,
-      selectedColorId: selectedColorId ?? this.selectedColorId,
-      selectedSize: selectedSize ?? this.selectedSize,
+      selectedSkus: selectedSkus ?? this.selectedSkus,
       quantity: quantity ?? this.quantity,
       isLoadingMoreReviews: isLoadingMoreReviews ?? this.isLoadingMoreReviews,
       isAddingToBag: isAddingToBag ?? this.isAddingToBag,
       isTogglingFavorite: isTogglingFavorite ?? this.isTogglingFavorite,
+      isLoadingVariant: isLoadingVariant ?? this.isLoadingVariant,
     );
   }
 
@@ -82,11 +84,11 @@ class ProductDetailsLoaded extends ProductDetailsState {
     reviews.reviews.length,
     similarProducts,
     recommendedProducts,
-    selectedColorId,
-    selectedSize,
+    selectedSkus,
     quantity,
     isLoadingMoreReviews,
     isAddingToBag,
     isTogglingFavorite,
+    isLoadingVariant,
   ];
 }
