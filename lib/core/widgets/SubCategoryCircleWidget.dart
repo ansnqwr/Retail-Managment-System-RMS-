@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'ImageHelper.dart';
@@ -45,7 +46,7 @@ class SubCategoryCircleWidget extends StatelessWidget {
           SizedBox(
             height: titleHeight,
             child: Text(
-              title,
+              title.tr(),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

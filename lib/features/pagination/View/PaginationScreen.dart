@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/widgets/FilterChipWidget.dart';
@@ -109,7 +110,7 @@ class _PaginationContentState extends State<_PaginationContent> {
           if (state is PaginationError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
+                content: Text(state.message.tr()),
                 backgroundColor:
                     state.message.contains('only use')
                         ? Colors.orange.shade700
@@ -122,7 +123,7 @@ class _PaginationContentState extends State<_PaginationContent> {
                     state.message.contains('only use')
                         ? null
                         : SnackBarAction(
-                          label: 'Retry',
+                          label: 'Retry'.tr(),
                           onPressed: () {
                             context.read<PaginationBloc>().add(
                               const PaginationRefreshRequested(),
@@ -162,7 +163,7 @@ class _PaginationContentState extends State<_PaginationContent> {
             const Icon(Icons.error_outline, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
-              'Something went wrong',
+              'Something went wrong'.tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -183,7 +184,7 @@ class _PaginationContentState extends State<_PaginationContent> {
                 );
               },
               icon: const Icon(Icons.refresh),
-              label: Text('Try Again'),
+              label: Text('Try Again'.tr()),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF6B2D5C),
                 foregroundColor: Colors.white,
@@ -214,7 +215,7 @@ class _PaginationContentState extends State<_PaginationContent> {
                   children: [
                     const SizedBox(width: 10),
                     PageTitle(
-                      title: state.paginationTitle,
+                      title: state.paginationTitle.tr(),
                       color: const Color(0xFF6B2D5C),
                     ),
                     const Spacer(),
@@ -329,7 +330,7 @@ class _PaginationContentState extends State<_PaginationContent> {
               padding: const EdgeInsets.all(16.0),
               child: Center(
                 child: Text(
-                  'No more items',
+                  'No more items'.tr(),
                   style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
                 ),
               ),
@@ -365,7 +366,7 @@ class _PaginationContentState extends State<_PaginationContent> {
               width: itemWidth,
               height: totalItemHeight,
               child: SubCategoryCircleWidget(
-                title: sub.title,
+                title: sub.title.tr(),
                 width: itemWidth,
                 onTap: () {
                   context.read<PaginationBloc>().add(

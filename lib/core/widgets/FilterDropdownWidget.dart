@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'DropDownListWidget.dart';
 import '../../features/pagination/Model/FiltersModel.dart';
@@ -123,8 +124,8 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                       max: widget.maxPrice,
                       divisions: 100,
                       labels: RangeLabels(
-                        '\$${_priceRange.start.toStringAsFixed(0)}',
-                        '\$${_priceRange.end.toStringAsFixed(0)}',
+                        '\$${_priceRange.start.toStringAsFixed(0).tr()}',
+                        '\$${_priceRange.end.toStringAsFixed(0).tr()}',
                       ),
                       onChanged: (values) {
                         setState(() {
@@ -141,9 +142,9 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                     ),
                     const SizedBox(height: 20),
 
-                    FilterWidgetHelpers.buildSectionTitle('Availability'),
+                    FilterWidgetHelpers.buildSectionTitle('Availability'.tr()),
                     CheckboxListTile(
-                      title: Text('In Stock Only'),
+                      title: Text('In Stock Only'.tr()),
                       value: _inStockOnly,
                       onChanged: (value) {
                         setState(() {
@@ -164,7 +165,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                       children: [
                         Expanded(
                           child: FilterWidgetHelpers.buildSectionTitle(
-                            'Category',
+                            'Category'.tr(),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -175,7 +176,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                                 ))
                             ? Expanded(
                               child: FilterWidgetHelpers.buildSectionTitle(
-                                'Sub Category',
+                                'Sub Category'.tr(),
                               ),
                             )
                             : const Expanded(child: SizedBox()),
@@ -187,7 +188,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                         Expanded(
                           child: DropDownListWidget(
                             value: _selectedCategory,
-                            hint: 'Select Category',
+                            hint: 'Select Category'.tr(),
                             items: widget.categories,
                             onChanged: (value) {
                               setState(() {
@@ -205,7 +206,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                             ? Expanded(
                               child: DropDownListWidget(
                                 value: _selectedSubCategory,
-                                hint: 'Select Sub Category',
+                                hint: 'Select Sub Category'.tr(),
                                 items:
                                     widget.subcategories[_selectedCategory!]!,
                                 onChanged: (value) {
@@ -244,7 +245,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                 Expanded(
                   child: DropDownListWidget(
                     value: _selectedGovernorate,
-                    hint: 'Select Governorate',
+                    hint: 'Select Governorate'.tr(),
                     items: widget.governorates,
                     onChanged: (value) {
                       setState(() {
@@ -260,7 +261,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                     ? Expanded(
                       child: DropDownListWidget(
                         value: _selectedCity,
-                        hint: 'Select City',
+                        hint: 'Select City'.tr(),
                         items: widget.cities[_selectedGovernorate!]!,
                         onChanged: (value) {
                           setState(() {
@@ -277,7 +278,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
             FilterWidgetHelpers.buildSectionTitle('Brand'),
             DropDownListWidget(
               value: _selectedBrand,
-              hint: 'Select Brand',
+              hint: 'Select Brand'.tr(),
               items: widget.brands,
               onChanged: (value) {
                 setState(() {
@@ -319,7 +320,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                 Expanded(
                   child: FilterWidgetHelpers.buildActionButton(
                     onPressed: _resetFilters,
-                    label: 'Reset',
+                    label: 'Reset'.tr(),
                     isOutlined: true,
                   ),
                 ),
@@ -327,7 +328,7 @@ class _FilterDropdownWidgetState extends State<FilterDropdownWidget> {
                 Expanded(
                   child: FilterWidgetHelpers.buildActionButton(
                     onPressed: _applyFilters,
-                    label: 'Apply',
+                    label: 'Apply'.tr(),
                   ),
                 ),
               ],
@@ -402,8 +403,8 @@ class FilterWidgetHelpers {
     bool isOutlined = false,
   }) {
     if (isOutlined) {
-      return OutlinedButton(onPressed: onPressed, child: Text(label));
+      return OutlinedButton(onPressed: onPressed, child: Text(label.tr()));
     }
-    return ElevatedButton(onPressed: onPressed, child: Text(label));
+    return ElevatedButton(onPressed: onPressed, child: Text(label.tr()));
   }
 }

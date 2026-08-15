@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class FilterChipsWidget extends StatelessWidget {
@@ -51,7 +52,7 @@ class FilterChipsWidget extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Clear All',
+                        'Clear All'.tr(),
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -69,7 +70,7 @@ class FilterChipsWidget extends StatelessWidget {
             children:
                 chips.map((chip) {
                   return Chip(
-                    label: Text(chip['label']),
+                    label: Text(chip['label'.tr()]),
                     deleteIcon: const Icon(Icons.close, size: 14),
                     onDeleted: () {
                       onRemoveFilter(chip['key']);
@@ -104,7 +105,7 @@ class FilterChipsWidget extends StatelessWidget {
 
     if (filters['inStockOnly'] == true || filters['inStockOnly'] == null) {
       if (filters.containsKey('inStockOnly')) {
-        chips.add({'key': 'inStockOnly', 'label': 'In Stock'});
+        chips.add({'key': 'inStockOnly', 'label': 'In Stock'.tr()});
       }
     }
 

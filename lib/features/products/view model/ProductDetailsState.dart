@@ -27,6 +27,7 @@ class ProductDetailsLoaded extends ProductDetailsState {
   final ProductReviewsResponse reviews;
   final List<SimilarProductModel> similarProducts;
   final List<SimilarProductModel> recommendedProducts;
+  final int variantImageIndex;
 
   /// Currently selected SKU values: {"Size": "256GB", "colors": "Titanium Black"}
   final Map<String, String> selectedSkus;
@@ -48,6 +49,7 @@ class ProductDetailsLoaded extends ProductDetailsState {
     this.isAddingToBag = false,
     this.isTogglingFavorite = false,
     this.isLoadingVariant = false,
+    this.variantImageIndex = 0,
   });
 
   ProductDetailsLoaded copyWith({
@@ -61,6 +63,7 @@ class ProductDetailsLoaded extends ProductDetailsState {
     bool? isAddingToBag,
     bool? isTogglingFavorite,
     bool? isLoadingVariant,
+    int? variantImageIndex,
   }) {
     return ProductDetailsLoaded(
       product: product ?? this.product,
@@ -73,6 +76,7 @@ class ProductDetailsLoaded extends ProductDetailsState {
       isAddingToBag: isAddingToBag ?? this.isAddingToBag,
       isTogglingFavorite: isTogglingFavorite ?? this.isTogglingFavorite,
       isLoadingVariant: isLoadingVariant ?? this.isLoadingVariant,
+      variantImageIndex: variantImageIndex ?? this.variantImageIndex,
     );
   }
 
@@ -90,5 +94,6 @@ class ProductDetailsLoaded extends ProductDetailsState {
     isAddingToBag,
     isTogglingFavorite,
     isLoadingVariant,
+    variantImageIndex,
   ];
 }

@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 import '/features/home/view/RootScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -73,7 +75,7 @@ class _SignupScreenState extends State<SignupScreen> {
               print('خطأ في المحافظات: ${state.message}'); // للتصحيح
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.message),
+                  content: Text(state.message.tr()),
                   backgroundColor: Colors.red,
                 ),
               );
@@ -98,7 +100,7 @@ class _SignupScreenState extends State<SignupScreen> {
               print('خطأ في المدن: ${state.message}'); // للتصحيح
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.message),
+                  content: Text(state.message.tr()),
                   backgroundColor: Colors.red,
                 ),
               );
@@ -116,7 +118,7 @@ class _SignupScreenState extends State<SignupScreen> {
               print('خطأ في التسجيل: ${state.errorMessage}'); // للتصحيح
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.errorMessage),
+                  content: Text(state.errorMessage.tr()),
                   backgroundColor: Colors.red,
                 ),
               );
@@ -131,7 +133,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               children: [
                 Text(
-                  "Continue\nSign up",
+                  "Continue\nSign up".tr(),
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 32,
@@ -144,7 +146,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 _buildField("Create Password", _passCtrl, isObscure: true),
                 _buildField(
-                  "Confirm Password",
+                  "Confirm Password".tr(),
                   _confirmPassCtrl,
                   isObscure: true,
                 ),
@@ -226,7 +228,7 @@ class _SignupScreenState extends State<SignupScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label.tr(),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFF6B2D5C),
@@ -260,7 +262,7 @@ class _SignupScreenState extends State<SignupScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label.tr(),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFF6B2D5C),
@@ -275,7 +277,7 @@ class _SignupScreenState extends State<SignupScreen> {
               items.map((item) {
                 return DropdownMenuItem<int>(
                   value: item.id,
-                  child: Text(item.name, overflow: TextOverflow.ellipsis),
+                  child: Text(item.name.tr(), overflow: TextOverflow.ellipsis),
                 );
               }).toList(),
           onChanged: onChanged,
@@ -298,7 +300,7 @@ class _SignupScreenState extends State<SignupScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label.tr(),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFF6B2D5C),
@@ -332,7 +334,10 @@ class _SignupScreenState extends State<SignupScreen> {
                 items.map((item) {
                   return DropdownMenuItem<int>(
                     value: item.id,
-                    child: Text(item.name, overflow: TextOverflow.ellipsis),
+                    child: Text(
+                      item.name.tr(),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   );
                 }).toList(),
             onChanged: onChanged,
@@ -387,7 +392,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   )
                   : Text(
-                    "Sign up",
+                    "Sign up".tr(),
                     style: TextStyle(
                       color: Color(0xFFF2A488),
                       fontSize: 18,
@@ -413,11 +418,11 @@ class _SignupScreenState extends State<SignupScreen> {
           ),
       child: RichText(
         text: TextSpan(
-          text: "Already have an account? Login ",
+          text: "Already have an account? Login ".tr(),
           style: TextStyle(color: Colors.grey),
           children: [
             TextSpan(
-              text: "here.",
+              text: "here.".tr(),
               style: TextStyle(
                 color: Color(0xFFF2A488),
                 fontWeight: FontWeight.bold,

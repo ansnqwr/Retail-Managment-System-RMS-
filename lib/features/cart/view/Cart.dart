@@ -2,6 +2,7 @@ import 'package:delni_rms/features/cart/model/CartItemModel.dart';
 import 'package:delni_rms/features/cart/view%20model/CartBloc.dart';
 import 'package:delni_rms/features/cart/view%20model/CartEvent.dart';
 import 'package:delni_rms/features/cart/view%20model/CartState.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,8 +19,8 @@ class CartScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          'My Cart',
+        title: Text(
+          'My Cart'.tr(),
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
@@ -40,7 +41,7 @@ class CartScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Your Cart is empty',
+                    'Your Cart is empty'.tr(),
                     style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
                   ),
                 ],
@@ -88,12 +89,12 @@ class CartScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Total',
+                Text(
+                  'Total'.tr(),
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 Text(
-                  '${state.items.isNotEmpty ? state.items.first.currency : ''} ${state.totalPrice.toStringAsFixed(0)}',
+                  '${state.items.isNotEmpty ? state.items.first.currency.tr() : ''} ${state.totalPrice.toStringAsFixed(0).tr()}',
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -118,7 +119,7 @@ class CartScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text('Checkout'),
+                child: Text('Checkout'.tr()),
               ),
             ),
           ],
@@ -162,7 +163,7 @@ class _CartItemTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.name,
+                item.name.tr(),
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
@@ -172,14 +173,14 @@ class _CartItemTile extends StatelessWidget {
               if (item.colorName != null || item.size != null)
                 Text(
                   [
-                    if (item.colorName != null) item.colorName,
+                    if (item.colorName != null) item.colorName?.tr(),
                     if (item.size != null) 'Size: ${item.size}',
                   ].join(' • '),
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                 ),
               const SizedBox(height: 6),
               Text(
-                '${item.currency} ${item.price.toStringAsFixed(0)}',
+                '${item.currency.tr()} ${item.price.toStringAsFixed(0).tr()}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF6B2D5C),

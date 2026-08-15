@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/settingsModel.dart';
@@ -52,7 +53,7 @@ class CurrencyScreen extends StatelessWidget {
                 onPressed:
                     () =>
                         context.read<SettingsBloc>().add(NavigateToCurrency()),
-                child: Text('Retry'),
+                child: Text('Retry'.tr()),
               ),
             );
           }
@@ -69,7 +70,7 @@ class CurrencyScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       children: [
         Text(
-          'Settings',
+          'Settings'.tr(),
           style: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.w700,
@@ -77,7 +78,10 @@ class CurrencyScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text('Currency', style: TextStyle(fontSize: 16, color: Colors.grey)),
+        Text(
+          'Currency'.tr(),
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
         const SizedBox(height: 20),
         ...currencies.map((c) => _CurrencyTile(currency: c)),
       ],
@@ -111,7 +115,7 @@ class _CurrencyTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${currency.code}  ·  ${currency.name}',
+              '${currency.code.tr()}  ·  ${currency.name.tr()}',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,

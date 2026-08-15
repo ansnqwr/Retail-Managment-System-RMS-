@@ -61,7 +61,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                 onPressed:
                     () =>
                         context.read<SettingsBloc>().add(NavigateToLanguage()),
-                child: Text('Retry'),
+                child: Text('Retry'.tr()),
               ),
             );
           }
@@ -76,7 +76,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       children: [
         Text(
-          'Settings',
+          'Settings'.tr(),
           style: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.w700,
@@ -84,7 +84,10 @@ class _LanguageScreenState extends State<LanguageScreen> {
           ),
         ),
         const SizedBox(height: 4),
-        Text('Language', style: TextStyle(fontSize: 16, color: Colors.grey)),
+        Text(
+          'Language'.tr(),
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
         const SizedBox(height: 20),
         ...languages.map(
           (lang) => _LanguageTile(
@@ -126,7 +129,7 @@ class _LanguageTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              language.name,
+              language.name.tr(),
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,

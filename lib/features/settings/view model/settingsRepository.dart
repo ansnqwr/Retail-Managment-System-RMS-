@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/settingsModel.dart';
 
@@ -40,12 +41,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
   ];
 
   static List<Currency> allCurrencies = [
-    Currency(code: 'USD', name: 'US Dollar', symbol: '\$'),
-    Currency(code: 'EUR', name: 'Euro', symbol: '€'),
-    Currency(code: 'GBP', name: 'British Pound', symbol: '£'),
-    Currency(code: 'TRY', name: 'Turkish Lira', symbol: '₺'),
-    Currency(code: 'LBP', name: 'Lebanese Lira', symbol: 'ل.ل'),
-    Currency(code: 'SYP', name: 'Syrian Pound', symbol: '£S'),
+    Currency(code: 'USD', name: 'US Dollar'.tr(), symbol: '\$'),
+    Currency(code: 'EUR', name: 'Euro'.tr(), symbol: '€'),
+    Currency(code: 'GBP', name: 'British Pound'.tr(), symbol: '£'),
+    Currency(code: 'TRY', name: 'Turkish Lira'.tr(), symbol: '₺'),
+    Currency(code: 'LBP', name: 'Lebanese Lira'.tr(), symbol: 'ل.ل'),
+    Currency(code: 'SYP', name: 'Syrian Pound'.tr(), symbol: '£S'),
   ];
 
   @override
@@ -67,29 +68,29 @@ class SettingsRepositoryImpl implements SettingsRepository {
     return [
       SettingOption(
         id: 'shipping',
-        title: 'Shipping Address',
+        title: 'Shipping Address'.tr(),
         section: SettingSection.personal,
       ),
       SettingOption(
         id: 'payment',
-        title: 'Payment methods',
+        title: 'Payment methods'.tr(),
         section: SettingSection.personal,
       ),
       SettingOption(
         id: 'currency',
-        title: 'Currency',
+        title: 'Currency'.tr(),
         value: currency.displayValue,
         section: SettingSection.shop,
       ),
       SettingOption(
         id: 'language',
-        title: 'Language',
+        title: 'Language'.tr(),
         value: language.name,
         section: SettingSection.account,
       ),
       SettingOption(
         id: 'delete',
-        title: 'Delete My Account',
+        title: 'Delete My Account'.tr(),
         section: SettingSection.account,
         isDestructive: true,
       ),

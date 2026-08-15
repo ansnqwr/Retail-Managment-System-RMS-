@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '/features/home/view/RootScreen.dart';
 
@@ -21,7 +22,7 @@ class VerificationSuccessScreen extends StatelessWidget {
               const Spacer(),
 
               Text(
-                "Verification Successful",
+                "Verification Successful".tr(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 28,
@@ -52,7 +53,8 @@ class VerificationSuccessScreen extends StatelessWidget {
               const SizedBox(height: 40),
 
               Text(
-                "Your account is now verified. You can now explore our latest products and enjoy a seamless shopping experience",
+                "Your account is now verified. You can now explore our latest products and enjoy a seamless shopping experience"
+                    .tr(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
@@ -82,7 +84,7 @@ class VerificationSuccessScreen extends StatelessWidget {
                   elevation: 2,
                 ),
                 child: Text(
-                  "Next",
+                  "Next".tr(),
                   style: TextStyle(
                     color: peachColor,
                     fontSize: 20,

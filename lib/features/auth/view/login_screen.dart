@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -93,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.redAccent,
-                content: Text(state.error),
+                content: Text(state.error.tr()),
               ),
             );
           }
@@ -143,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             const SizedBox(height: 180),
                             Text(
-                              "Login",
+                              "Login".tr(),
                               style: TextStyle(
                                 fontSize: 42,
                                 fontWeight: FontWeight.w900,
@@ -152,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 30),
                             Text(
-                              "Email",
+                              "Email".tr(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey,
@@ -165,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               validator:
                                   (value) =>
                                       (value == null || value.isEmpty)
-                                          ? 'Please enter the Email.'
+                                          ? 'Please enter the Email.'.tr()
                                           : null,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
@@ -179,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 20),
                             Text(
-                              "Password",
+                              "Password".tr(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey,
@@ -219,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           ),
                                     ),
                                     Text(
-                                      "remember me",
+                                      "remember me".tr(),
                                       style: TextStyle(
                                         color: darkPurple,
                                         fontWeight: FontWeight.w600,
@@ -241,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     );
                                   },
                                   child: Text(
-                                    "Forgot Your Password?",
+                                    "Forgot Your Password?".tr(),
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontWeight: FontWeight.bold,
@@ -279,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   const SizedBox(width: 15),
                                   Text(
-                                    "Sign up with google",
+                                    "Sign up with google".tr(),
                                     style: TextStyle(
                                       color: darkPurple,
                                       fontSize: 16,
@@ -294,7 +295,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Don't have an account? ",
+                                  "Don't have an account? ".tr(),
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
@@ -314,7 +315,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     );
                                   },
                                   child: Text(
-                                    "Sign up",
+                                    "Sign up".tr(),
                                     style: TextStyle(
                                       decoration: TextDecoration.underline,
                                       decorationColor: Colors.blue,
@@ -349,7 +350,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                   child: Text(
-                                    "Login",
+                                    "Login".tr(),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18,

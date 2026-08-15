@@ -77,13 +77,15 @@ class ProductDetailsRepository {
     Map<String, String> skuSelection,
   ) async {
     final response = await _client.post(
-      Uri.parse('$baseUrl/products/$productId/variant'),
+      Uri.parse('$baseUrl/products/$productId/sku'), // ← was /variant
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'sku_selection': skuSelection}),
     );
 
     if (response.statusCode == 200) {
-      return ProductDetailModel.fromJson(json.decode(response.body));
+      final data = json.decode(response.body);
+      // Attach image_index into the map so the Bloc can read it
+      return ProductDetailModel.fromJson(data);
     } else {
       throw Exception(
         'Variant not found or invalid SKU selection (${response.statusCode})',

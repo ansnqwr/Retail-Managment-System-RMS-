@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class DropDownListWidget extends StatelessWidget {
@@ -18,7 +19,7 @@ class DropDownListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return buildDropdownField(
       value: value,
-      hint: hint,
+      hint: hint.tr(),
       items: items,
       onChanged: onChanged,
       isExpanded: isExpanded,
@@ -34,11 +35,11 @@ class DropDownListWidget extends StatelessWidget {
   }) {
     return DropdownButtonFormField<String>(
       value: value!,
-      hint: Text(hint),
+      hint: Text(hint.tr()),
       isExpanded: isExpanded,
       items:
           items.map((item) {
-            return DropdownMenuItem(value: item, child: Text(item));
+            return DropdownMenuItem(value: item, child: Text(item.tr()));
           }).toList(),
       onChanged: onChanged,
       decoration: const InputDecoration(

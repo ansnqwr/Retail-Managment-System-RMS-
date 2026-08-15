@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/data/models/Repository/signup_repository.dart';
@@ -96,7 +97,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       setState(() {
         isLoadingLocations = false;
       });
-      _showSnackBar(e.toString());
+      _showSnackBar(e.toString().tr());
     }
   }
 
@@ -131,7 +132,7 @@ class _EditProfileViewState extends State<EditProfileView> {
       setState(() {
         isLoadingCities = false;
       });
-      _showSnackBar(e.toString());
+      _showSnackBar(e.toString().tr());
     }
   }
 
@@ -139,7 +140,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     if (mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      ).showSnackBar(SnackBar(content: Text(message.tr())));
     }
   }
 
@@ -148,7 +149,10 @@ class _EditProfileViewState extends State<EditProfileView> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Edit Profile', style: TextStyle(color: Color(0xFFF2A488))),
+        title: Text(
+          'Edit Profile'.tr(),
+          style: TextStyle(color: Color(0xFFF2A488)),
+        ),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Color(0xFFF2A488)),
       ),
@@ -157,14 +161,14 @@ class _EditProfileViewState extends State<EditProfileView> {
           if (state is ProfileActionSuccess) {
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            ).showSnackBar(SnackBar(content: Text(state.message.tr())));
             if (state.requiresRelogin == false) {
               Navigator.pop(context);
             }
           } else if (state is ProfileError) {
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            ).showSnackBar(SnackBar(content: Text(state.message.tr())));
           }
         },
         builder: (context, state) {
@@ -189,18 +193,18 @@ class _EditProfileViewState extends State<EditProfileView> {
           children: [
             Center(
               child: Text(
-                'Your Information',
+                'Your Information'.tr(),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: 20),
 
-            _buildTextField('First Name', _fNameCtrl),
-            _buildTextField('Last Name', _lNameCtrl),
-            _buildTextField('Phone Number', _phoneCtrl, isNumber: true),
+            _buildTextField('First Name'.tr(), _fNameCtrl),
+            _buildTextField('Last Name'.tr(), _lNameCtrl),
+            _buildTextField('Phone Number'.tr(), _phoneCtrl, isNumber: true),
 
             _buildLocationDropdown(
-              label: 'Governorate',
+              label: 'Governorate'.tr(),
               items: governorates,
               selectedItem: selectedGovernorate,
               isLoading: false,
@@ -217,7 +221,7 @@ class _EditProfileViewState extends State<EditProfileView> {
             ),
 
             _buildLocationDropdown(
-              label: 'City',
+              label: 'City'.tr(),
               items: cities,
               selectedItem: selectedCity,
               isLoading: isLoadingCities,
@@ -243,7 +247,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     if (selectedGovernorate == null || selectedCity == null) {
-                      _showSnackBar("please select both governorate and city.");
+                      _showSnackBar(
+                        "please select both governorate and city.".tr(),
+                      );
                       return;
                     }
                     final updatedUser = UserModel(
@@ -263,7 +269,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                   }
                 },
                 child: Text(
-                  'Save Changes',
+                  'Save Changes'.tr(),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -289,7 +295,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label,
+            label.tr(),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Color(0xFF6B2D5C),
@@ -332,7 +338,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label,
+            label.tr(),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Color(0xFF6B2D5C),
@@ -356,14 +362,14 @@ class _EditProfileViewState extends State<EditProfileView> {
                 items.map((item) {
                   return DropdownMenuItem<LocationItem>(
                     value: item,
-                    child: Text(item.name),
+                    child: Text(item.name.tr()),
                   );
                 }).toList(),
             onChanged: items.isEmpty || isLoading ? null : onChanged,
             decoration: InputDecoration(
               hintText:
                   items.isEmpty && !isLoading
-                      ? 'choose a governorate first'
+                      ? 'choose a governorate first'.tr()
                       : 'Select $label',
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,

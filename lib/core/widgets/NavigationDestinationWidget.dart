@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class NavigationDestinationWidget extends StatelessWidget {
@@ -23,7 +24,7 @@ class NavigationDestinationWidget extends StatelessWidget {
         size: selectedIndex == index ? 30.0 : 24.0,
         color: selectedIndex == index ? const Color(0xFF6B2D5C) : Colors.grey,
       ),
-      label: label,
+      label: label.tr(),
     );
   }
 }

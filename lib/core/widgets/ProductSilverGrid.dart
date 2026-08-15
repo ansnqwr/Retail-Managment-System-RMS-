@@ -1,6 +1,7 @@
 import 'package:delni_rms/features/home/view%20model/HomePage_bloc.dart';
 import 'package:delni_rms/features/home/view%20model/HomePage_event.dart';
 import 'package:delni_rms/features/products/view/ProductDetailsScreen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,7 +31,7 @@ class _ProductSilverGridState extends State<ProductSilverGrid> {
           final product = products[index];
           return ProductCard(
             imageUrl: product.imageUrl,
-            title: product.title,
+            title: product.title.tr(),
             price: product.price,
             isNew: product.isNew,
             hasDiscount: product.hasDiscount,

@@ -153,9 +153,21 @@ class ProductDetailsBloc
 
       final mergedProduct = variant.copyWith(
         skuFactors: state.product.skuFactors,
+        // Preserve fields the variant response omits
+        brand: state.product.brand,
+        description: state.product.description,
+        specifications: state.product.specifications,
+        howItWasMade: state.product.howItWasMade,
+        manufacturingInformation: state.product.manufacturingInformation,
       );
 
-      emit(state.copyWith(product: mergedProduct, isLoadingVariant: false));
+      emit(
+        state.copyWith(
+          product: mergedProduct,
+          isLoadingVariant: false,
+          variantImageIndex: variant.variantImageIndex, // ← was hardcoded 0
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(isLoadingVariant: false));
     }

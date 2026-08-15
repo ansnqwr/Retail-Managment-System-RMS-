@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/view/login_screen.dart';
@@ -56,7 +57,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.redAccent,
-                content: Text(state.error),
+                content: Text(state.error.tr()),
               ),
             );
           }
@@ -87,7 +88,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    "Forgot Your Password?",
+                    "Forgot Your Password?".tr(),
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w500,
@@ -109,16 +110,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   const SizedBox(height: 30),
 
                   _buildPasswordTextField(
-                    title: "Create Password",
+                    title: "Create Password".tr(),
                     controller: _newPasswordController,
                     obscureText: _obscureNew,
                     onToggle: () => setState(() => _obscureNew = !_obscureNew),
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return 'Please enter the new password.';
+                        return 'Please enter the new password.'.tr();
                       }
                       if (val.length < 6) {
-                        return 'Password must not be shorter that 6 characters.';
+                        return 'Password must not be shorter that 6 characters.'
+                            .tr();
                       }
                       return null;
                     },
@@ -126,7 +128,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   const SizedBox(height: 20),
 
                   _buildPasswordTextField(
-                    title: "Confirm New Password",
+                    title: "Confirm New Password".tr(),
                     controller: _confirmPasswordController,
                     obscureText: _obscureConfirm,
                     onToggle:
@@ -134,10 +136,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             setState(() => _obscureConfirm = !_obscureConfirm),
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return 'Please Confirm the password.';
+                        return 'Please Confirm the password.'.tr();
                       }
                       if (val != _newPasswordController.text) {
-                        return 'Passwords are not matching!';
+                        return 'Passwords are not matching!'.tr();
                       }
                       return null;
                     },
@@ -171,7 +173,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         elevation: 3,
                       ),
                       child: Text(
-                        "Reset",
+                        "Reset".tr(),
                         style: TextStyle(
                           color: Color(0xFFE2B78B),
                           fontSize: 18,
@@ -205,7 +207,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         Align(
           alignment: Alignment.center,
           child: Text(
-            title,
+            title.tr(),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: darkPurple,

@@ -1,6 +1,7 @@
 import 'package:delni_rms/features/home/Model/ProductCardModel.dart';
 import 'package:delni_rms/features/stores/model/StoreProfileModel.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/widgets/ImageHelper.dart';
@@ -35,7 +36,7 @@ class StoreDetailsBloc extends Bloc<StoreDetailsEvent, StoreDetailsState> {
         repository.getStoreProducts(
           _currentStoreId,
           _currentPage,
-          'popularity',
+          'popularity'.tr(),
         ),
         repository.getStoreProfile(_currentStoreId),
       ]);
@@ -74,7 +75,7 @@ class StoreDetailsBloc extends Bloc<StoreDetailsEvent, StoreDetailsState> {
 
           isLoadingMore: false,
 
-          currentSort: 'popularity',
+          currentSort: 'popularity'.tr(),
         ),
       );
     } catch (e, stack) {

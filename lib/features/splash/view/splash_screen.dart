@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/view/WelcomeLogin.dart';
@@ -95,7 +96,7 @@ class SplashScreen extends StatelessWidget {
                 Positioned(
                   bottom: 40,
                   child: Text(
-                    'Retail Management System',
+                    'Retail Management System'.tr(),
                     style: TextStyle(
                       fontFamily: 'Cairo',
                       fontSize: 14,

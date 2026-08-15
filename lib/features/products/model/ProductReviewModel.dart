@@ -20,7 +20,7 @@ class ProductReviewModel {
 
   factory ProductReviewModel.fromJson(Map<String, dynamic> json) {
     return ProductReviewModel(
-      id: json['id'] ?? 0,
+      id: json['review_id'] ?? json['id'] ?? 0,
       userName: json['user_name'] ?? json['userName'] ?? 'Anonymous',
       rating: (json['rating'] ?? 0).toDouble(),
       comment: json['comment'] ?? '',
@@ -64,13 +64,14 @@ class ProductReviewsResponse {
         (json['reviews'] as List? ?? [])
             .map((e) => ProductReviewModel.fromJson(e))
             .toList();
+    final totalReviews = json['total_reviews'] ?? 0;
     return ProductReviewsResponse(
       averageRating: (json['average_rating'] ?? 0).toDouble(),
       verifiedBuyers: json['verified_buyers'] ?? 0,
-      totalReviews: json['total_reviews'] ?? 0,
+      totalReviews: totalReviews,
       reviews: reviews,
-      // Proposed pagination flag for the backend - see API spec.
-      hasMore: json['has_more'] ?? false,
+      // Fallback: if backend doesn't send has_more, infer from counts
+      hasMore: json['has_more'] ?? (reviews.length < totalReviews),
     );
   }
 }

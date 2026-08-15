@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 class UserModel {
   final String id;
   final String firstName;
@@ -23,8 +25,8 @@ class UserModel {
   factory UserModel.guest() {
     return UserModel(
       id: 'guest',
-      firstName: 'Guest',
-      lastName: 'User',
+      firstName: 'Guest'.tr(),
+      lastName: 'User'.tr(),
       email: '',
       phone: '',
       governorate: '',
@@ -42,7 +44,7 @@ class UserModel {
       phone: json['phone'] ?? '',
       governorate: json['governorate'] ?? '',
       city: json['city'] ?? '',
-      access_token: json['access_token'] ?? null,
+      access_token: json['access_token'],
     );
   }
 

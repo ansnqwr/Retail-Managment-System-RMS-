@@ -1,5 +1,6 @@
 // lib/features/home/presentation/Favorites.dart
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,7 +30,7 @@ class _FavoritesState extends State<Favorites> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('My Favorites'),
+        title: Text('My Favorites'.tr()),
         backgroundColor: Colors.white,
         elevation: 0.5,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -61,7 +62,7 @@ class _FavoritesState extends State<Favorites> {
                         const FavoritesStarted(),
                       );
                     },
-                    child: Text('Retry'),
+                    child: Text('Retry'.tr()),
                   ),
                 ],
               ),
@@ -71,7 +72,7 @@ class _FavoritesState extends State<Favorites> {
           if (state.products.isEmpty) {
             return Center(
               child: Text(
-                'No favorites added yet.',
+                'No favorites added yet.'.tr(),
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
             );
@@ -150,7 +151,7 @@ class _FavoriteCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.name,
+                    product.name.tr(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -160,7 +161,7 @@ class _FavoriteCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${product.formattedPrice} IQD',
+                    '${product.formattedPrice.tr()} IQD',
                     style: TextStyle(
                       color: Colors.green[700],
                       fontWeight: FontWeight.bold,
@@ -169,7 +170,7 @@ class _FavoriteCard extends StatelessWidget {
                   ),
                   if (product.isOnSale)
                     Text(
-                      '-${product.discount}%',
+                      '-${product.discount.tr()}%',
                       style: const TextStyle(color: Colors.red, fontSize: 12),
                     ),
                 ],

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../Model/profile_repository.dart';
 import '../Model/user_model.dart';
@@ -100,7 +101,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       _currentUser = await repository.updateProfile(event.updatedUser);
       emit(
         ProfileActionSuccess(
-          'Profile updated successfully',
+          'Profile updated successfully'.tr(),
           updatedUser: _currentUser,
         ),
       );
@@ -120,7 +121,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       await repository.changePassword(event.currentPassword, event.newPassword);
       emit(
         ProfileActionSuccess(
-          'Password changed successfully',
+          'Password changed successfully'.tr(),
           requiresRelogin: true,
         ),
       );
@@ -139,7 +140,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       await repository.changeEmail(event.newEmail, event.currentPassword);
       emit(
         ProfileActionSuccess(
-          'Email changed successfully',
+          'Email changed successfully'.tr(),
           requiresRelogin: true,
         ),
       );

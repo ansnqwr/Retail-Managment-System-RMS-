@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
 import '../../auth/data/models/Repository/signin_repository.dart';
@@ -174,7 +175,7 @@ class HomeRepository {
         // fetchAds(), // COMMENTED: backend broken
         fetchCategories(),
         fetchProducts(
-          businessType: '<Trending>',
+          businessType: 'Trending'.tr(),
           searchQuery: null,
           filters: {},
           subCategoryId: null,
@@ -182,7 +183,7 @@ class HomeRepository {
           limit: 10,
         ),
         fetchProducts(
-          businessType: 'On Sale',
+          businessType: 'On Sale'.tr(),
           searchQuery: null,
           filters: {},
           subCategoryId: null,
@@ -198,7 +199,7 @@ class HomeRepository {
         //   limit: 10,
         // ),
         fetchProducts(
-          businessType: 'Newest',
+          businessType: 'Newest'.tr(),
           searchQuery: null,
           filters: {},
           subCategoryId: null,
@@ -206,7 +207,7 @@ class HomeRepository {
           limit: 10,
         ),
         fetchStores(
-          businessType: 'Brands',
+          businessType: 'Brands'.tr(),
           searchQuery: null,
           filters: {},
           subCategoryId: null,
@@ -214,7 +215,7 @@ class HomeRepository {
           limit: 10,
         ),
         fetchStores(
-          businessType: 'Stores Nearby',
+          businessType: 'Stores Nearby'.tr(),
           searchQuery: null,
           filters: {},
           subCategoryId: null,
@@ -222,7 +223,7 @@ class HomeRepository {
           limit: 10,
         ),
         fetchProducts(
-          businessType: 'Just For You',
+          businessType: 'Just For You'.tr(),
           searchQuery: null,
           filters: {},
           subCategoryId: null,

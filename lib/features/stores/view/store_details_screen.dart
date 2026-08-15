@@ -4,6 +4,7 @@ import 'package:delni_rms/features/stores/view%20model/store_details_event.dart'
 import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_state.dart';
 import 'package:delni_rms/features/products/view/ProductDetailsScreen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -198,7 +199,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
                   children: [
                     Flexible(
                       child: Text(
-                        title,
+                        title.tr(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -239,7 +240,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
 
                       Expanded(
                         child: Text(
-                          _formatLocation(governorate, city),
+                          _formatLocation(governorate.tr(), city.tr()),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -263,7 +264,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
                       const SizedBox(width: 3),
 
                       Text(
-                        rating.averageRating.toStringAsFixed(1),
+                        rating.averageRating.toStringAsFixed(1).tr(),
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -333,7 +334,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
         children: [
           if (title.isNotEmpty) ...[
             Text(
-              title,
+              title.tr(),
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -349,7 +350,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
             const SizedBox(height: 16),
 
             Text(
-              description,
+              description.tr(),
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.grey.shade700,
@@ -408,7 +409,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
           ),
           const SizedBox(height: 8),
           Text(
-            'No Banner Available',
+            'No Banner Available'.tr(),
             style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
           ),
         ],
@@ -421,7 +422,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Categories',
+          'Categories'.tr(),
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -487,7 +488,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
             right: 10,
             bottom: 10,
             child: Text(
-              title,
+              title.tr(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -541,7 +542,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Store Information',
+            'Store Information'.tr().tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -598,14 +599,14 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                label,
+                label.tr(),
                 style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
               ),
 
               const SizedBox(height: 2),
 
               Text(
-                value,
+                value.tr(),
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -661,17 +662,23 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Sort By:', style: TextStyle(color: Colors.grey)),
+          Text('Sort By:'.tr(), style: TextStyle(color: Colors.grey)),
 
           DropdownButton<String>(
             value: state.currentSort,
             underline: const SizedBox.shrink(),
             items: [
-              DropdownMenuItem(value: 'popularity', child: Text('Popularity')),
-              DropdownMenuItem(value: 'cheapest', child: Text('Lowest Price')),
+              DropdownMenuItem(
+                value: 'popularity',
+                child: Text('Popularity'.tr()),
+              ),
+              DropdownMenuItem(
+                value: 'cheapest',
+                child: Text('Lowest Price'.tr()),
+              ),
               DropdownMenuItem(
                 value: 'expensive',
-                child: Text('Highest Price'),
+                child: Text('Highest Price'.tr()),
               ),
             ],
             onChanged: (value) {
@@ -786,7 +793,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
             const SizedBox(height: 12),
 
             Text(
-              'No products available',
+              'No products available'.tr(),
               style: TextStyle(
                 color: Colors.grey.shade600,
                 fontSize: 15,
@@ -815,7 +822,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
           const SizedBox(height: 4),
 
           Text(
-            'No Image',
+            'No Image'.tr(),
             style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
           ),
         ],
@@ -892,7 +899,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Location',
+            'Location'.tr(),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -915,7 +922,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
 
               Expanded(
                 child: Text(
-                  _formatLocation(governorate, city),
+                  _formatLocation(governorate.tr(), city.tr()),
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -942,7 +949,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'All Branches',
+          'All Branches'.tr(),
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -1019,7 +1026,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      branch.title,
+                      branch.title.tr(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -1042,7 +1049,10 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
 
                         Expanded(
                           child: Text(
-                            _formatLocation(branch.governorate, branch.city),
+                            _formatLocation(
+                              branch.governorate.tr(),
+                              branch.city.tr(),
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -1078,16 +1088,16 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
   Widget _buildRatingsSection(RatingSummary? rating) {
     if (rating == null) {
       return _buildEmptySection(
-        title: 'Ratings & Reviews',
-        message: 'No ratings yet',
+        title: 'Ratings & Reviews'.tr(),
+        message: 'No ratings yet'.tr(),
         icon: Icons.star_border_rounded,
       );
     }
 
     if (rating.totalCount == 0) {
       return _buildEmptySection(
-        title: 'Ratings & Reviews',
-        message: 'No ratings yet',
+        title: 'Ratings & Reviews'.tr(),
+        message: 'No ratings yet'.tr(),
         icon: Icons.star_border_rounded,
       );
     }
@@ -1111,7 +1121,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Customer Reviews',
+          'Customer Reviews'.tr(),
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -1124,7 +1134,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
         if (reviewList.isEmpty)
           _buildEmptySection(
             title: null,
-            message: 'No reviews yet',
+            message: 'No reviews yet'.tr(),
             icon: Icons.rate_review_outlined,
           )
         else
@@ -1152,7 +1162,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                title,
+                title.tr(),
                 style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
@@ -1168,7 +1178,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
           const SizedBox(height: 8),
 
           Text(
-            message,
+            message.tr(),
             style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
           ),
         ],
@@ -1228,7 +1238,7 @@ class _StoreDetailsScreenState extends State<StoreDetailsScreen>
             const SizedBox(height: 12),
 
             Text(
-              message,
+              message.tr(),
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey.shade700),
             ),
@@ -1271,7 +1281,7 @@ class RatingBarChart extends StatelessWidget {
         Row(
           children: [
             Text(
-              'Ratings & Reviews',
+              'Ratings & Reviews'.tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -1294,7 +1304,7 @@ class RatingBarChart extends StatelessWidget {
                   const SizedBox(width: 4),
 
                   Text(
-                    averageRating.toStringAsFixed(1),
+                    averageRating.toStringAsFixed(1).tr(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -1434,8 +1444,8 @@ class ReviewCard extends StatelessWidget {
                 ),
                 child: Text(
                   review.userName.isNotEmpty
-                      ? review.userName[0].toUpperCase()
-                      : 'U',
+                      ? review.userName[0].toUpperCase().tr()
+                      : 'U'.tr(),
                   style: TextStyle(
                     color: StoreDetailsScreen.primaryColor,
                     fontWeight: FontWeight.bold,
@@ -1451,7 +1461,7 @@ class ReviewCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      review.userName,
+                      review.userName.tr(),
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
@@ -1476,7 +1486,7 @@ class ReviewCard extends StatelessWidget {
                         const SizedBox(width: 8),
 
                         Text(
-                          review.createdAt,
+                          review.createdAt.tr(),
                           style: TextStyle(
                             color: Colors.grey.shade500,
                             fontSize: 12,
@@ -1494,7 +1504,7 @@ class ReviewCard extends StatelessWidget {
             const SizedBox(height: 10),
 
             Text(
-              review.comment,
+              review.comment.tr(),
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey.shade700,

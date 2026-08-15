@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,7 +59,7 @@ class _ProfileViewState extends State<ProfileView> {
           if (state is ProfileError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
+                content: Text(state.message.tr()),
                 backgroundColor: Colors.red,
               ),
             );
@@ -67,7 +68,7 @@ class _ProfileViewState extends State<ProfileView> {
           if (state is ProfileActionSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
+                content: Text(state.message.tr()),
                 backgroundColor: Colors.green,
               ),
             );
@@ -113,17 +114,17 @@ class _ProfileViewState extends State<ProfileView> {
                     padding: const EdgeInsets.all(24.0),
                     child: Column(
                       children: [
-                        _buildInfoField('Email', user.email),
-                        _buildInfoField('Phone Number', user.phone),
-                        _buildInfoField('Governorate', user.governorate),
-                        _buildInfoField('City', user.city),
+                        _buildInfoField('Email'.tr(), user.email),
+                        _buildInfoField('Phone Number'.tr(), user.phone),
+                        _buildInfoField('Governorate'.tr(), user.governorate),
+                        _buildInfoField('City'.tr(), user.city),
                         const SizedBox(height: 20),
 
                         Wrap(
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            Text('Do you want to change '),
+                            Text('Do you want to change '.tr()),
                             GestureDetector(
                               onTap:
                                   () => Navigator.push(
@@ -133,14 +134,14 @@ class _ProfileViewState extends State<ProfileView> {
                                     ),
                                   ),
                               child: Text(
-                                'Email',
+                                'Email'.tr(),
                                 style: TextStyle(
                                   color: Colors.red,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            Text(' or '),
+                            Text(' or '.tr()),
                             GestureDetector(
                               onTap:
                                   () => Navigator.push(
@@ -151,14 +152,14 @@ class _ProfileViewState extends State<ProfileView> {
                                     ),
                                   ),
                               child: Text(
-                                'Password',
+                                'Password'.tr(),
                                 style: TextStyle(
                                   color: Colors.red,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            Text('?'),
+                            Text('?'.tr()),
                           ],
                         ),
                         const SizedBox(height: 30),
@@ -190,7 +191,7 @@ class _ProfileViewState extends State<ProfileView> {
                             size: 24,
                           ),
                           label: Text(
-                            'Log out',
+                            'Log out'.tr(),
                             style: TextStyle(
                               color: Colors.red,
                               fontSize: 18,
@@ -221,11 +222,11 @@ class _ProfileViewState extends State<ProfileView> {
           const Icon(Icons.storefront, size: 80, color: Color(0xFF6B2D5C)),
           const SizedBox(height: 16),
           Text(
-            'Guest Mode Active',
+            'Guest Mode Active'.tr(),
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Text('Please login to view and edit your profile.'),
+          Text('Please login to view and edit your profile.'.tr()),
           const SizedBox(height: 24),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -242,7 +243,7 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               );
             },
-            child: Text('Login', style: TextStyle(color: Colors.white)),
+            child: Text('Login'.tr(), style: TextStyle(color: Colors.white)),
           ),
           TextButton(
             onPressed: () {
@@ -256,7 +257,10 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               );
             },
-            child: Text('Sign up', style: TextStyle(color: Color(0xFF6B2D5C))),
+            child: Text(
+              'Sign up'.tr(),
+              style: TextStyle(color: Color(0xFF6B2D5C)),
+            ),
           ),
         ],
       ),
@@ -289,7 +293,7 @@ class _ProfileViewState extends State<ProfileView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Welcome',
+                      'Welcome'.tr(),
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -352,7 +356,7 @@ class _ProfileViewState extends State<ProfileView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label,
+            label.tr(),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Color(0xFF6B2D5C),
@@ -367,7 +371,7 @@ class _ProfileViewState extends State<ProfileView> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              value,
+              value.tr(),
               style: const TextStyle(fontSize: 16),
               overflow: TextOverflow.ellipsis,
             ),

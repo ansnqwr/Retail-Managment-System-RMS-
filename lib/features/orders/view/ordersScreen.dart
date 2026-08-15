@@ -5,6 +5,7 @@ import 'package:delni_rms/features/orders/view%20model/orderBloc.dart';
 import 'package:delni_rms/features/orders/view%20model/orderEvent.dart';
 import 'package:delni_rms/features/orders/view%20model/orderState.dart';
 import 'package:delni_rms/features/orders/view/orderTrackingScreen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,13 +34,13 @@ class OrdersScreen extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(state.message),
+                          Text(state.message.tr()),
                           TextButton(
                             onPressed:
                                 () => context.read<OrdersBloc>().add(
                                   LoadOrders(),
                                 ),
-                            child: Text('Retry'),
+                            child: Text('Retry'.tr()),
                           ),
                         ],
                       ),
@@ -71,7 +72,7 @@ class OrdersScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'My order',
+            'My order'.tr(),
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w300,
@@ -116,7 +117,7 @@ class _OrderCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      order.orderNumber,
+                      order.orderNumber.tr(),
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -133,7 +134,7 @@ class _OrderCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  order.displayDeliveryType,
+                  order.displayDeliveryType.tr(),
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                 ),
                 const SizedBox(height: 8),
@@ -161,7 +162,10 @@ class _OrderCard extends StatelessWidget {
                       ],
                     ),
                     _ActionButton(
-                      label: order.status.showTrackButton ? 'Track' : 'Review',
+                      label:
+                          order.status.showTrackButton
+                              ? 'Track'.tr()
+                              : 'Review'.tr(),
                       onTap: () {
                         if (order.status.showTrackButton) {
                           Navigator.of(context).push(
@@ -252,7 +256,7 @@ class _ActionButton extends StatelessWidget {
           border: isTrack ? null : Border.all(color: const Color(0xFF5B2E5A)),
         ),
         child: Text(
-          label,
+          label.tr(),
           style: TextStyle(
             color: isTrack ? Colors.white : const Color(0xFF5B2E5A),
             fontWeight: FontWeight.w500,

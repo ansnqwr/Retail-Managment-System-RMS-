@@ -18,18 +18,24 @@ class BrandModel extends Equatable {
 class ProductImageModel extends Equatable {
   final int id;
   final String imageUrl;
+  final int index; // ← add this
 
-  const ProductImageModel({required this.id, required this.imageUrl});
+  const ProductImageModel({
+    required this.id,
+    required this.imageUrl,
+    this.index = 0,
+  });
 
   factory ProductImageModel.fromJson(Map<String, dynamic> json) {
     return ProductImageModel(
       id: json['id'] ?? 0,
       imageUrl: json['image_url'] ?? '',
+      index: json['index'] ?? 0, // ← parse it
     );
   }
 
   @override
-  List<Object?> get props => [id, imageUrl];
+  List<Object?> get props => [id, imageUrl, index];
 }
 
 class ProductDetailModel extends Equatable {
@@ -49,6 +55,7 @@ class ProductDetailModel extends Equatable {
   final String howItWasMade;
   final String manufacturingInformation;
   final Map<String, String> specifications;
+  final int variantImageIndex;
 
   const ProductDetailModel({
     required this.productId,
@@ -67,6 +74,7 @@ class ProductDetailModel extends Equatable {
     this.howItWasMade = '',
     this.manufacturingInformation = '',
     this.specifications = const {},
+    this.variantImageIndex = 0,
   });
 
   ProductDetailModel copyWith({
@@ -86,6 +94,7 @@ class ProductDetailModel extends Equatable {
     String? howItWasMade,
     String? manufacturingInformation,
     Map<String, String>? specifications,
+    int? variantImageIndex,
   }) {
     return ProductDetailModel(
       productId: productId ?? this.productId,
@@ -105,10 +114,12 @@ class ProductDetailModel extends Equatable {
       manufacturingInformation:
           manufacturingInformation ?? this.manufacturingInformation,
       specifications: specifications ?? this.specifications,
+      variantImageIndex: variantImageIndex ?? this.variantImageIndex,
     );
   }
 
   factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
+    final story = json['story'] as Map<String, dynamic>? ?? {};
     final skuRaw = json['Sku'] ?? json['sku'];
     Map<String, List<String>> skuFactors = {};
     if (skuRaw is Map) {
@@ -140,9 +151,10 @@ class ProductDetailModel extends Equatable {
       stockCount: json['stock_count'] ?? 0,
       isInStock: json['is_in_stock'] ?? false,
       isFavorite: json['is_favorite'] ?? false,
-      howItWasMade: json['how_it_was_made'] ?? '',
-      manufacturingInformation: json['manufacturing_information'] ?? '',
+      howItWasMade: story['how_it_was_made'] ?? '',
+      manufacturingInformation: story['manufacturing_info'] ?? '',
       specifications: Map<String, String>.from(json['specifications'] ?? {}),
+      variantImageIndex: json['image_index'] ?? 0,
     );
   }
 
@@ -164,6 +176,7 @@ class ProductDetailModel extends Equatable {
     howItWasMade,
     manufacturingInformation,
     specifications,
+    variantImageIndex,
   ];
 }
 

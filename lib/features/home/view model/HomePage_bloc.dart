@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../Model/ProductCardModel.dart';
 import '../Model/StoreCardItem.dart';
@@ -108,7 +109,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       final results = await Future.wait([
         _homeRepository.fetchProducts(
-          businessType: 'Trending',
+          businessType: 'Trending'.tr(),
           searchQuery: null,
           filters: filters,
           subCategoryId: null,
@@ -116,7 +117,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           limit: 10,
         ),
         _homeRepository.fetchProducts(
-          businessType: 'On Sale',
+          businessType: 'On Sale'.tr(),
           searchQuery: null,
           filters: filters,
           subCategoryId: null,
@@ -124,7 +125,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           limit: 10,
         ),
         _homeRepository.fetchProducts(
-          businessType: 'Newest',
+          businessType: 'Newest'.tr(),
           searchQuery: null,
           filters: filters,
           subCategoryId: null,
@@ -132,7 +133,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           limit: 10,
         ),
         _homeRepository.fetchStores(
-          businessType: 'Brands',
+          businessType: 'Brands'.tr(),
           searchQuery: null,
           filters: filters,
           subCategoryId: null,
@@ -140,7 +141,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           limit: 10,
         ),
         _homeRepository.fetchStores(
-          businessType: 'Stores Nearby',
+          businessType: 'Stores Nearby'.tr(),
           searchQuery: null,
           filters: filters,
           subCategoryId: null,
@@ -148,7 +149,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           limit: 10,
         ),
         _homeRepository.fetchProducts(
-          businessType: 'Just For You',
+          businessType: 'Just For You'.tr(),
           searchQuery: null,
           filters: filters,
           subCategoryId: null,
@@ -233,7 +234,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
 
       final newProducts = await _homeRepository.fetchProducts(
-        businessType: 'Just For You',
+        businessType: 'Just For You'.tr(),
         searchQuery: current.homeSearchQuery,
         filters: filters,
         subCategoryId: null,
@@ -289,7 +290,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       if (event.isSearchingProducts) {
         final products = await _homeRepository.fetchProducts(
-          businessType: 'Just For You',
+          businessType: 'Just For You'.tr(),
           searchQuery: trimmedQuery,
           filters: filters,
           subCategoryId: null,
@@ -307,7 +308,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         );
       } else {
         final stores = await _homeRepository.fetchStores(
-          businessType: 'Stores Nearby',
+          businessType: 'Stores Nearby'.tr(),
           searchQuery: trimmedQuery,
           filters: filters,
           subCategoryId: null,
@@ -367,7 +368,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
 
       final products = await _homeRepository.fetchProducts(
-        businessType: 'Just For You',
+        businessType: 'Just For You'.tr(),
         searchQuery: null,
         filters: filters,
         subCategoryId: null,

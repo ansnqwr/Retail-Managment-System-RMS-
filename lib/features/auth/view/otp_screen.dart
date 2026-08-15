@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/home/view/RootScreen.dart';
@@ -70,9 +71,9 @@ class _OtpScreenState extends State<OtpScreen> {
         ),
       );
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Please enter the entire code")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter the entire code".tr())),
+      );
     }
   }
 
@@ -105,7 +106,7 @@ class _OtpScreenState extends State<OtpScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.redAccent,
-                content: Text(state.error),
+                content: Text(state.error.tr()),
               ),
             );
           }
@@ -140,7 +141,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Almost there",
+                    "Almost there".tr(),
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
@@ -154,7 +155,9 @@ class _OtpScreenState extends State<OtpScreen> {
                   child: Text(
                     widget.flow == OtpFlow.forgotPassword
                         ? "Enter the 6-digit code sent to your\nemail to reset your password."
-                        : "Enter the 6-digit code sent to your\nemail for verification.",
+                            .tr()
+                        : "Enter the 6-digit code sent to your\nemail for verification."
+                            .tr(),
                     style: const TextStyle(
                       fontSize: 15,
                       color: Colors.black54,
@@ -214,7 +217,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                   ),
                   child: Text(
-                    "VERIFY",
+                    "VERIFY".tr(),
                     style: TextStyle(
                       color: Color(0xFFE2B78B),
                       fontSize: 18,
@@ -228,7 +231,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Didn’t receive any code? ",
+                      "Didn’t receive any code? ".tr(),
                       style: TextStyle(
                         color: Colors.black54,
                         fontWeight: FontWeight.bold,
@@ -258,7 +261,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               }
                               : null,
                       child: Text(
-                        "Resend Again",
+                        "Resend Again".tr(),
                         style: TextStyle(
                           color: _start == 0 ? darkPurple : Colors.grey,
                           fontWeight: FontWeight.bold,
@@ -270,7 +273,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 const SizedBox(height: 10),
                 Text(
                   _start == 0
-                      ? "You can request a new code now"
+                      ? "You can request a new code now".tr()
                       : "Request new code in 00:${_start.toString().padLeft(2, '0')}s",
                   style: const TextStyle(color: Colors.grey, fontSize: 13),
                 ),

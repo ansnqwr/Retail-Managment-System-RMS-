@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/widgets/CategoryCard.dart';
@@ -37,10 +38,10 @@ class _CategoriesContent extends StatelessWidget {
           if (state is CategoriesErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
+                content: Text(state.message.tr()),
                 backgroundColor: Colors.red,
                 action: SnackBarAction(
-                  label: 'Retry',
+                  label: 'Retry'.tr(),
                   onPressed: () {
                     context.read<CategoriesBloc>().add(
                       const CategoriesRefreshRequested(),
@@ -81,7 +82,7 @@ class _CategoriesContent extends StatelessWidget {
             const Icon(Icons.error_outline, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
-              'Something went wrong',
+              'Something went wrong'.tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -90,7 +91,7 @@ class _CategoriesContent extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              message,
+              message.tr(),
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.grey),
             ),
@@ -102,7 +103,7 @@ class _CategoriesContent extends StatelessWidget {
                 );
               },
               icon: const Icon(Icons.refresh),
-              label: Text('Try Again'),
+              label: Text('Try Again'.tr()),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF6B2D5C),
                 foregroundColor: Colors.white,
@@ -129,7 +130,10 @@ class _CategoriesContent extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(width: 10),
-                    PageTitle(title: "Categories", color: Color(0xFF6B2D5C)),
+                    PageTitle(
+                      title: "Categories".tr(),
+                      color: Color(0xFF6B2D5C),
+                    ),
                     Spacer(),
                   ],
                 ),
@@ -158,7 +162,7 @@ class _CategoriesContent extends StatelessWidget {
             children: [
               CategoryCard(
                 imageUrl: category.imageUrl,
-                title: category.title,
+                title: category.title.tr(),
                 isExpanded: isExpanded,
                 width: double.infinity,
                 onTap: () {
@@ -199,7 +203,7 @@ class _CategoriesContent extends StatelessWidget {
         itemBuilder: (context, index) {
           final sub = subCategories[index];
           return SubCategoryCard(
-            title: sub.title,
+            title: sub.title.tr(),
             width: double.infinity,
             onTap: () {
               context.read<CategoriesBloc>().add(

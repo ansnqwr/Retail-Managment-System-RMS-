@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class SubCategoryCard extends StatelessWidget {
@@ -27,7 +28,7 @@ class SubCategoryCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             child: Text(
-              title,
+              title.tr(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: primaryColor,

@@ -2,6 +2,7 @@ import 'package:delni_rms/features/stores/view%20model/store_details_bloc.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_event.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
 import 'package:delni_rms/features/stores/view/store_details_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -34,7 +35,7 @@ class _StoreSilverGridState extends State<StoreSilverGrid> {
           final store = stores[index];
           return StoreCard(
             imageUrl: store.imageUrl,
-            title: store.title,
+            title: store.title.tr(),
             isNew: store.isNew,
             width: double.infinity,
             onTap: () {

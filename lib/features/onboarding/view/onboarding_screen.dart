@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,7 +54,7 @@ class OnboardingScreen extends StatelessWidget {
                         );
                       },
                       child: Text(
-                        'Skip',
+                        'Skip'.tr(),
                         style: TextStyle(
                           color: primaryPurple,
                           fontWeight: FontWeight.bold,
@@ -167,7 +168,7 @@ class OnboardingScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Select\nLanguage",
+            "Select\nLanguage".tr(),
             style: TextStyle(
               fontSize: 36,
               fontWeight: FontWeight.bold,
@@ -177,7 +178,7 @@ class OnboardingScreen extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           Text(
-            "Easy. Seamless. Delightful.\nShop your favorites anytime",
+            "Easy. Seamless. Delightful.\nShop your favorites anytime".tr(),
             style: TextStyle(
               fontSize: 16,
               color: primaryPurple.withOpacity(0.8),
@@ -200,7 +201,7 @@ class OnboardingScreen extends StatelessWidget {
           //
           const SizedBox(height: 15),
           Text(
-            "Your Language Preference",
+            "Your Language Preference".tr(),
             style: TextStyle(
               fontSize: 16,
               color: primaryPurple,
@@ -210,7 +211,7 @@ class OnboardingScreen extends StatelessWidget {
           const Divider(),
           // أزرار اختيار اللغة
           ListTile(
-            title: Text('English'),
+            title: Text('English'.tr()),
             leading: Radio<String>(
               value: 'English',
               groupValue: state.language,
@@ -222,7 +223,7 @@ class OnboardingScreen extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text('Arabic'),
+            title: Text('Arabic'.tr()),
             leading: Radio<String>(
               value: 'Arabic',
               groupValue: state.language,
@@ -246,7 +247,7 @@ class OnboardingScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Discover New\nTrends",
+            "Discover New\nTrends".tr(),
             style: TextStyle(
               fontSize: 36,
               fontWeight: FontWeight.bold,
@@ -256,7 +257,7 @@ class OnboardingScreen extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           Text(
-            "Explore millions of products from\nyour favorite brands",
+            "Explore millions of products from\nyour favorite brands".tr(),
             style: TextStyle(
               fontSize: 16,
               color: primaryPurple.withOpacity(0.8),

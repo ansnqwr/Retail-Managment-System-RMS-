@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'ImageHelper.dart';
 
@@ -69,7 +70,7 @@ class StoreCard extends StatelessWidget {
                   children: [
                     // Title
                     Text(
-                      title,
+                      title.tr(),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -116,7 +117,7 @@ class StoreCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        label,
+        label.tr(),
         style: const TextStyle(
           color: Colors.white,
           fontSize: 10,

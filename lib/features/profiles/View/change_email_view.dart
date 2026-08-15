@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/view/email_changed_screen.dart';
@@ -44,14 +45,14 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
             if (state is ProfileActionSuccess && state.requiresRelogin) {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text(state.message)));
+              ).showSnackBar(SnackBar(content: Text(state.message.tr())));
               Navigator.of(
                 context,
               ).pushNamedAndRemoveUntil('/login', (route) => false);
             } else if (state is ProfileError) {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text(state.message)));
+              ).showSnackBar(SnackBar(content: Text(state.message.tr())));
             }
           },
           child: SingleChildScrollView(
@@ -64,7 +65,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                   _buildBackButton(),
                   const SizedBox(height: 32),
                   Text(
-                    'Create new Email',
+                    'Create new Email'.tr(),
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -73,7 +74,8 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Create a new account with your email and password, then go to the login page',
+                    'Create a new account with your email and password, then go to the login page'
+                        .tr(),
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.black87,
@@ -83,24 +85,24 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                   const SizedBox(height: 32),
                   _buildTextField(
                     controller: _newEmailCtrl,
-                    hint: 'New Email',
+                    hint: 'New Email'.tr(),
                     isObscure: false,
                     keyboardType: TextInputType.emailAddress,
                     validator:
                         (val) =>
                             val == null || !val.contains('@')
-                                ? 'Enter a valid email'
+                                ? 'Enter a valid email'.tr()
                                 : null,
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
                     controller: _passwordCtrl,
-                    hint: 'Current Password',
+                    hint: 'Current Password'.tr(),
                     isObscure: true,
                     validator:
                         (val) =>
                             val == null || val.isEmpty
-                                ? 'Required to confirm identity'
+                                ? 'Required to confirm identity'.tr()
                                 : null,
                   ),
                   const SizedBox(height: 12),
@@ -124,7 +126,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        'Forgot old password?',
+                        'Forgot old password?'.tr(),
                         style: TextStyle(color: _primaryColor, fontSize: 13),
                       ),
                     ),
@@ -183,7 +185,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                             ),
                           ),
                           child: Text(
-                            'Reset Email',
+                            'Reset Email'.tr(),
                             style: TextStyle(
                               color: _accentColor,
                               fontSize: 16,

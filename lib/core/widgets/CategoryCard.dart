@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'ImageHelper.dart';
@@ -55,7 +56,7 @@ class CategoryCard extends StatelessWidget {
                     vertical: 8,
                   ),
                   child: Text(
-                    title,
+                    title.tr(),
                     style: TextStyle(
                       color: primaryColor,
                       fontSize: 18,

@@ -1,6 +1,7 @@
 import 'package:delni_rms/features/auth/data/models/Repository/signup_repository.dart';
 import 'package:delni_rms/features/auth/view/login_screen.dart';
 import 'package:delni_rms/features/auth/view_model/bloc/signup_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,7 +40,7 @@ class RegisterFirstStep extends StatelessWidget {
 
               Center(
                 child: Text(
-                  "Welcome Back!",
+                  "Welcome Back!".tr(),
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 40.33,
@@ -50,7 +51,7 @@ class RegisterFirstStep extends StatelessWidget {
               ),
 
               Text(
-                "Get Started For Free",
+                "Get Started For Free".tr(),
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 32,
@@ -69,7 +70,7 @@ class RegisterFirstStep extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Already have an account? ",
+                    "Already have an account? ".tr(),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
@@ -89,7 +90,7 @@ class RegisterFirstStep extends StatelessWidget {
                       );
                     },
                     child: Text(
-                      "Sign in",
+                      "Sign in".tr(),
                       style: TextStyle(
                         decoration: TextDecoration.underline,
                         decorationColor: Colors.blue,
@@ -147,7 +148,7 @@ class RegisterFirstStep extends StatelessWidget {
                   }
                 },
                 child: Text(
-                  "Next",
+                  "Next".tr(),
                   style: TextStyle(
                     color: Color(0xFFF2A488),
                     fontSize: 18,
@@ -171,7 +172,7 @@ class RegisterFirstStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label.tr(),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFF6B2D5C),

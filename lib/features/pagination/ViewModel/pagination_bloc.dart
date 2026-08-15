@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 import '/features/pagination/Model/FiltersModel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../categories/Model/CategoryItemModel.dart';
@@ -31,7 +33,7 @@ class PaginationBloc extends Bloc<PaginationEvent, PaginationState> {
     'Brands',
     'Stores Nearby',
     'Just For You',
-    'Most Bought',
+    // 'Most Bought'.tr(),
   };
 
   PaginationBloc({required PaginationRepository paginationRepository})

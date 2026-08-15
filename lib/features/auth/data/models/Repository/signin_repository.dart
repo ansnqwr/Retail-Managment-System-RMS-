@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'auth_local_data.dart';
 
@@ -40,16 +41,17 @@ class SigninRepository {
         final errorData = jsonDecode(response.body);
         throw Exception(
           errorData['message'] ??
-              'Email or password is incorrect. Please try again.',
+              'Email or password is incorrect. Please try again.'.tr(),
         );
       }
     } on http.ClientException {
       throw Exception(
-        'Connection error: Unable to reach the server. Please check your internet connection.',
+        'Connection error: Unable to reach the server. Please check your internet connection.'
+            .tr(),
       );
     } on FormatException {
       throw Exception(
-        'Invalid response format: Unable to process the server response.',
+        'Invalid response format: Unable to process the server response.'.tr(),
       );
     } catch (e) {
       throw Exception(e.toString());
@@ -76,12 +78,13 @@ class SigninRepository {
         final errorData = jsonDecode(response.body);
         throw Exception(
           errorData['message'] ??
-              'Server error: Unable to send OTP. Please try again later.',
+              'Server error: Unable to send OTP. Please try again later.'.tr(),
         );
       }
     } on http.ClientException {
       throw Exception(
-        'Network error: Unable to reach the server. Please check your internet connection.',
+        'Network error: Unable to reach the server. Please check your internet connection.'
+            .tr(),
       );
     } catch (e) {
       throw Exception(e.toString());
@@ -115,7 +118,8 @@ class SigninRepository {
       } else {
         final errorData = jsonDecode(response.body);
         throw Exception(
-          errorData['message'] ?? 'Verification code is invalid or expired.',
+          errorData['message'] ??
+              'Verification code is invalid or expired.'.tr(),
         );
       }
     } catch (e) {
@@ -140,19 +144,20 @@ class SigninRepository {
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (body['status'] == 'success') return;
         throw Exception(
-          body['message'] ?? 'Failed to send password reset link',
+          body['message'] ?? 'Failed to send password reset link'.tr(),
         );
       } else {
         throw Exception(
-          body['message'] ?? 'Failed to send password reset link',
+          body['message'] ?? 'Failed to send password reset link'.tr(),
         );
       }
     } on http.ClientException {
       throw Exception(
-        'Network error: Unable to reach the server. Please check your internet connection.',
+        'Network error: Unable to reach the server. Please check your internet connection.'
+            .tr(),
       );
     } catch (e) {
-      throw Exception(e.toString().replaceAll('Exception:', '').trim());
+      throw Exception(e.toString().replaceAll('Exception:'.tr(), '').trim());
     }
   }
 
@@ -174,12 +179,14 @@ class SigninRepository {
       } else {
         final errorData = jsonDecode(response.body);
         throw Exception(
-          errorData['message'] ?? 'Verification code is invalid or expired.',
+          errorData['message'] ??
+              'Verification code is invalid or expired.'.tr(),
         );
       }
     } on http.ClientException {
       throw Exception(
-        'Network error: Unable to reach the server. Please check your internet connection.',
+        'Network error: Unable to reach the server. Please check your internet connection.'
+            .tr(),
       );
     } catch (e) {
       throw Exception(e.toString());
@@ -212,12 +219,13 @@ class SigninRepository {
         final errorData = jsonDecode(response.body);
         throw Exception(
           errorData['message'] ??
-              'Failed to reset password. Please try again later.',
+              'Failed to reset password. Please try again later.'.tr(),
         );
       }
     } on http.ClientException {
       throw Exception(
-        'Network error: Unable to reach the server. Please check your internet connection',
+        'Network error: Unable to reach the server. Please check your internet connection'
+            .tr(),
       );
     } catch (e) {
       throw Exception(e.toString());
@@ -263,12 +271,13 @@ class SigninRepository {
         final errorData = jsonDecode(response.body);
         throw Exception(
           errorData['message'] ??
-              'Failed to register Google user. Please try again later.',
+              'Failed to register Google user. Please try again later.'.tr(),
         );
       }
     } on http.ClientException {
       throw Exception(
-        'Network error: Unable to reach the server. Please check your internet connection.',
+        'Network error: Unable to reach the server. Please check your internet connection.'
+            .tr(),
       );
     } catch (e) {
       throw Exception(e.toString());
@@ -307,7 +316,8 @@ class SigninRepository {
       // Network error → still clear local tokens
       await TokenManager().clearTokens();
       throw Exception(
-        'Network error: Unable to reach the server. Please check your internet connection.',
+        'Network error: Unable to reach the server. Please check your internet connection.'
+            .tr(),
       );
     } catch (e) {
       // Any other error → still clear local tokens

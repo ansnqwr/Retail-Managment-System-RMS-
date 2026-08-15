@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import '/features/auth/view/SignupScreen.dart';
 import '/features/auth/data/models/Repository/signin_repository.dart';
@@ -33,15 +34,19 @@ class SignupRepository {
       } else {
         final errorData = jsonDecode(response.body);
         throw Exception(
-          errorData['message'] ?? 'Failed to sign up. Please try again later.',
+          errorData['message'] ??
+              'Failed to sign up. Please try again later.'.tr(),
         );
       }
     } on http.ClientException {
       throw Exception(
-        'Network error: Unable to reach the server. Please check your internet connection.',
+        'Network error: Unable to reach the server. Please check your internet connection.'
+            .tr(),
       );
     } on FormatException {
-      throw Exception('Network error: Unable to process the server response.');
+      throw Exception(
+        'Network error: Unable to process the server response.'.tr(),
+      );
     } catch (e) {
       throw Exception(e.toString().replaceAll('Exception:', '').trim());
     }
@@ -73,7 +78,9 @@ class SignupRepository {
             .toList();
       } else {
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'Failed to get governorates');
+        throw Exception(
+          errorData['message'] ?? 'Failed to get governorates'.tr(),
+        );
       }
     } catch (e) {
       print('خطأ في getGovernorates: $e');
@@ -109,7 +116,7 @@ class SignupRepository {
             .toList();
       } else {
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'Failed to get cities');
+        throw Exception(errorData['message'] ?? 'Failed to get cities'.tr());
       }
     } catch (e) {
       print('خطأ في getCities: $e');

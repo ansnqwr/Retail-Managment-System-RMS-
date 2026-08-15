@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class PageTitle extends StatelessWidget {
@@ -13,7 +14,7 @@ class PageTitle extends StatelessWidget {
 
   Widget _buildPageTitle(String title, Color color) {
     return Text(
-      title,
+      title.tr(),
       style: TextStyle(
         fontFamily: 'Cairo',
         fontSize: 24,

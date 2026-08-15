@@ -47,7 +47,13 @@ class TokenManager {
     final prefs = await SharedPreferences.getInstance();
     accessToken = prefs.getString('access_token');
     refreshToken = prefs.getString('refresh_token');
+
+    print("========= 🔑 TOKENS SAVED =========");
+    print("Access Token: $accessToken");
+    print("Refresh Token: $refreshToken");
+    print("===================================");
   }
+  //1|D4jt5uwsCdm1RooucK48RPBS35kF63asQqSfnUU8d1d6ab4c
 
   Future<void> clearTokens() async {
     accessToken = null;

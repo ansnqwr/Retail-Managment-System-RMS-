@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class CategorySliderItem extends StatelessWidget {
@@ -33,7 +34,7 @@ class CategorySliderItem extends StatelessWidget {
           color: bg,
         ),
         child: Text(
-          label,
+          label.tr(),
           style: TextStyle(
             fontFamily: 'Cairo',
             fontSize: 16,

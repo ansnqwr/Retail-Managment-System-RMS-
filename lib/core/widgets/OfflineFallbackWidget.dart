@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class OfflineFallbackWidget extends StatelessWidget {
@@ -14,7 +15,7 @@ class OfflineFallbackWidget extends StatelessWidget {
             Icon(Icons.storefront, size: 80, color: Color(0xFF6B2D5C)),
             SizedBox(height: 16),
             Text(
-              'Welcome to Delni',
+              'Welcome to Delni'.tr(),
               style: TextStyle(
                 fontFamily: 'Cairo',
                 fontSize: 18,
@@ -23,7 +24,8 @@ class OfflineFallbackWidget extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              'You are currently offline. Please check your internet connection.',
+              'You are currently offline. Please check your internet connection.'
+                  .tr(),
               textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Cairo', color: Colors.grey),
             ),

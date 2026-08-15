@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'ImageHelper.dart';
@@ -42,7 +43,7 @@ class ProductCard extends StatelessWidget {
                   Positioned(
                     top: 8,
                     left: 8,
-                    child: _badge('NEW', Colors.green.shade700),
+                    child: _badge('NEW'.tr(), Colors.green.shade700),
                   ),
                 if (hasDiscount)
                   Positioned(
@@ -63,7 +64,7 @@ class ProductCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
+                      title.tr(),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -76,7 +77,7 @@ class ProductCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          '\$${price.toStringAsFixed(2)}',
+                          '\$${price.toStringAsFixed(2).tr()}',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -103,7 +104,7 @@ class ProductCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        label,
+        label.tr(),
         style: const TextStyle(
           color: Colors.white,
           fontSize: 11,

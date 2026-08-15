@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../features/pagination/View/PaginationScreen.dart';
 
@@ -116,7 +117,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                       padding: const EdgeInsets.only(right: 6),
                       child: Chip(
                         label: Text(
-                          chip,
+                          chip.tr(),
                           style: TextStyle(
                             fontSize: 12,
                             color: primaryColor,
@@ -144,7 +145,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                       controller: _controller,
                       focusNode: _focusNode,
                       decoration: InputDecoration(
-                        hintText: hasChips ? '' : 'Search here',
+                        hintText: hasChips ? '' : 'Search here'.tr(),
                         hintStyle: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,

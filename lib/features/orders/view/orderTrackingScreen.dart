@@ -6,6 +6,7 @@ import 'package:delni_rms/features/orders/view%20model/orderEvent.dart';
 import 'package:delni_rms/features/orders/view%20model/orderState.dart';
 import 'package:delni_rms/features/orders/view%20model/ordersRepository.dart';
 import 'package:delni_rms/features/orders/view/scannerScreen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,13 +42,13 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(state.message),
+                    Text(state.message.tr()),
                     TextButton(
                       onPressed:
                           () => context.read<OrdersBloc>().add(
                             LoadOrderDetails(widget.orderId),
                           ),
-                      child: const Text('Retry'),
+                      child: Text('Retry'.tr()),
                     ),
                   ],
                 ),
@@ -107,11 +108,11 @@ class _OrderTrackingView extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'To Receive',
+                'To Receive'.tr(),
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
@@ -120,7 +121,7 @@ class _OrderTrackingView extends StatelessWidget {
               ),
               SizedBox(height: 4),
               Text(
-                'Track Your Order',
+                'Track Your Order'.tr(),
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
             ],
@@ -164,7 +165,7 @@ class _OrderTrackingView extends StatelessWidget {
         final i = entry.key;
         final event = entry.value;
         return _TrackingStep(
-          title: event.title,
+          title: event.title.tr(),
           description: event.description,
           date: event.timestamp,
           isCompleted: i < currentIndex,
@@ -206,7 +207,7 @@ class _OrderTrackingView extends StatelessWidget {
       final isFuture = current < stepStage;
       final date = now.add(Duration(days: dayOffset));
       return _TrackingStep(
-        title: title,
+        title: title.tr(),
         description: desc,
         date: date,
         isCompleted: isCompleted,
@@ -364,8 +365,8 @@ class _TrackingNumberCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Tracking Number',
+              Text(
+                'Tracking Number'.tr(),
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
@@ -374,7 +375,7 @@ class _TrackingNumberCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                _displayTrackingNumber,
+                _displayTrackingNumber.tr(),
                 style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
               ),
             ],
@@ -383,7 +384,7 @@ class _TrackingNumberCard extends StatelessWidget {
             onTap: () {
               Clipboard.setData(ClipboardData(text: _displayTrackingNumber));
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Copied to clipboard')),
+                SnackBar(content: Text('Copied to clipboard'.tr())),
               );
             },
             child: Container(
@@ -445,7 +446,7 @@ class _TimelineStepWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  step.title,
+                  step.title.tr(),
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight:
@@ -492,10 +493,10 @@ class _TimelineStepWidget extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            step.description,
+            step.description.tr(),
             style: TextStyle(fontSize: 13, color: descColor, height: 1.4),
           ),
-          if (step.title == 'Delivered' && step.isCompleted) ...[
+          if (step.title == 'Delivered'.tr() && step.isCompleted) ...[
             const SizedBox(height: 4),
             const Icon(Icons.check_circle, color: Color(0xFF5B2E5A), size: 20),
           ],
@@ -528,8 +529,8 @@ class _OrderItemsSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Total',
+            Text(
+              'Total'.tr(),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -537,7 +538,7 @@ class _OrderItemsSection extends StatelessWidget {
               ),
             ),
             Text(
-              '\$${order.totalPrice.toStringAsFixed(2)}',
+              '\$${order.totalPrice.toStringAsFixed(2).tr()}',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
@@ -553,11 +554,11 @@ class _OrderItemsSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Shipping',
+                  'Shipping'.tr(),
                   style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                 ),
                 Text(
-                  '\$${order.shippingFee!.toStringAsFixed(2)}',
+                  '\$${order.shippingFee!.toStringAsFixed(2).tr()}',
                   style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                 ),
               ],
@@ -605,7 +606,7 @@ class _OrderItemTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.title,
+                  item.title.tr(),
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
@@ -614,7 +615,7 @@ class _OrderItemTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '\$${item.price.toStringAsFixed(2)}',
+                  '\$${item.price.toStringAsFixed(2).tr()}',
                   style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
                 ),
                 const SizedBox(height: 2),

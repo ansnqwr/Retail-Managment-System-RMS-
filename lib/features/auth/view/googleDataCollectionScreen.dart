@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/data/models/Repository/signup_repository.dart';
@@ -53,7 +54,7 @@ class _GoogleDataCollectionScreenState
       setState(() => _isLoadingGovs = false);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+      ).showSnackBar(SnackBar(content: Text(e.toString().tr())));
     }
   }
 
@@ -75,7 +76,7 @@ class _GoogleDataCollectionScreenState
       setState(() => _isLoadingCities = false);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+      ).showSnackBar(SnackBar(content: Text(e.toString().tr())));
     }
   }
 
@@ -97,7 +98,7 @@ class _GoogleDataCollectionScreenState
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          "Complete Profile",
+          "Complete Profile".tr(),
           style: TextStyle(color: darkPurple, fontWeight: FontWeight.bold),
         ),
         iconTheme: const IconThemeData(color: darkPurple),
@@ -119,7 +120,7 @@ class _GoogleDataCollectionScreenState
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.redAccent,
-                content: Text(state.error),
+                content: Text(state.error.tr()),
               ),
             );
           }
@@ -133,7 +134,8 @@ class _GoogleDataCollectionScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "We need a few more details\nto finish your Google sign-in.",
+                    "We need a few more details\nto finish your Google sign-in."
+                        .tr(),
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w900,
@@ -211,19 +213,19 @@ class _GoogleDataCollectionScreenState
                       if (_formKey.currentState!.validate()) {
                         context.read<LoginBloc>().add(
                           SubmitGoogleSignInDataEvent(
-                            email: widget.email,
+                            email: widget.email.tr(),
                             googleId: widget.googleId,
-                            firstName: _firstCtrl.text.trim(),
-                            lastName: _lastCtrl.text.trim(),
-                            phone: _phoneCtrl.text.trim(),
-                            governorate: _selectedGovernorateName ?? '',
-                            city: _selectedCityName ?? '',
+                            firstName: _firstCtrl.text.trim().tr(),
+                            lastName: _lastCtrl.text.trim().tr(),
+                            phone: _phoneCtrl.text.trim().tr(),
+                            governorate: _selectedGovernorateName?.tr() ?? '',
+                            city: _selectedCityName?.tr() ?? '',
                           ),
                         );
                       }
                     },
                     child: Text(
-                      "Continue",
+                      "Continue".tr(),
                       style: TextStyle(
                         color: Color(0xFFF2A488),
                         fontSize: 18,
@@ -245,7 +247,7 @@ class _GoogleDataCollectionScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label.tr(),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFF6B2D5C),
@@ -281,7 +283,7 @@ class _GoogleDataCollectionScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label.tr(),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFF6B2D5C),
@@ -297,7 +299,10 @@ class _GoogleDataCollectionScreenState
                   .map(
                     (item) => DropdownMenuItem<int>(
                       value: item.id,
-                      child: Text(item.name, overflow: TextOverflow.ellipsis),
+                      child: Text(
+                        item.name.tr(),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   )
                   .toList(),

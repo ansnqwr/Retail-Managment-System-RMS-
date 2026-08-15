@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '/core/widgets/IconCircleWidget.dart';
 
@@ -38,7 +39,7 @@ Widget _badgeIcon(
           radius: 9,
           backgroundColor: Theme.of(context).colorScheme.secondary,
           child: Text(
-            label,
+            label.tr(),
             style: const TextStyle(fontSize: 10, color: Colors.white),
           ),
         ),

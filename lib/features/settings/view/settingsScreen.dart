@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/settingsModel.dart';
@@ -46,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: TextButton(
                   onPressed:
                       () => context.read<SettingsBloc>().add(LoadSettings()),
-                  child: Text('Retry'),
+                  child: Text('Retry'.tr()),
                 ),
               );
             }
@@ -69,7 +70,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       children: [
         Text(
-          'Settings',
+          'Settings'.tr(),
           style: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.w700,
@@ -77,11 +78,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
         const SizedBox(height: 24),
-        _buildSection('Personal', personal, context),
+        _buildSection('Personal'.tr(), personal, context),
         const SizedBox(height: 24),
-        _buildSection('Shop', shop, context),
+        _buildSection('Shop'.tr(), shop, context),
         const SizedBox(height: 24),
-        _buildSection('Account', account, context),
+        _buildSection('Account'.tr(), account, context),
       ],
     );
   }
@@ -95,7 +96,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title,
+          title.tr(),
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -131,7 +132,7 @@ class _SettingTileState extends State<_SettingTile> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              widget.option.title,
+              widget.option.title.tr(),
               style: TextStyle(
                 fontSize: 15,
                 color:
@@ -146,7 +147,7 @@ class _SettingTileState extends State<_SettingTile> {
                 children: [
                   if (widget.option.value != null)
                     Text(
-                      widget.option.value!,
+                      widget.option.value!.tr(),
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.grey.shade600,
@@ -242,7 +243,7 @@ class _SettingTileState extends State<_SettingTile> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'You are going to delete\nyour account',
+                      'You are going to delete\nyour account'.tr(),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 18,
@@ -253,7 +254,7 @@ class _SettingTileState extends State<_SettingTile> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "You won't be able to restore your data",
+                      "You won't be able to restore your data".tr(),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
@@ -277,7 +278,7 @@ class _SettingTileState extends State<_SettingTile> {
                                 ),
                               ),
                               child: Text(
-                                'Cancel',
+                                'Cancel'.tr(),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -305,7 +306,7 @@ class _SettingTileState extends State<_SettingTile> {
                                 ),
                               ),
                               child: Text(
-                                'Delete',
+                                'Delete'.tr(),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,

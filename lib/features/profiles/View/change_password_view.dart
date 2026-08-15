@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/view/forgot_password_screen.dart';
@@ -43,7 +44,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             } else if (state is ProfileError) {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text(state.message)));
+              ).showSnackBar(SnackBar(content: Text(state.message.tr())));
             }
           },
           child: SingleChildScrollView(
@@ -56,7 +57,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                   _buildBackButton(),
                   const SizedBox(height: 32),
                   Text(
-                    'Create new password',
+                    'Create new password'.tr(),
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -65,7 +66,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Your new password must be unique from those previously used.',
+                    'Your new password must be unique from those previously used.'
+                        .tr(),
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.black87,
@@ -75,23 +77,24 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                   const SizedBox(height: 32),
                   _buildTextField(
                     controller: _currentCtrl,
-                    hint: 'current Password',
-                    validator: (val) => val!.isEmpty ? 'Required' : null,
+                    hint: 'current Password'.tr(),
+                    validator: (val) => val!.isEmpty ? 'Required'.tr() : null,
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
                     controller: _newCtrl,
-                    hint: 'New Password',
-                    validator: (val) => val!.length < 6 ? 'Min 6 chars' : null,
+                    hint: 'New Password'.tr(),
+                    validator:
+                        (val) => val!.length < 6 ? 'Min 6 chars'.tr() : null,
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
                     controller: _confirmCtrl,
-                    hint: 'Confirm Password',
+                    hint: 'Confirm Password'.tr(),
                     validator:
                         (val) =>
                             val != _newCtrl.text
-                                ? 'Passwords do not match'
+                                ? 'Passwords do not match'.tr()
                                 : null,
                   ),
                   const SizedBox(height: 12),
@@ -115,7 +118,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        'Forget old password?',
+                        'Forget old password?'.tr(),
                         style: TextStyle(color: _primaryColor, fontSize: 13),
                       ),
                     ),
@@ -168,7 +171,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                             ),
                           ),
                           child: Text(
-                            'Reset Password',
+                            'Reset Password'.tr(),
                             style: TextStyle(
                               color: _accentColor,
                               fontSize: 16,

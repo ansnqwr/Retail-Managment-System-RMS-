@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../view_model/bloc/login_bloc.dart';
@@ -49,7 +50,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.redAccent,
-                content: Text(state.error),
+                content: Text(state.error.tr()),
               ),
             );
           }
@@ -89,7 +90,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   const SizedBox(height: 30),
 
                   Text(
-                    "Forgot Your Password?",
+                    "Forgot Your Password?".tr(),
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w500,
@@ -100,7 +101,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   const SizedBox(height: 20),
 
                   Text(
-                    "Enter your email in this field to receive a link for resetting your password.",
+                    "Enter your email in this field to receive a link for resetting your password."
+                        .tr(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 14,
@@ -114,7 +116,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Email",
+                      "Email".tr(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: darkPurple,
@@ -198,7 +200,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       shadowColor: Colors.black45,
                     ),
                     child: Text(
-                      "Send to Email",
+                      "Send to Email".tr(),
                       style: TextStyle(
                         color: Color(0xFFE2B78B),
                         fontSize: 18,

@@ -15,6 +15,7 @@ import 'package:delni_rms/features/favorites/view%20model/favorites_bloc.dart';
 import 'package:delni_rms/features/favorites/view%20model/favorites_state.dart';
 import 'package:delni_rms/features/cart/view/Cart.dart';
 import 'package:delni_rms/features/favorites/view/Favorites.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -110,7 +111,7 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
           children: [
             const Icon(Icons.error_outline, size: 56, color: Colors.grey),
             const SizedBox(height: 12),
-            Text(message, textAlign: TextAlign.center),
+            Text(message.tr(), textAlign: TextAlign.center),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed:
@@ -121,7 +122,7 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
                 backgroundColor: _primaryColor,
                 foregroundColor: Colors.white,
               ),
-              child: const Text('Try Again'),
+              child: Text('Try Again'.tr()),
             ),
           ],
         ),
@@ -139,6 +140,7 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
         SliverToBoxAdapter(
           child: ProductImageGallery(
             imageUrls: product.images.map((e) => e.imageUrl).toList(),
+            initialIndex: state.variantImageIndex,
           ),
         ),
         SliverPadding(
@@ -212,17 +214,17 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
               const SizedBox(height: 24),
 
               ExpandableSection(
-                title: 'Product Details',
+                title: 'Product Details'.tr(),
                 initiallyExpanded: true,
                 child: Text(
                   product.description.isNotEmpty
                       ? product.description
-                      : 'No description available.',
+                      : 'No description available.'.tr(),
                   style: TextStyle(color: Colors.grey.shade700, height: 1.5),
                 ),
               ),
               ExpandableSection(
-                title: 'Specification',
+                title: 'Specification'.tr(),
                 child: SpecificationTable(
                   specifications: product.specifications,
                 ),
@@ -240,7 +242,7 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
-                    'No reviews yet',
+                    'No reviews yet'.tr(),
                     style: TextStyle(color: Colors.grey.shade500),
                   ),
                 )
@@ -258,30 +260,30 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
 
               if (product.howItWasMade.isNotEmpty)
                 ExpandableSection(
-                  title: 'How this was made',
+                  title: 'How this was made'.tr(),
                   child: Text(
-                    product.howItWasMade,
+                    product.howItWasMade.tr(),
                     style: TextStyle(color: Colors.grey.shade700, height: 1.5),
                   ),
                 ),
               if (product.manufacturingInformation.isNotEmpty)
                 ExpandableSection(
-                  title: 'Manufacturing Information',
+                  title: 'Manufacturing Information'.tr(),
                   child: Text(
-                    product.manufacturingInformation,
+                    product.manufacturingInformation.tr(),
                     style: TextStyle(color: Colors.grey.shade700, height: 1.5),
                   ),
                 ),
               const SizedBox(height: 16),
 
               RelatedProductsSection(
-                title: 'Similar Products',
+                title: 'Similar Products'.tr(),
                 products: state.similarProducts,
                 showSortBy: true,
               ),
               const SizedBox(height: 24),
               RelatedProductsSection(
-                title: 'Customers also like',
+                title: 'Customers also like'.tr(),
                 products: state.recommendedProducts,
               ),
               const SizedBox(height: 24),
@@ -312,12 +314,12 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          product.name,
+          product.name.tr(),
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 2),
         Text(
-          product.brand.name,
+          product.brand.name.tr(),
           style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
         ),
         const SizedBox(height: 8),
@@ -325,7 +327,7 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
           children: [
             if (product.discountPercentage > 0)
               Text(
-                '${product.currency} ${product.oldPrice.toStringAsFixed(0)}',
+                '${product.currency.tr()} ${product.oldPrice.toStringAsFixed(0).tr()}',
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey.shade400,
@@ -334,7 +336,7 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
               ),
             if (product.discountPercentage > 0) const SizedBox(width: 8),
             Text(
-              '${product.currency} ${product.price.toStringAsFixed(0)}',
+              '${product.currency.tr()} ${product.price.toStringAsFixed(0).tr()}',
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -344,7 +346,7 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
             if (product.discountPercentage > 0) ...[
               const SizedBox(width: 8),
               Text(
-                '(${product.discountPercentage.toStringAsFixed(0)}% Off)',
+                '(${product.discountPercentage.toStringAsFixed(0).tr()}% Off)',
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -393,7 +395,7 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
                       FavoriteToggled(product.productId, isFavorite),
                     ),
                 icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
-                label: const Text('Wishlist'),
+                label: Text('Wishlist'.tr()),
               );
             },
           ),
@@ -444,11 +446,13 @@ class _ProductDetailsViewState extends State<_ProductDetailsView> {
                         ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Added to Cart')),
+                        SnackBar(content: Text('Added to Cart'.tr())),
                       );
                     },
             icon: const Icon(Icons.shopping_cart_outlined),
-            label: Text(product.isInStock ? 'Add to Cart' : 'Out of Stock'),
+            label: Text(
+              product.isInStock ? 'Add to Cart'.tr() : 'Out of Stock'.tr(),
+            ),
           ),
         ),
       ],
@@ -482,7 +486,7 @@ class SkuSelector extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          factorKey,
+          factorKey.tr(),
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 10),
@@ -493,7 +497,7 @@ class SkuSelector extends StatelessWidget {
               options.map((value) {
                 final isSelected = selectedValue == value;
                 return ChoiceChip(
-                  label: Text(value),
+                  label: Text(value.tr()),
                   selected: isSelected,
                   selectedColor: const Color(0xFF6B2D5C),
                   labelStyle: TextStyle(
@@ -576,7 +580,7 @@ class _RelatedProductsSectionState extends State<RelatedProductsSection> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.title,
+                widget.title.tr(),
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -589,22 +593,22 @@ class _RelatedProductsSectionState extends State<RelatedProductsSection> {
                   underline: const SizedBox(),
                   icon: const Icon(Icons.arrow_drop_down, size: 18),
                   style: const TextStyle(fontSize: 12, color: Colors.black87),
-                  items: const [
+                  items: [
                     DropdownMenuItem(
                       value: RelatedProductsSort.none,
-                      child: Text('Sort By'),
+                      child: Text('Sort By'.tr()),
                     ),
                     DropdownMenuItem(
                       value: RelatedProductsSort.priceLowToHigh,
-                      child: Text('Price: Low to High'),
+                      child: Text('Price: Low to High'.tr()),
                     ),
                     DropdownMenuItem(
                       value: RelatedProductsSort.priceHighToLow,
-                      child: Text('Price: High to Low'),
+                      child: Text('Price: High to Low'.tr()),
                     ),
                     DropdownMenuItem(
                       value: RelatedProductsSort.rating,
-                      child: Text('Top Rated'),
+                      child: Text('Top Rated'.tr()),
                     ),
                   ],
                   onChanged: (value) {
@@ -719,7 +723,7 @@ class RelatedProductCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    product.name,
+                    product.name.tr(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -733,7 +737,7 @@ class RelatedProductCard extends StatelessWidget {
                     children: [
                       if (hasDiscount) ...[
                         Text(
-                          '${product.currency} ${product.oldPrice.toStringAsFixed(0)}',
+                          '${product.currency.tr()} ${product.oldPrice.toStringAsFixed(0).tr()}',
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.grey.shade400,
@@ -743,7 +747,7 @@ class RelatedProductCard extends StatelessWidget {
                         const SizedBox(width: 6),
                       ],
                       Text(
-                        '${product.currency} ${product.price.toStringAsFixed(0)}',
+                        '${product.currency.tr()} ${product.price.toStringAsFixed(0).tr()}',
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -759,7 +763,7 @@ class RelatedProductCard extends StatelessWidget {
                         const Icon(Icons.star, color: Colors.amber, size: 14),
                         const SizedBox(width: 2),
                         Text(
-                          product.averageRating.toStringAsFixed(1),
+                          product.averageRating.toStringAsFixed(1).tr(),
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey.shade600,
@@ -822,7 +826,7 @@ class _ProductReviewCardState extends State<ProductReviewCard> {
             Padding(
               padding: const EdgeInsets.only(bottom: 4),
               child: Text(
-                review.fitTag!,
+                review.fitTag!.tr(),
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
@@ -834,7 +838,7 @@ class _ProductReviewCardState extends State<ProductReviewCard> {
               const Icon(Icons.star, color: Colors.amber, size: 15),
               const SizedBox(width: 4),
               Text(
-                review.rating.toStringAsFixed(1),
+                review.rating.toStringAsFixed(1).tr(),
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
@@ -842,12 +846,12 @@ class _ProductReviewCardState extends State<ProductReviewCard> {
               ),
               const SizedBox(width: 8),
               Text(
-                review.userName,
+                review.userName.tr(),
                 style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
               ),
               const SizedBox(width: 8),
               Text(
-                review.createdAt,
+                review.createdAt.tr(),
                 style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
               ),
             ],
@@ -862,10 +866,10 @@ class _ProductReviewCardState extends State<ProductReviewCard> {
                   height: 1.4,
                 ),
                 children: [
-                  TextSpan(text: displayedComment),
+                  TextSpan(text: displayedComment.tr()),
                   if (commentTooLong)
                     TextSpan(
-                      text: _expanded ? '  Show less' : '  Read More',
+                      text: _expanded ? '  Show less'.tr() : '  Read More'.tr(),
                       style: const TextStyle(
                         color: Color(0xFF6B2D5C),
                         fontWeight: FontWeight.w600,
@@ -929,8 +933,8 @@ class ProductRatingSummary extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text(
-          'Ratings & Reviews',
+        Text(
+          'Ratings & Reviews'.tr(),
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -939,7 +943,7 @@ class ProductRatingSummary extends StatelessWidget {
         ),
         const Spacer(),
         Text(
-          averageRating.toStringAsFixed(1),
+          averageRating.toStringAsFixed(1).tr(),
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(width: 4),
@@ -978,7 +982,7 @@ class SpecificationTable extends StatelessWidget {
   Widget build(BuildContext context) {
     if (specifications.isEmpty) {
       return Text(
-        'No specifications available.',
+        'No specifications available.'.tr(),
         style: TextStyle(color: Colors.grey.shade500),
       );
     }
@@ -1014,12 +1018,12 @@ class SpecificationTable extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label.tr(),
           style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
         ),
         const SizedBox(height: 2),
         Text(
-          value,
+          value.tr(),
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         ),
       ],
@@ -1065,7 +1069,7 @@ class _ExpandableSectionState extends State<ExpandableSection> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.title,
+                    widget.title.tr(),
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -1116,8 +1120,8 @@ class QuantitySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Text(
-          'Quantity',
+        Text(
+          'Quantity'.tr(),
           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         ),
         const Spacer(),
@@ -1171,14 +1175,47 @@ class QuantitySelector extends StatelessWidget {
 
 class ProductImageGallery extends StatefulWidget {
   final List<String> imageUrls;
-  const ProductImageGallery({super.key, required this.imageUrls});
+  final int initialIndex;
+
+  const ProductImageGallery({
+    super.key,
+    required this.imageUrls,
+    this.initialIndex = 0,
+  });
 
   @override
   State<ProductImageGallery> createState() => _ProductImageGalleryState();
 }
 
 class _ProductImageGalleryState extends State<ProductImageGallery> {
-  int _currentIndex = 0;
+  late int _currentIndex;
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
+
+  @override
+  void didUpdateWidget(ProductImageGallery oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Image list changed (new variant) → jump to correct image
+    if (oldWidget.imageUrls != widget.imageUrls ||
+        oldWidget.initialIndex != widget.initialIndex) {
+      setState(() => _currentIndex = widget.initialIndex);
+      // animateToPage so the carousel actually moves
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _carouselController.animateToPage(
+          widget.initialIndex,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1188,6 +1225,7 @@ class _ProductImageGalleryState extends State<ProductImageGallery> {
       alignment: Alignment.bottomCenter,
       children: [
         CarouselSlider.builder(
+          carouselController: _carouselController, // ← add this
           itemCount: images.length,
           itemBuilder: (context, index, realIndex) {
             final url = images[index];
@@ -1220,6 +1258,7 @@ class _ProductImageGalleryState extends State<ProductImageGallery> {
           options: CarouselOptions(
             height: 420,
             viewportFraction: 1,
+            initialPage: widget.initialIndex,
             enableInfiniteScroll: false,
             onPageChanged: (index, reason) {
               setState(() => _currentIndex = index);

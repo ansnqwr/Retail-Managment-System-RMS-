@@ -4,6 +4,7 @@ import 'package:delni_rms/features/settings/view/settingsScreen.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_bloc.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_event.dart';
 import 'package:delni_rms/features/stores/view%20model/store_details_repository.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -100,10 +101,10 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 duration: Duration(milliseconds: 2000),
-                content: Text(state.message),
+                content: Text(state.message.tr()),
                 backgroundColor: Colors.red,
                 action: SnackBarAction(
-                  label: 'Retry',
+                  label: 'Retry'.tr(),
                   onPressed: () {
                     context.read<HomeBloc>().add(const HomeRefreshRequested());
                   },
@@ -141,7 +142,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
             const Icon(Icons.error_outline, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
-              'Something went wrong',
+              'Something went wrong'.tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -150,7 +151,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
             ),
             const SizedBox(height: 8),
             Text(
-              message,
+              message.tr(),
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.grey),
             ),
@@ -160,7 +161,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                 context.read<HomeBloc>().add(const HomeRefreshRequested());
               },
               icon: const Icon(Icons.refresh),
-              label: Text('Try Again'),
+              label: Text('Try Again'.tr()),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF6B2D5C),
                 foregroundColor: Colors.white,
@@ -190,7 +191,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                 Row(
                   children: [
                     const SizedBox(width: 10),
-                    PageTitle(title: 'Hello, User!', color: primaryColor),
+                    PageTitle(title: 'Hello, User!'.tr(), color: primaryColor),
                     const Spacer(),
                     _buildSettingsButton(context, primaryColor),
                     const SizedBox(width: 12),
@@ -222,7 +223,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           _buildToggleButton(
-                            label: 'Products',
+                            label: 'Products'.tr(),
                             isSelected: state.isSearchingProducts,
                             onTap: () {
                               if (!state.isSearchingProducts) {
@@ -236,7 +237,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                           ),
                           const SizedBox(width: 12),
                           _buildToggleButton(
-                            label: 'Stores',
+                            label: 'Stores'.tr(),
                             isSelected: !state.isSearchingProducts,
                             onTap: () {
                               if (state.isSearchingProducts) {
@@ -266,7 +267,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                 _buildProductSection(
                   context,
                   1,
-                  'Trending',
+                  'Trending'.tr(),
                   state.trendingProducts,
                   primaryColor,
                   state.selectedCategoryId,
@@ -275,7 +276,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                 _buildProductSection(
                   context,
                   2,
-                  'On Sale',
+                  'On Sale'.tr(),
                   state.onSaleProducts,
                   primaryColor,
                   state.selectedCategoryId,
@@ -292,7 +293,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                 _buildProductSection(
                   context,
                   4,
-                  'Newest',
+                  'Newest'.tr(),
                   state.newestProducts,
                   primaryColor,
                   state.selectedCategoryId,
@@ -300,7 +301,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                 _buildStoresSection(
                   context,
                   5,
-                  'Brands',
+                  'Brands'.tr(),
                   state.brandStores,
                   primaryColor,
                   client,
@@ -309,7 +310,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                 _buildStoresSection(
                   context,
                   6,
-                  'Stores Nearby',
+                  'Stores Nearby'.tr(),
                   state.nearbyStores,
                   primaryColor,
                   client,
@@ -320,7 +321,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
             ),
           ),
         ),
-        _buildBusinessTypeGrid('Just For You', primaryColor),
+        _buildBusinessTypeGrid('Just For You'.tr(), primaryColor),
         ProductSilverGrid(products: state.justForYouProducts),
 
         if (state.isLoadingMoreJustForYou)
@@ -337,7 +338,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
               padding: const EdgeInsets.all(16.0),
               child: Center(
                 child: Text(
-                  'No more items',
+                  'No more items'.tr(),
                   style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
                 ),
               ),
@@ -364,7 +365,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
-          label,
+          label.tr(),
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
@@ -385,7 +386,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
         final cat = state.categories[index];
         final isSelected = state.selectedCategoryIndex == index;
         return CategorySliderItem(
-          label: cat.title,
+          label: cat.title.tr(),
           categoryId: cat.id,
           isSelected: isSelected,
           onTap: () {
@@ -419,7 +420,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
             height: 140,
             alignment: Alignment.center,
             child: Text(
-              'No ads available',
+              'No ads available'.tr(),
               style: TextStyle(color: Colors.grey),
             ),
           ),
@@ -498,7 +499,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
             child: Row(
               children: [
                 Text(
-                  businessType,
+                  businessType.tr(),
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
@@ -507,7 +508,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                 ),
                 const Spacer(),
                 Text(
-                  "See all",
+                  "See all".tr(),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -536,7 +537,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   padding: const EdgeInsets.only(right: 12.0),
                   child: ProductCard(
                     imageUrl: product.imageUrl,
-                    title: product.title,
+                    title: product.title.tr(),
                     price: product.price,
                     isNew: product.isNew,
                     hasDiscount: product.hasDiscount,
@@ -599,7 +600,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
             child: Row(
               children: [
                 Text(
-                  businessType,
+                  businessType.tr(),
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
@@ -608,7 +609,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                 ),
                 const Spacer(),
                 Text(
-                  "See all",
+                  "See all".tr(),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -637,7 +638,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   padding: const EdgeInsets.only(right: 12.0),
                   child: StoreCard(
                     imageUrl: store.imageUrl,
-                    title: store.title,
+                    title: store.title.tr(),
                     isNew: store.isNew,
                     branchesCount: store.branches.length,
                     width: 170,
@@ -678,7 +679,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
       sliver: SliverList(
         delegate: SliverChildListDelegate([
           Text(
-            businessType,
+            businessType.tr(),
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w800,
@@ -744,7 +745,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
           color: Colors.grey.shade300,
         ),
         child: Text(
-          "Sign up",
+          "Sign up".tr(),
           style: TextStyle(
             fontFamily: 'Cairo',
             fontSize: 16,

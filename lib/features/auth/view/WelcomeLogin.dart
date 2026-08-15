@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,7 +32,7 @@ class WelcomeLoginScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Welcome to Our\nStore!",
+                "Welcome to Our\nStore!".tr(),
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 38,
@@ -81,7 +82,7 @@ class WelcomeLoginScreen extends StatelessWidget {
                   elevation: 0,
                 ),
                 child: Text(
-                  "log in",
+                  "log in".tr(),
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     color: peachColor,
@@ -119,7 +120,7 @@ class WelcomeLoginScreen extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    "Continue as Guest",
+                    "Continue as Guest".tr(),
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       color: darkPurple,
@@ -144,7 +145,7 @@ class WelcomeLoginScreen extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    "Sign up",
+                    "Sign up".tr(),
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       color: darkPurple,

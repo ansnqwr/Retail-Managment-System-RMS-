@@ -4,6 +4,7 @@ import 'package:delni_rms/features/orders/model/orderModel.dart';
 import 'package:delni_rms/features/orders/view%20model/orderBloc.dart';
 import 'package:delni_rms/features/orders/view%20model/orderEvent.dart';
 import 'package:delni_rms/features/orders/view%20model/orderState.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -34,7 +35,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
           if (state is OrdersError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
+                content: Text(state.message.tr()),
                 backgroundColor: Colors.red.shade700,
                 behavior: SnackBarBehavior.floating,
                 duration: const Duration(seconds: 2),
@@ -45,8 +46,8 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
           if (state is OrderDetailsLoaded) {
             if (state.order.status == OrderStatus.Confirmed) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Order confirmed successfully!'),
+                SnackBar(
+                  content: Text('Order confirmed successfully!'.tr()),
                   backgroundColor: Colors.green,
                   behavior: SnackBarBehavior.floating,
                   duration: Duration(seconds: 2),
@@ -90,8 +91,8 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                       icon: Icons.close,
                       onTap: () => Navigator.of(context).pop(false),
                     ),
-                    const Text(
-                      'Scan QR Code',
+                    Text(
+                      'Scan QR Code'.tr(),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -130,7 +131,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'Align QR code within the frame',
+                          'Align QR code within the frame'.tr(),
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.8),
                             fontSize: 14,
@@ -138,7 +139,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Order: ${widget.orderNumber}',
+                          'Order: ${widget.orderNumber.tr()}',
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.5),
                             fontSize: 12,

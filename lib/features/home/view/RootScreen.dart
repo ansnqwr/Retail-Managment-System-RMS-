@@ -1,7 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
-
-import '../../cart/view model/CartBloc.dart';
-import '../../cart/view model/CartRepository.dart';
 import '../../favorites/view model/FavoritesRepository.dart';
 import '../../favorites/view model/favorites_bloc.dart';
 import '../../favorites/view model/favorites_event.dart';
@@ -10,13 +8,11 @@ import '../../orders/view model/orderEvent.dart';
 import '../../orders/view model/ordersRepository.dart';
 import '../../orders/view/ordersScreen.dart';
 import '/core/widgets/NavigationDestinationWidget.dart';
-
 import '../../profiles/Model/profile_repository.dart';
 import '../../profiles/ViewModel/profile_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../profiles/View/profile_view.dart';
-import '../../cart/view/Cart.dart';
 import '../../favorites/view/Favorites.dart';
 import '/features/home/view/HomeScreen.dart';
 import '../../categories/View/Categories.dart';
@@ -90,35 +86,35 @@ class _RootScreenState extends State<RootScreen> {
             NavigationDestinationWidget(
               index: 0,
               selectedIndex: selectedIndex,
-              label: 'Home',
+              label: 'Home'.tr(),
               icon: Icons.home_outlined,
               selectedIcon: Icons.home,
             ),
             NavigationDestinationWidget(
               index: 1,
               selectedIndex: selectedIndex,
-              label: 'Favorites',
+              label: 'Favorites'.tr(),
               icon: Icons.favorite_border,
               selectedIcon: Icons.favorite,
             ),
             NavigationDestinationWidget(
               index: 2,
               selectedIndex: selectedIndex,
-              label: 'Categories',
+              label: 'Categories'.tr(),
               icon: Icons.category_outlined,
               selectedIcon: Icons.category,
             ),
             NavigationDestinationWidget(
               index: 3,
               selectedIndex: selectedIndex,
-              label: 'Cart',
+              label: 'Cart'.tr(),
               icon: Icons.shopping_cart_outlined,
               selectedIcon: Icons.shopping_cart,
             ),
             NavigationDestinationWidget(
               index: 4,
               selectedIndex: selectedIndex,
-              label: 'Profile',
+              label: 'Profile'.tr(),
               icon: Icons.person_outline,
               selectedIcon: Icons.person,
             ),

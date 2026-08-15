@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/features/auth/data/models/Repository/signin_repository.dart'
@@ -46,7 +47,7 @@ class EmailChangedScreen extends StatelessWidget {
                 width: 300,
                 height: 31,
                 child: Text(
-                  "Email has been changed successfully!",
+                  "Email has been changed successfully!".tr(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Urbanist',
@@ -64,7 +65,7 @@ class EmailChangedScreen extends StatelessWidget {
                 width: 226,
                 height: 46,
                 child: Text(
-                  "Your email has been changed successfully.",
+                  "Your email has been changed successfully.".tr(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Urbanist',
@@ -100,7 +101,7 @@ class EmailChangedScreen extends StatelessWidget {
                   elevation: 0,
                 ),
                 child: Text(
-                  "Back to Login",
+                  "Back to Login".tr(),
                   style: TextStyle(
                     fontFamily: 'Urbanist',
                     color: peachColor,
