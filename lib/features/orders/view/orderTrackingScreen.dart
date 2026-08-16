@@ -191,7 +191,7 @@ class _OrderTrackingView extends StatelessWidget {
           return 4;
         case OrderStatus.Delivered:
           return 5;
-        case OrderStatus.Confirmed:
+        case OrderStatus.Completed:
           return 6;
         case OrderStatus.Cancelled:
           return -1;
@@ -301,7 +301,7 @@ class _ProgressBar extends StatelessWidget {
       color = const Color(0xFF5B2E5A);
     } else if (isCurrent) {
       color =
-          status == OrderStatus.Delivered || status == OrderStatus.Confirmed
+          status == OrderStatus.Delivered || status == OrderStatus.Completed
               ? const Color(0xFF4CAF50)
               : const Color(0xFFE53935);
     } else {

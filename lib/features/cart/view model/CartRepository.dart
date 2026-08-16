@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:delni_rms/features/auth/data/models/Repository/signin_repository.dart';
-import 'package:delni_rms/features/cart/model/CartItemModel.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../model/CartItemModel.dart';
 
 class CartRepository {
   final http.Client _client;
@@ -11,35 +13,106 @@ class CartRepository {
 
   CartRepository(this._client);
 
+  // دالة مساعدة لجلب الـ access_token من الكاش مع طباعة حالته
+  Future<String?> _getAccessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    print('----------------------------------------');
+    print(
+      '🔑 [Token Check]: ${token != null && token.isNotEmpty ? "Available (Length: ${token.length})" : "NOT FOUND / EMPTY"}',
+    );
+    print('----------------------------------------');
+
+    return token;
+  }
+
   Future<List<CartItemModel>> getCart() async {
     try {
-      final response = await _client.get(Uri.parse('$baseUrl/cart'));
+      final token = await _getAccessToken();
+      final response = await _client.get(
+        Uri.parse('$baseUrl/cart'),
+        headers: {
+          'Content-Type': 'application/json',
+          if (token != null && token.isNotEmpty)
+            'Authorization': 'Bearer $token',
+        },
+      );
+      print('📦 [GetCart] Status Code: ${response.statusCode}');
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final items = (data['items'] as List? ?? []);
+        final items =
+            (data['items'] as List? ?? data['cart_items'] as List? ?? []);
         return items.map((e) => CartItemModel.fromJson(e)).toList();
       }
-    } catch (_) {
-      // backend not available yet - fall through to local cart
+    } catch (e) {
+      print(
+        '⚠️ [GetCart Error] Backend not available, falling back to local: $e',
+      );
     }
     return _readLocal();
   }
 
   Future<List<CartItemModel>> addToCart(CartItemModel item) async {
+    print(
+      '🛒 [AddToCart Started] Product: ${item.name} (ID: ${item.productId}), Qty: ${item.quantity}',
+    );
+
     try {
+      // 1. جلب التوكن لإرساله داخل الـ Body كما في Postman
+      final token = await _getAccessToken();
+
+      // بناء الـ Body تماماً مثل Postman (يتضمن access_token, product_id, color, size, quantity)
+      final Map<String, dynamic> bodyData = {
+        if (token != null && token.isNotEmpty) "access_token": token,
+        "product_id": item.productId,
+        if (item.colorName != null) "color": item.colorName,
+        if (item.size != null) "size": item.size,
+        "quantity": item.quantity,
+      };
+
+      final requestBody = json.encode(bodyData);
+      print('📤 [AddToCart Request Body]: $requestBody');
+
+      // 2. الرابط المطابق لـ Postman وهو /api/cart
+      final String requestUrl = '$baseUrl/cart';
+      print('🌐 [AddToCart URL]: $requestUrl');
+
+      // 3. إرسال الطلب بطريقة POST
       final response = await _client.post(
-        Uri.parse('$baseUrl/cart/items'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(item.toAddToCartJson()),
+        Uri.parse(requestUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          if (token != null && token.isNotEmpty)
+            'Authorization': 'Bearer $token',
+        },
+        body: requestBody,
       );
+
+      print('📥 [AddToCart Response Status Code]: ${response.statusCode}');
+      print('📥 [AddToCart Response Body]: ${response.body}');
+
+      // 4. التحقق من نجاح الطلب
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = json.decode(response.body);
-        final items = (data['items'] as List? ?? []);
+        final items =
+            (data['items'] as List? ?? data['cart_items'] as List? ?? []);
+        print(
+          '✅ [AddToCart Success]: Added via Backend successfully. Total items: ${items.length}',
+        );
         return items.map((e) => CartItemModel.fromJson(e)).toList();
+      } else {
+        print(
+          '❌ [AddToCart Server Error]: Status code is ${response.statusCode}',
+        );
       }
-    } catch (_) {
-      // fall back to local
+    } catch (e, stackTrace) {
+      print('⚠️ [AddToCart Exception Caught]: $e');
+      print('🔍 [Stack Trace]: $stackTrace');
     }
+
+    // التراجع إلى التخزين المحلي (Local) في حال فشل الاتصال أو السيرفر
+    print('💾 [AddToCart Fallback]: Saving item to local storage (Cache)...');
     final cart = await _readLocal();
     final existingIndex = cart.indexWhere(
       (existing) => existing.isSameVariant(item),
@@ -52,6 +125,9 @@ class CartRepository {
       cart.add(item);
     }
     await _writeLocal(cart);
+    print(
+      '✅ [AddToCart Local Success]: Local cart updated. Total local items: ${cart.length}',
+    );
     return cart;
   }
 
@@ -61,18 +137,25 @@ class CartRepository {
   ) async {
     if (item.cartItemId != null) {
       try {
+        final token = await _getAccessToken();
         final response = await _client.patch(
           Uri.parse('$baseUrl/cart/items/${item.cartItemId}'),
-          headers: {'Content-Type': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            if (token != null && token.isNotEmpty)
+              'Authorization': 'Bearer $token',
+          },
           body: json.encode({'quantity': newQuantity}),
         );
+        print('🔄 [UpdateQuantity] Status Code: ${response.statusCode}');
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
-          final items = (data['items'] as List? ?? []);
+          final items =
+              (data['items'] as List? ?? data['cart_items'] as List? ?? []);
           return items.map((e) => CartItemModel.fromJson(e)).toList();
         }
-      } catch (_) {
-        // fall back to local
+      } catch (e) {
+        print('⚠️ [UpdateQuantity Error]: $e');
       }
     }
     final cart = await _readLocal();
@@ -91,14 +174,20 @@ class CartRepository {
   Future<List<CartItemModel>> removeFromCart(CartItemModel item) async {
     if (item.cartItemId != null) {
       try {
+        final token = await _getAccessToken();
         final response = await _client.delete(
           Uri.parse('$baseUrl/cart/items/${item.cartItemId}'),
+          headers: {
+            if (token != null && token.isNotEmpty)
+              'Authorization': 'Bearer $token',
+          },
         );
+        print('🗑️ [RemoveFromCart] Status Code: ${response.statusCode}');
         if (response.statusCode == 200 || response.statusCode == 204) {
           return getCart();
         }
-      } catch (_) {
-        // fall back to local
+      } catch (e) {
+        print('⚠️ [RemoveFromCart Error]: $e');
       }
     }
     final cart = await _readLocal();
@@ -109,13 +198,21 @@ class CartRepository {
 
   Future<void> clearCart() async {
     try {
-      final response = await _client.delete(Uri.parse('$baseUrl/cart'));
+      final token = await _getAccessToken();
+      final response = await _client.delete(
+        Uri.parse('$baseUrl/cart'),
+        headers: {
+          if (token != null && token.isNotEmpty)
+            'Authorization': 'Bearer $token',
+        },
+      );
+      print('🧹 [ClearCart] Status Code: ${response.statusCode}');
       if (response.statusCode == 200 || response.statusCode == 204) {
         await _writeLocal([]);
         return;
       }
-    } catch (_) {
-      // fall back to local
+    } catch (e) {
+      print('⚠️ [ClearCart Error]: $e');
     }
     await _writeLocal([]);
   }

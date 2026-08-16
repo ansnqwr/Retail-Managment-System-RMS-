@@ -44,7 +44,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
             setState(() => _hasScanned = false);
           }
           if (state is OrderDetailsLoaded) {
-            if (state.order.status == OrderStatus.Confirmed) {
+            if (state.order.status == OrderStatus.Completed) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Order confirmed successfully!'.tr()),

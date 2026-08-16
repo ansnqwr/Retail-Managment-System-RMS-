@@ -1,5 +1,6 @@
-import 'package:delni_rms/features/cart/model/CartItemModel.dart';
 import 'package:equatable/equatable.dart';
+
+import '../model/CartItemModel.dart';
 
 class CartState extends Equatable {
   final List<CartItemModel> items;

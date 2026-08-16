@@ -20,6 +20,10 @@ import '../../../core/widgets/IconCircleWidget.dart';
 import '../../../core/widgets/BadgeIconWidget.dart';
 import '../../../core/widgets/CategorySliderItem.dart';
 import '../../../features/home/Model/AdModel.dart';
+import '../../favorites/view model/FavoritesRepository.dart';
+import '../../favorites/view model/favorites_bloc.dart';
+import '../../favorites/view model/favorites_event.dart';
+import '../../favorites/view/Favorites.dart';
 import '../../products/view/ProductDetailsScreen.dart';
 import '../../settings/view model/settingsRepository.dart';
 import '../../stores/view/store_details_screen.dart';
@@ -196,7 +200,7 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                     _buildSettingsButton(context, primaryColor),
                     const SizedBox(width: 12),
                     widget.isGuest == false
-                        ? _buildNotificationsButton(context, primaryColor)
+                        ? _buildFavoritesButton(context, primaryColor)
                         : _buildGuestSignUpButton(context, primaryColor),
                     const SizedBox(width: 10),
                   ],
@@ -713,15 +717,25 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
     );
   }
 
-  Widget _buildNotificationsButton(BuildContext context, Color color) {
+  Widget _buildFavoritesButton(BuildContext context, Color color) {
     return InkWell(
       onTap: () {
         context.read<HomeBloc>().add(const HomeNotificationsTapped());
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder:
+                (_) => BlocProvider(
+                  create:
+                      (_) =>
+                          FavoritesBloc(FavoritesRepository(http.Client()))
+                            ..add(const FavoritesStarted()),
+                  child: const Favorites(),
+                ),
+          ),
+        );
       },
-      child: BadgeIconWidget(
-        context: context,
-        label: '3',
-        icon: Icons.notifications_outlined,
+      child: Icon(
+        Icons.favorite_border, // changed from notification icon
         color: color,
       ),
     );

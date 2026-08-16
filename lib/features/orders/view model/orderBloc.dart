@@ -89,11 +89,34 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     }
   }
 
+  String _extractOrderNumber(String scanned) {
+    // If it's a plain number already, return as-is
+    if (RegExp(r'^\d+$').hasMatch(scanned.trim())) return scanned.trim();
+
+    // If it's a URL, try to extract a numeric segment from the path
+    try {
+      final uri = Uri.parse(scanned);
+      final segments = uri.pathSegments;
+      for (final segment in segments.reversed) {
+        if (RegExp(r'^\d+$').hasMatch(segment)) return segment;
+      }
+    } catch (_) {}
+
+    return scanned.trim();
+  }
+
   Future<void> _onConfirmOrderViaQr(
     ConfirmOrderViaQr event,
     Emitter<OrdersState> emit,
   ) async {
-    if (event.scannedCode.trim() != event.orderNumber.trim()) {
+    final scanned = _extractOrderNumber(event.scannedCode).replaceAll('#', '');
+    final expected = event.orderNumber.trim().replaceAll('#', '');
+
+    print('SCANNED: "$scanned"');
+    print('EXPECTED: "$expected"');
+    print('MATCH: ${scanned == expected}');
+
+    if (scanned != expected) {
       emit(const OrdersError('QR code does not match this order'));
       return;
     }
@@ -102,7 +125,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     try {
       final updatedOrder = await _repository.changeOrderStatus(
         event.orderId,
-        OrderStatus.Confirmed,
+        OrderStatus.Completed,
       );
       emit(OrderDetailsLoaded(updatedOrder));
     } catch (e) {

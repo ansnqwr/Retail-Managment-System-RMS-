@@ -1,21 +1,17 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:http/http.dart' as http;
-import '../../favorites/view model/FavoritesRepository.dart';
-import '../../favorites/view model/favorites_bloc.dart';
-import '../../favorites/view model/favorites_event.dart';
-import '../../orders/view model/orderBloc.dart';
-import '../../orders/view model/orderEvent.dart';
-import '../../orders/view model/ordersRepository.dart';
-import '../../orders/view/ordersScreen.dart';
-import '/core/widgets/NavigationDestinationWidget.dart';
-import '../../profiles/Model/profile_repository.dart';
-import '../../profiles/ViewModel/profile_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../profiles/View/profile_view.dart';
-import '../../favorites/view/Favorites.dart';
-import '/features/home/view/HomeScreen.dart';
 import '../../categories/View/Categories.dart';
+import '../../orders/view%20model/orderBloc.dart';
+import '../../orders/view%20model/orderEvent.dart';
+import '../../orders/view%20model/ordersRepository.dart';
+import '../../orders/view/ordersScreen.dart';
+import '../../paymentcart/presentation/views/payment_cart_view.dart';
+import '../../profiles/Model/profile_repository.dart';
+import '../../profiles/View/profile_view.dart';
+import '../../profiles/ViewModel/profile_bloc.dart';
+import '/core/widgets/NavigationDestinationWidget.dart';
+import 'HomeScreen.dart';
 
 class RootScreen extends StatefulWidget {
   final bool isGuest;
@@ -38,21 +34,8 @@ class _RootScreenState extends State<RootScreen> {
       case 0:
         return HomeScreen(isGuest: widget.isGuest);
       case 1:
-        return BlocProvider(
-          create:
-              (_) =>
-                  FavoritesBloc(FavoritesRepository(http.Client()))
-                    ..add(const FavoritesStarted()),
-          child: const Favorites(),
-        );
-      case 2:
         return Categories();
-      // case 3:
-      //   return BlocProvider(
-      //     create: (_) => CartBloc(CartRepository(http.Client())),
-      //     child: const CartScreen(),
-      //   );
-      case 3:
+      case 2:
         return BlocProvider(
           create:
               (context) =>
@@ -60,6 +43,9 @@ class _RootScreenState extends State<RootScreen> {
                     ..add(LoadOrders()),
           child: const OrdersScreen(),
         );
+      case 3:
+        // CartCubit is global — no local provider needed
+        return const PaymentCartView();
       case 4:
         return BlocProvider(
           create: (context) {
@@ -76,7 +62,6 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Build all 5 pages using the cache so IndexedStack has them all
     final pages = List.generate(5, (i) => _getPage(i));
 
     return Scaffold(
@@ -93,16 +78,16 @@ class _RootScreenState extends State<RootScreen> {
             NavigationDestinationWidget(
               index: 1,
               selectedIndex: selectedIndex,
-              label: 'Favorites'.tr(),
-              icon: Icons.favorite_border,
-              selectedIcon: Icons.favorite,
+              label: 'Categories'.tr(),
+              icon: Icons.category_outlined,
+              selectedIcon: Icons.category,
             ),
             NavigationDestinationWidget(
               index: 2,
               selectedIndex: selectedIndex,
-              label: 'Categories'.tr(),
-              icon: Icons.category_outlined,
-              selectedIcon: Icons.category,
+              label: 'Orders'.tr(),
+              icon: Icons.list_outlined,
+              selectedIcon: Icons.list,
             ),
             NavigationDestinationWidget(
               index: 3,

@@ -7,12 +7,20 @@ enum OrderStatus {
   Shipped,
   Delivering,
   Delivered,
-  Confirmed,
+  Completed,
   Cancelled;
 
+  // In OrderStatus:
   static OrderStatus fromString(String value) {
+    // Map backend strings that differ from enum names.
+    const aliases = {
+      'completed': 'Completed',
+      'in_transit': 'Shipping',
+      'out_for_delivery': 'Delivering',
+    };
+    final normalized = aliases[value.toLowerCase()] ?? value;
     return values.firstWhere(
-      (e) => e.name.toLowerCase() == value.toLowerCase(),
+      (e) => e.name.toLowerCase() == normalized.toLowerCase(),
       orElse: () => Pending,
     );
   }
@@ -27,7 +35,7 @@ extension OrderStatusX on OrderStatus {
   bool get isShipped => this == OrderStatus.Shipped;
   bool get isDelivering => this == OrderStatus.Delivering;
   bool get isDelivered => this == OrderStatus.Delivered;
-  bool get isConfirmed => this == OrderStatus.Confirmed;
+  bool get isCompleted => this == OrderStatus.Completed;
   bool get isCancelled => this == OrderStatus.Cancelled;
 
   int get progressStep {
@@ -44,7 +52,7 @@ extension OrderStatusX on OrderStatus {
         return 4;
       case OrderStatus.Delivered:
         return 5;
-      case OrderStatus.Confirmed:
+      case OrderStatus.Completed:
         return 6;
       case OrderStatus.Cancelled:
         return -1;
@@ -53,7 +61,7 @@ extension OrderStatusX on OrderStatus {
 
   bool get showTrackButton =>
       this != OrderStatus.Delivered &&
-      this != OrderStatus.Confirmed &&
+      this != OrderStatus.Completed &&
       this != OrderStatus.Cancelled;
 }
 
@@ -76,14 +84,13 @@ class OrderItem {
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
-      id: json['id'] as String,
+      id: json['id'].toString(),
       imageUrl: json['image_url'] as String? ?? '',
       price: (json['price'] as num).toDouble(),
       title: json['title'] as String,
       quantity: json['quantity'] as int? ?? 1,
     );
   }
-
   Map<String, dynamic> toJson() => {
     'id': id,
     'image_url': imageUrl,
@@ -175,7 +182,7 @@ class Order {
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
-      id: json['id'] as String,
+      id: json['id'].toString(),
       orderNumber: json['order_number'] as String,
       hasDelivery: json['has_delivery'] as bool?,
       hasShipping: json['has_shipping'] as bool?,
@@ -207,7 +214,6 @@ class Order {
               : [],
     );
   }
-
   Map<String, dynamic> toJson() => {
     'id': id,
     'order_number': orderNumber,
