@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:easy_localization/easy_localization.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../auth/data/models/Repository/signin_repository.dart';
 import '../model/settingsModel.dart';
 
 abstract class SettingsRepository {
@@ -10,7 +14,7 @@ abstract class SettingsRepository {
   Future<void> updateCurrency(String currencyCode);
   Future<String> getSavedLanguageCode();
   Future<String> getSavedCurrencyCode();
-  Future<void> deleteAccount();
+  Future<void> deleteAccount(String password);
 }
 
 class SettingsRepositoryImpl implements SettingsRepository {
@@ -138,12 +142,18 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<void> deleteAccount() async {
-    // TODO: replace with real DELETE /account API call
-    // final response = await dio.delete('/account');
-    // if (response.statusCode != 200 && response.statusCode != 204) {
-    //   throw Exception('Failed to delete account');
-    // }
-    await Future.delayed(const Duration(milliseconds: 800));
+  Future<void> deleteAccount(String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token') ?? '';
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/profile'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'access_token': token, 'password': password}),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception('Failed to delete account');
+    }
   }
 }

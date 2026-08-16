@@ -90,9 +90,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   ) async {
     emit(const SettingsActionLoading('delete'));
     try {
-      await _repository.deleteAccount();
-      final options = await _repository.getSettings();
-      emit(SettingsLoaded(options));
+      await _repository.deleteAccount(event.password);
+      emit(const AccountDeleted());
     } catch (e) {
       emit(const SettingsError('Failed to delete account'));
     }

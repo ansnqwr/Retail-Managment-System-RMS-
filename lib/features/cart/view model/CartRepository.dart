@@ -27,11 +27,20 @@ class CartRepository {
     return token;
   }
 
+  Future<String> _getCurrencyCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return (prefs.getString('settings_currency') ?? 'USD').toUpperCase();
+  }
+
   Future<List<CartItemModel>> getCart() async {
     try {
       final token = await _getAccessToken();
+      final currency = await _getCurrencyCode();
+      final uri = Uri.parse(
+        '$baseUrl/cart',
+      ).replace(queryParameters: {'currency': currency});
       final response = await _client.get(
-        Uri.parse('$baseUrl/cart'),
+        uri,
         headers: {
           'Content-Type': 'application/json',
           if (token != null && token.isNotEmpty)

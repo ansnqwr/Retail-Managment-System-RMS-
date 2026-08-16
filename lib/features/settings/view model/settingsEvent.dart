@@ -20,4 +20,7 @@ class SelectCurrency extends SettingsEvent {
   SelectCurrency(this.currencyCode);
 }
 
-class DeleteAccount extends SettingsEvent {}
+class DeleteAccount extends SettingsEvent {
+  final String password;
+  DeleteAccount({required this.password});
+}

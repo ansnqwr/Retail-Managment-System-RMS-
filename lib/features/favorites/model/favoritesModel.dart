@@ -47,20 +47,29 @@ class Product {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
+    // Helper to safely extract a nested image URL or plain string
+    String? asString(dynamic val) {
+      if (val == null) return null;
+      if (val is String) return val;
+      if (val is Map)
+        return val['url']?.toString() ?? val['path']?.toString() ?? '';
+      return val.toString();
+    }
+
     return Product(
       id: json['id'] as int,
       subCategoryId: json['sub_category_id'] as int?,
       brandId: json['brand_id'] as int?,
       storeId: json['store_id'] as int?,
       ownerId: json['owner_id'] as int?,
-      name: json['name'] as String? ?? '',
-      description: json['description'] as String?,
-      specifications: json['specifications'] as String?,
-      story: json['story'] as String?,
+      name: asString(json['name']) ?? '',
+      description: asString(json['description']),
+      specifications: asString(json['specifications']),
+      story: asString(json['story']),
       price: json['price']?.toString() ?? '0',
       oldPrice: json['old_price']?.toString(),
       quantity: json['quantity'] as int? ?? 0,
-      image: json['image'] as String? ?? '',
+      image: asString(json['image']) ?? '',
       isTrending: json['is_trending'] as bool? ?? false,
       isNewest: json['is_newest'] as bool? ?? false,
       isOnSale: json['is_on_sale'] as bool? ?? false,

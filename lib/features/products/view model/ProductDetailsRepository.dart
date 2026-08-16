@@ -4,6 +4,7 @@ import 'package:delni_rms/features/auth/data/models/Repository/signin_repository
 import 'package:http/http.dart' as http;
 import 'package:delni_rms/features/products/model/ProductDetailModel.dart';
 import 'package:delni_rms/features/products/model/ProductReviewModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductDetailsRepository {
   final http.Client _client;
@@ -38,10 +39,18 @@ class ProductDetailsRepository {
   //   }
   // }
   // ═══════════════════════════════════════════════════════════════
+
+  Future<String> _getCurrencyCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return (prefs.getString('settings_currency') ?? 'USD').toUpperCase();
+  }
+
   Future<ProductDetailModel> getProductDetails(int productId) async {
-    final response = await _client.get(
-      Uri.parse('$baseUrl/products/$productId'),
-    );
+    final currency = await _getCurrencyCode();
+    final uri = Uri.parse(
+      '$baseUrl/products/$productId',
+    ).replace(queryParameters: {'currency': currency});
+    final response = await _client.get(uri);
     if (response.statusCode == 200) {
       return ProductDetailModel.fromJson(json.decode(response.body));
     } else {

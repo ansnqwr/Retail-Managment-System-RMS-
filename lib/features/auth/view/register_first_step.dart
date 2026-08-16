@@ -61,9 +61,13 @@ class RegisterFirstStep extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              _buildField("Email Address", _emailCtrl, Icons.email_outlined),
-              _buildField("First Name", _firstCtrl, Icons.person_outline),
-              _buildField("Last Name", _lastCtrl, Icons.person_outline),
+              _buildField(
+                "Email Address".tr(),
+                _emailCtrl,
+                Icons.email_outlined,
+              ),
+              _buildField("First Name".tr(), _firstCtrl, Icons.person_outline),
+              _buildField("Last Name".tr(), _lastCtrl, Icons.person_outline),
 
               const SizedBox(height: 20),
               Row(
@@ -180,9 +184,11 @@ class RegisterFirstStep extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         TextFormField(
+          keyboardType: TextInputType.emailAddress,
           controller: controller,
           validator:
-              (val) => (val == null || val.isEmpty) ? 'Field required' : null,
+              (val) =>
+                  (val == null || val.isEmpty) ? 'Field required'.tr() : null,
           decoration: InputDecoration(
             filled: true,
             fillColor: const Color(0xFFDED3DC).withOpacity(0.4),

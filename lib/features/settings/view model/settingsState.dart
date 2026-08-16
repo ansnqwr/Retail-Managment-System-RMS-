@@ -27,6 +27,10 @@ class SettingsError extends SettingsState {
   List<Object?> get props => [message];
 }
 
+class AccountDeleted extends SettingsState {
+  const AccountDeleted();
+}
+
 class LanguageSelectionState extends SettingsState {
   final List<Language> languages;
   const LanguageSelectionState(this.languages);

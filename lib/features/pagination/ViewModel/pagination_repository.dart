@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '/features/pagination/Model/FiltersModel.dart';
 import '/features/auth/data/models/Repository/signin_repository.dart';
 import '/features/categories/Model/CategoryItemModel.dart';
@@ -37,6 +39,11 @@ class PaginationRepository {
     // );
 
     return dio;
+  }
+
+  Future<String> _getCurrencyCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return (prefs.getString('settings_currency') ?? 'USD').toUpperCase();
   }
 
   Future<List<ProductCardModel>> fetchProducts({
@@ -133,6 +140,9 @@ class PaginationRepository {
       }
 
       print('PRODUCT QUERY PARAMS: $queryParams');
+
+      final currency = await _getCurrencyCode();
+      queryParams['currency'] = currency;
 
       final response = await _dio.get(
         '/products/filtered',

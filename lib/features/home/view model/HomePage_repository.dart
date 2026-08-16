@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../auth/data/models/Repository/signin_repository.dart';
 import '../Model/ProductCardModel.dart';
 import '../Model/StoreCardItem.dart';
@@ -40,6 +41,11 @@ class HomeRepository {
     // );
 
     return dio;
+  }
+
+  Future<String> _getCurrencyCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return (prefs.getString('settings_currency') ?? 'USD').toUpperCase();
   }
 
   Future<List<AdModel>> fetchAds() async {
@@ -110,6 +116,9 @@ class HomeRepository {
         queryParams['minPrice'] = null;
         queryParams['maxPrice'] = null;
       }
+
+      final currency = await _getCurrencyCode();
+      queryParams['currency'] = currency;
 
       final response = await _dio.get(
         '/products/filtered',

@@ -1,6 +1,8 @@
+import 'package:delni_rms/features/auth/view/WelcomeLogin.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../model/settingsModel.dart';
 import '../view model/settingsBloc.dart';
 import '../view model/settingsEvent.dart';
@@ -34,80 +36,91 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: BlocBuilder<SettingsBloc, SettingsState>(
-          builder: (context, state) {
-            if (state is SettingsLoading || state is SettingsActionLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (state is SettingsLoaded) {
-              return _buildSettingsList(context, state.options);
-            }
-            if (state is SettingsError) {
-              return Center(
-                child: TextButton(
-                  onPressed:
-                      () => context.read<SettingsBloc>().add(LoadSettings()),
-                  child: Text('Retry'.tr()),
-                ),
+        child: BlocListener<SettingsBloc, SettingsState>(
+          listener: (context, state) {
+            if (state is AccountDeleted) {
+              SharedPreferences.getInstance().then((prefs) => prefs.clear());
+
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const WelcomeLoginScreen()),
+                (_) => false,
               );
             }
-            return const SizedBox.shrink();
           },
+          child: BlocBuilder<SettingsBloc, SettingsState>(
+            builder: (context, state) {
+              if (state is SettingsLoading || state is SettingsActionLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is SettingsLoaded) {
+                return _buildSettingsList(context, state.options);
+              }
+              if (state is SettingsError) {
+                return Center(
+                  child: TextButton(
+                    onPressed:
+                        () => context.read<SettingsBloc>().add(LoadSettings()),
+                    child: Text('Retry'.tr()),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildSettingsList(BuildContext context, List<SettingOption> options) {
-    final personal =
-        options.where((o) => o.section == SettingSection.personal).toList();
-    final shop =
-        options.where((o) => o.section == SettingSection.shop).toList();
-    final account =
-        options.where((o) => o.section == SettingSection.account).toList();
+Widget _buildSettingsList(BuildContext context, List<SettingOption> options) {
+  final personal =
+      options.where((o) => o.section == SettingSection.personal).toList();
+  final shop = options.where((o) => o.section == SettingSection.shop).toList();
+  final account =
+      options.where((o) => o.section == SettingSection.account).toList();
 
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      children: [
-        Text(
-          'Settings'.tr(),
-          style: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF2D1B2E),
-          ),
+  return ListView(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    children: [
+      Text(
+        'Settings'.tr(),
+        style: TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.w700,
+          color: Color(0xFF2D1B2E),
         ),
-        const SizedBox(height: 24),
-        _buildSection('Personal'.tr(), personal, context),
-        const SizedBox(height: 24),
-        _buildSection('Shop'.tr(), shop, context),
-        const SizedBox(height: 24),
-        _buildSection('Account'.tr(), account, context),
-      ],
-    );
-  }
+      ),
+      const SizedBox(height: 24),
+      _buildSection('Personal'.tr(), personal, context),
+      const SizedBox(height: 24),
+      _buildSection('Shop'.tr(), shop, context),
+      const SizedBox(height: 24),
+      _buildSection('Account'.tr(), account, context),
+    ],
+  );
+}
 
-  Widget _buildSection(
-    String title,
-    List<SettingOption> items,
-    BuildContext context,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title.tr(),
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF2D1B2E),
-          ),
+Widget _buildSection(
+  String title,
+  List<SettingOption> items,
+  BuildContext context,
+) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        title.tr(),
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          color: Color(0xFF2D1B2E),
         ),
-        const SizedBox(height: 12),
-        ...items.map((item) => _SettingTile(option: item)),
-      ],
-    );
-  }
+      ),
+      const SizedBox(height: 12),
+      ...items.map((item) => _SettingTile(option: item)),
+    ],
+  );
 }
 
 class _SettingTile extends StatefulWidget {
@@ -221,6 +234,7 @@ class _SettingTileState extends State<_SettingTile> {
   }
 
   void _showDeleteDialog(BuildContext context, SettingsBloc bloc) {
+    final passwordController = TextEditingController();
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.35),
@@ -261,6 +275,21 @@ class _SettingTileState extends State<_SettingTile> {
                         color: Colors.grey.shade600,
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        hintText: 'Enter your password'.tr(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 24),
                     Row(
                       children: [
@@ -293,8 +322,9 @@ class _SettingTileState extends State<_SettingTile> {
                             height: 48,
                             child: ElevatedButton(
                               onPressed: () {
-                                // Use captured bloc, not context.read
-                                bloc.add(DeleteAccount());
+                                final password = passwordController.text.trim();
+                                if (password.isEmpty) return;
+                                bloc.add(DeleteAccount(password: password));
                                 Navigator.pop(ctx);
                               },
                               style: ElevatedButton.styleFrom(

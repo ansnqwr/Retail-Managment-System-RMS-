@@ -36,6 +36,9 @@ class FavoritesRepository {
             list
                 .map((e) => Product.fromJson(e as Map<String, dynamic>))
                 .toList();
+        if (list.isNotEmpty) {
+          print('🔍 [Wishlist] First item raw: ${list.first}');
+        }
 
         // keep local IDs in sync
         final ids = products.map((p) => p.id).toSet();
